@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Batch History</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+:root{
+  --primary: linear-gradient(135deg,#6777ef,#9c88ff);
+  --bg:#f4f6f9;
+}
+
+body{
+  margin:0;
+  display:flex;
+  background:var(--bg);
+  font-family:'Poppins',sans-serif;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:240px;
+  height:100vh;
+  position:fixed;
+  background:var(--primary);
+  color:#fff;
+}
+
+.sidebar .brand{
+  padding:20px;
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.sidebar a{
+  display:flex;
+  align-items:center;
+  padding:14px 20px;
+  color:#eee;
+  text-decoration:none;
+}
+
+.sidebar a:hover{
+  background:rgba(255,255,255,0.15);
+}
+
+.sidebar a.active{
+  background:rgba(255,255,255,0.25);
+  border-left:4px solid #fff;
+}
+
+/* MAIN */
+.main{
+  margin-left:240px;
+  width:100%;
+  padding:20px;
+}
+
+/* TOPBAR */
+.topbar{
+  background:#fff;
+  padding:15px 20px;
+  border-radius:12px;
+  margin-bottom:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* CARD */
+.card{
+  border:none;
+  border-radius:15px;
+  padding:20px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* FILTER */
+.filter-group{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+}
+
+select{
+  border-radius:10px;
+  padding:8px 12px;
+}
+
+.btn-primary{
+  border-radius:25px;
+  padding:8px 20px;
+}
+
+/* TABLE */
+.clean-table thead{
+  background:#6777ef;
+  color:#fff;
+}
+
+.clean-table th{
+  border:none;
+}
+
+.clean-table td{
+  padding:14px;
+  border-top:1px solid #eee;
+}
+
+.clean-table tr:hover{
+  background:#f5f7ff;
+}
+
+/* PROGRESS BAR */
+.progress{
+  height:8px;
+  border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="brand">🚀 Smart Admin</div>
+
+<a href="admin_dashboard.html">
+        <i class="fas fa-home me-2"></i> Dashboard
+    </a>
+
+    <a href="add_trainer.html">
+        <i class="fas fa-user-plus me-2"></i> Add Trainers
+    </a>
+
+    <a href="trainer.html">
+        <i class="fas fa-users me-2"></i> Trainers
+    </a>
+
+    <a href="assign-batch.html">
+        <i class="fas fa-box me-2"></i> Batches
+    </a>
+
+    <a href="batch-history.html" class="active">
+        <i class="fas fa-history me-2"></i> History
+    </a>
+
+    <a href="#">
+        <i class="fas fa-chart-line me-2"></i> Progress
+    </a>
+
+    <a href="notification.html">
+        <i class="fas fa-bell me-2"></i> Notifications
+    </a>
+
+    <a href="#" onclick="logout()">
+        <i class="fas fa-sign-out-alt me-2"></i> Logout
+    </a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <h5 class="mb-0">Batch History</h5>
+</div>
+
+<!-- FILTER CARD -->
+<div class="card mb-4">
+  <h5>Filter Batches</h5>
+
+  <div class="filter-group mt-3">
+    <label>Year:</label>
+    <select id="year">
+      <option value="2025">2025</option>
+      <option value="2026">2026</option>
+    </select>
+
+    <label>Month:</label>
+    <select id="month">
+      <option value="">All</option>
+      <option value="1">Jan</option>
+      <option value="2">Feb</option>
+      <option value="3">Mar</option>
+      <option value="4">Apr</option>
+      <option value="5">May</option>
+      <option value="6">Jun</option>
+      <option value="7">Jul</option>
+      <option value="8">Aug</option>
+      <option value="9">Sep</option>
+      <option value="10">Oct</option>
+      <option value="11">Nov</option>
+      <option value="12">Dec</option>
+    </select>
+
+    <button onclick="loadHistory()" class="btn btn-primary">
+      <i class="fas fa-search"></i> Load
+    </button>
+  </div>
+</div>
+
+<!-- TABLE CARD -->
+<div class="card">
+  <h5>Completed Batches</h5>
+
+  <table class="table clean-table text-center align-middle">
+    <thead>
+      <tr>
+        <th>Batch</th>
+        <th>Trainer</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
+
+</div>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

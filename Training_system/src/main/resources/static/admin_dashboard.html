@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+<style>
+:root {
+    --primary: linear-gradient(135deg, #6777ef, #9c88ff);
+    --bg: #f4f6f9;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    background: var(--bg);
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    position: fixed;
+    background: var(--primary);
+    color: white;
+}
+
+.sidebar .brand {
+    font-size: 22px;
+    padding: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.sidebar a {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    color: #eee;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background: rgba(255,255,255,0.15);
+    padding-left: 25px;
+}
+
+.sidebar a.active {
+    background: rgba(255,255,255,0.25);
+    border-left: 4px solid #fff;
+}
+
+/* ===== MAIN ===== */
+.main {
+    margin-left: 240px;
+    width: 100%;
+    padding: 20px;
+}
+
+/* ===== TOPBAR ===== */
+.topbar {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* ===== CARDS ===== */
+.card-box {
+    padding: 25px;
+    border-radius: 15px;
+    color: white;
+    text-align: center;
+}
+
+.bg1 { background: linear-gradient(135deg,#667eea,#764ba2); }
+.bg2 { background: linear-gradient(135deg,#2ed573,#1eae60); }
+.bg3 { background: linear-gradient(135deg,#ffa502,#ff7f50); }
+.bg4 { background: linear-gradient(135deg,#ff4757,#c0392b); }
+
+/* ===== TABLE ===== */
+.card {
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.table thead {
+    background: #6777ef;
+    color: white;
+}
+
+/* ===== NOTIFICATIONS ===== */
+#notificationList {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    width: 320px;
+    display: none;
+}
+
+.notification-box {
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px;
+    max-height: 350px;
+    overflow-y: auto;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item small {
+    color: gray;
+}
+</style>
+
+<script>
+(function () {
+    const role = localStorage.getItem("role");
+    if (!role || role !== "ADMIN") {
+        alert("Access denied");
+        window.location.href = "login.html";
+    }
+})();
+</script>
+
+</head>
+
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<div class="sidebar">
+    <div class="brand">🚀 Smart Admin</div>
+
+    <a href="admin_dashboard.html" class="active">
+        <i class="fas fa-home me-2"></i> Dashboard
+    </a>
+
+    <a href="add_trainer.html">
+        <i class="fas fa-user-plus me-2"></i> Add Trainers
+    </a>
+
+    <a href="trainer.html">
+        <i class="fas fa-users me-2"></i> Trainers
+    </a>
+
+    <a href="assign-batch.html">
+        <i class="fas fa-box me-2"></i> Batches
+    </a>
+
+    <a href="batch-history.html">
+        <i class="fas fa-history me-2"></i> History
+    </a>
+
+    <a href="#">
+        <i class="fas fa-chart-line me-2"></i> Progress
+    </a>
+
+    <a href="notification.html">
+        <i class="fas fa-bell me-2"></i> Notifications
+    </a>
+
+    <a href="#" onclick="logout()">
+        <i class="fas fa-sign-out-alt me-2"></i> Logout
+    </a>
+</div>
+
+<!-- ===== MAIN ===== -->
+<div class="main">
+
+    <!-- ===== TOPBAR ===== -->
+    <div class="topbar">
+        <h5 class="mb-0">Welcome Admin 👋</h5>
+
+        <div class="d-flex align-items-center gap-3">
+
+            <!-- 🔔 Notification Bell -->
+            <div style="position:relative; cursor:pointer;" onclick="toggleNotifications()">
+                <i class="fas fa-bell fa-lg"></i>
+                <span id="notifCount" class="badge bg-danger"
+                      style="position:absolute; top:-5px; right:-10px;">0</span>
+
+                <!-- Dropdown -->
+                <div id="notificationList">
+                    <div class="notification-box" id="notificationBox">
+                        <div class="text-center text-muted">No notifications</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-sm btn-primary" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- ===== CARDS ===== -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card-box bg1">
+                <h3 id="trainers">0</h3>
+                <p>Total Trainers</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-box bg2">
+                <h3 id="batches">0</h3>
+                <p>Total Batches</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-box bg3">
+                <h3 id="active">0</h3>
+                <p>Ongoing</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card-box bg4">
+                <h3 id="completed">0</h3>
+                <p>Completed</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TABLE ===== -->
+    <div class="card p-3">
+        <h5 class="mb-3">📊 Ongoing Batches</h5>
+
+        <table class="table table-hover text-center">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Batch</th>
+                    <th>Trainer</th>
+                    <th>Dates</th>
+                    <th>Progress</th>
+                </tr>
+            </thead>
+            <tbody id="dashboardBatchTable"></tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- ✅ REQUIRED SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+
+<script>
+function logout() {
+    localStorage.clear();
+    window.location.href = "login.html";
+}
+
+// 🔔 Toggle Notification Dropdown
+function toggleNotifications() {
+    const box = document.getElementById("notificationList");
+    box.style.display = box.style.display === "block" ? "none" : "block";
+}
+</script>
+
+<script src="script.js"></script>
+
+</body>
+</html>

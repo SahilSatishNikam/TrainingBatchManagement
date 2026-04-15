@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mock Interviews</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+<style>
+:root {
+    --primary: linear-gradient(135deg, #6777ef, #9c88ff);
+    --bg: #f4f6f9;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    background: var(--bg);
+    font-family: 'Poppins', sans-serif;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    position: fixed;
+    background: var(--primary);
+    color: #fff;
+}
+
+.sidebar .brand {
+    padding: 20px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.sidebar a {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    color: #eee;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.sidebar a.active {
+    background: rgba(255, 255, 255, 0.25);
+    border-left: 4px solid #fff;
+}
+
+/* MAIN */
+.main {
+    margin-left: 240px;
+    width: 100%;
+    padding: 20px;
+}
+
+/* TOPBAR */
+.topbar {
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* CARD */
+.card {
+    border-radius: 15px;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* TABLE */
+.table thead {
+    background: #343a40;
+    color: #fff;
+}
+</style>
+
+<script>
+(function(){
+    let role = localStorage.getItem("role");
+    if (role)
+        role = role.replace("ROLE_", "").toUpperCase();
+
+    if (!role || role !== "TRAINER") {
+        alert("Access denied");
+        window.location.href = "login.html";
+    }
+})();
+</script>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <div class="brand">🎓 Smart Trainer</div>
+
+    <a href="trainer_dashboard.html">
+        <i class="fas fa-home me-2"></i>Dashboard
+    </a>
+
+    <a href="create_batch.html">
+        <i class="fas fa-plus me-2"></i>Create Batch
+    </a>
+
+    <a href="trainer_batches.html">
+        <i class="fas fa-layer-group me-2"></i>My Batches
+    </a>
+
+    <a href="training_sessions.html">
+        <i class="fas fa-layer-group me-2"></i>Create Session
+    </a>
+
+    <a href="practical_project.html">
+        <i class="fas fa-laptop-code me-2"></i>Practicals & Projects
+    </a>
+
+    <a href="mock_interview.html" class="active">
+        <i class="fas fa-microphone me-2"></i>Mock Interviews
+    </a>
+
+    <a href="update_progress.html">
+        <i class="fas fa-chart-line me-2"></i>Progress
+    </a>
+
+    <a href="notification.html">
+        <i class="fas fa-bell me-2"></i>Notifications
+    </a>
+
+    <a href="#">
+        <i class="fas fa-cog me-2"></i>Settings
+    </a>
+
+    <a href="#" onclick="logout()">
+        <i class="fas fa-sign-out-alt me-2"></i>Logout
+    </a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <h5 class="mb-0">🎤 Mock Interviews</h5>
+        <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- CARD -->
+    <div class="card">
+
+        <!-- FORM -->
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <select id="mockBatch" class="form-control"></select>
+            </div>
+
+            <div class="col-md-3">
+                <input id="interviewer" class="form-control" placeholder="Interviewer Name">
+            </div>
+
+            <div class="col-md-3">
+                <input type="date" id="date" class="form-control">
+            </div>
+
+            <div class="col-md-3">
+                <button class="btn btn-warning w-100" onclick="createMock()">
+                    Schedule Interview
+                </button>
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <table class="table text-center">
+            <thead>
+                <tr>
+                    <th>Interviewer</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Score</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="mockTable"></tbody>
+        </table>
+
+    </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="mockModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Complete Interview</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <input type="hidden" id="mockId">
+
+        <label class="mb-1">Score</label>
+        <input type="number" id="mockScore"
+               class="form-control mb-3"
+               placeholder="Enter Score (0-100)">
+
+        <label class="mb-1">Feedback</label>
+        <textarea id="mockFeedback"
+                  class="form-control"
+                  rows="3"
+                  placeholder="Enter feedback"></textarea>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-success" onclick="completeMock()">
+          Submit
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

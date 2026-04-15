@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Create Batch</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+<style>
+:root {
+  --primary: linear-gradient(135deg,#6777ef,#9c88ff);
+  --bg:#f4f6f9;
+}
+
+body {
+  margin:0;
+  display:flex;
+  background:var(--bg);
+  font-family:'Poppins',sans-serif;
+}
+
+/* SIDEBAR (SAME AS DASHBOARD) */
+.sidebar{
+  width:240px;
+  height:100vh;
+  position:fixed;
+  background:var(--primary);
+  color:#fff;
+}
+
+.sidebar .brand{
+  padding:20px;
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.sidebar a{
+  display:flex;
+  align-items:center;
+  padding:14px 20px;
+  color:#eee;
+  text-decoration:none;
+}
+
+.sidebar a:hover{
+  background:rgba(255,255,255,0.15);
+}
+
+.sidebar a.active{
+  background:rgba(255,255,255,0.25);
+  border-left:4px solid #fff;
+}
+
+/* MAIN */
+.main{
+  margin-left:240px;
+  width:100%;
+  padding:20px;
+}
+
+/* TOPBAR */
+.topbar{
+  background:#fff;
+  padding:15px 20px;
+  border-radius:12px;
+  margin-bottom:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* CARD */
+.card-box{
+  background:#fff;
+  border-radius:15px;
+  padding:25px;
+  max-width:550px;
+  margin:auto;
+  box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* INPUT */
+.form-control{
+  border-radius:10px;
+}
+
+/* BUTTON */
+.btn-primary{
+  background:#6777ef;
+  border:none;
+  border-radius:10px;
+}
+
+.btn-primary:hover{
+  background:#5563d6;
+}
+</style>
+
+<script>
+(function(){
+  const role = localStorage.getItem("role");
+  if(role !== "TRAINER"){
+    alert("Access denied");
+    window.location.href="login.html";
+  }
+})();
+</script>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="brand">🎓 Smart Trainer</div>
+
+ <a href="trainer_dashboard.html">
+        <i class="fas fa-home me-2"></i>Dashboard
+    </a>
+
+    <a href="create_batch.html"  class="active">
+        <i class="fas fa-plus me-2"></i>Create Batch
+    </a>
+
+    <a href="trainer_batches.html">
+        <i class="fas fa-layer-group me-2"></i>My Batches
+    </a>
+
+    <a href="training_sessions.html">
+        <i class="fas fa-layer-group me-2"></i>Create Session
+    </a>
+
+    <a href="practical_project.html">
+        <i class="fas fa-laptop-code me-2"></i>Practicals & Projects
+    </a>
+
+    <a href="mock_interview.html">
+        <i class="fas fa-microphone me-2"></i>Mock Interviews
+    </a>
+
+    <a href="update_progress.html">
+        <i class="fas fa-chart-line me-2"></i>Progress
+    </a>
+
+    <a href="notification.html">
+        <i class="fas fa-bell me-2"></i>Notifications
+    </a>
+
+    <a href="#">
+        <i class="fas fa-cog me-2"></i>Settings
+    </a>
+
+    <a href="#" onclick="logout()">
+        <i class="fas fa-sign-out-alt me-2"></i>Logout
+    </a>
+</div>  
+<!-- MAIN -->
+<div class="main">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <h5 class="mb-0">Create New Batch</h5>
+  <span>Trainer Panel 🚀</span>
+</div>
+
+<!-- FORM CARD -->
+<div class="card-box">
+
+  <h5 class="text-center mb-4">Create Batch</h5>
+
+  <div class="mb-3">
+    <label>Batch Name</label>
+    <input id="batchName" class="form-control" placeholder="Enter batch name">
+  </div>
+
+  <div class="mb-3">
+    <label>Start Date</label>
+    <input type="date" id="startDate" class="form-control">
+  </div>
+
+  <div class="mb-3">
+    <label>End Date</label>
+    <input type="date" id="endDate" class="form-control">
+  </div>
+
+  <div class="mb-3">
+    <label>Total Days</label>
+    <input type="number" id="totalDays" class="form-control" placeholder="Enter total days">
+  </div>
+
+  <button class="btn btn-primary w-100" onclick="createTrainerBatch()">
+    Create Batch
+  </button>
+
+</div>
+
+</div>
+
+<!-- YOUR JS -->
+<script src="script.js"></script>
+
+</body>
+</html>

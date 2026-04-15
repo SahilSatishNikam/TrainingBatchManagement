@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Update Progress</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+<style>
+:root {
+  --primary: linear-gradient(135deg,#6777ef,#9c88ff);
+  --bg:#f4f6f9;
+}
+
+body {
+  margin:0;
+  display:flex;
+  background:var(--bg);
+  font-family:'Poppins',sans-serif;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:240px;
+  height:100vh;
+  position:fixed;
+  background:var(--primary);
+  color:#fff;
+}
+
+.sidebar .brand{
+  padding:20px;
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.sidebar a{
+  display:flex;
+  align-items:center;
+  padding:14px 20px;
+  color:#eee;
+  text-decoration:none;
+}
+
+.sidebar a:hover{
+  background:rgba(255,255,255,0.15);
+}
+
+.sidebar a.active{
+  background:rgba(255,255,255,0.25);
+  border-left:4px solid #fff;
+}
+
+/* MAIN */
+.main{
+  margin-left:240px;
+  width:100%;
+  padding:20px;
+}
+
+/* TOPBAR */
+.topbar{
+  background:#fff;
+  padding:15px 20px;
+  border-radius:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* CARD */
+.card-box{
+  background:#fff;
+  border-radius:15px;
+  padding:25px;
+  max-width:500px;
+  margin:40px auto;
+  box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* INPUT */
+.form-control, .form-select{
+  border-radius:10px;
+}
+
+/* PROGRESS */
+.progress{
+  height:20px;
+  border-radius:10px;
+}
+
+.progress-bar{
+  transition:0.4s;
+}
+
+/* BUTTON */
+.btn-primary{
+  background:#6777ef;
+  border:none;
+  border-radius:10px;
+}
+
+.btn-primary:hover{
+  background:#5563d6;
+}
+
+/* NOTIFICATION */
+#notificationList{
+  display:none;
+  position:fixed;
+  top:70px;
+  right:20px;
+  width:300px;
+  z-index:9999;
+}
+
+#notifCount{
+  position:absolute;
+  top:-8px;
+  right:-8px;
+  background:red;
+  color:#fff;
+  padding:3px 7px;
+  font-size:12px;
+  border-radius:50%;
+}
+</style>
+
+<script>
+(function(){
+  let role = localStorage.getItem("role");
+  if(role) role = role.replace("ROLE_","").toUpperCase();
+
+  if(!role || role !== "TRAINER"){
+    alert("Access denied");
+    window.location.href="login.html";
+  }
+})();
+</script>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="brand">🎓 Smart Trainer</div>
+
+  <a href="trainer_dashboard.html">
+        <i class="fas fa-home me-2"></i>Dashboard
+    </a>
+
+    <a href="create_batch.html">
+        <i class="fas fa-plus me-2"></i>Create Batch
+    </a>
+
+    <a href="trainer_batches.html">
+        <i class="fas fa-layer-group me-2"></i>My Batches
+    </a>
+
+    <a href="training_sessions.html">
+        <i class="fas fa-layer-group me-2"></i>Create Session
+    </a>
+
+    <a href="practical_project.html">
+        <i class="fas fa-laptop-code me-2"></i>Practicals & Projects
+    </a>
+
+    <a href="mock_interview.html">
+        <i class="fas fa-microphone me-2"></i>Mock Interviews
+    </a>
+
+    <a href="update_progress.html"  class="active">
+        <i class="fas fa-chart-line me-2"></i>Progress
+    </a>
+
+    <a href="notification.html">
+        <i class="fas fa-bell me-2"></i>Notifications
+    </a>
+ 
+    <a href="#">
+        <i class="fas fa-cog me-2"></i>Settings
+    </a>
+
+    <a href="#" onclick="logout()">
+        <i class="fas fa-sign-out-alt me-2"></i>Logout
+    </a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <h5 class="mb-0">Update Progress</h5>
+
+  <div onclick="toggleNotifications()"
+       style="position:fixed;top:15px;right:20px;cursor:pointer;">
+    <i class="fas fa-bell" style="font-size:22px;"></i>
+    <span id="notifCount">0</span>
+  </div>
+</div>
+
+<!-- CARD -->
+<div class="card-box">
+
+<input type="hidden" id="batchId">
+
+<label>Select Batch</label>
+<select id="batchSelect" class="form-select mb-3"></select>
+
+<label>Total Days</label>
+<input id="totalDays" class="form-control mb-2" readonly>
+
+<label>Completed Days</label>
+<input id="completedDays" class="form-control mb-3">
+
+<div class="progress mb-2">
+  <div id="progressBar" class="progress-bar bg-success"></div>
+</div>
+
+<small id="progressText">0%</small>
+
+<button class="btn btn-primary w-100 mt-3" onclick="submitProgress()">
+  Update Progress
+</button>
+
+</div>
+
+</div>
+
+<!-- NOTIFICATIONS -->
+<div id="notificationList"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

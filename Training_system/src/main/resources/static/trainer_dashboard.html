@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Trainer Dashboard</title>
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+	rel="stylesheet">
+
+<style>
+:root {
+	--primary: linear-gradient(135deg, #6777ef, #9c88ff);
+	--bg: #f4f6f9;
+}
+
+body {
+	margin: 0;
+	display: flex;
+	background: var(--bg);
+	font-family: 'Poppins', sans-serif;
+}
+
+/* SIDEBAR */
+.sidebar {
+	width: 240px;
+	height: 100vh;
+	position: fixed;
+	background: var(--primary);
+	color: #fff;
+}
+
+.sidebar .brand {
+	padding: 20px;
+	text-align: center;
+	font-size: 22px;
+	font-weight: bold;
+}
+
+.sidebar a {
+	display: flex;
+	align-items: center;
+	padding: 14px 20px;
+	color: #eee;
+	text-decoration: none;
+	transition: 0.3s;
+}
+
+.sidebar a:hover {
+	background: rgba(255, 255, 255, 0.15);
+}
+
+.sidebar a.active {
+	background: rgba(255, 255, 255, 0.25);
+	border-left: 4px solid #fff;
+}
+
+/* MAIN */
+.main {
+	margin-left: 240px;
+	width: 100%;
+	padding: 20px;
+}
+
+/* TOPBAR */
+.topbar {
+	background: #fff;
+	padding: 15px 20px;
+	border-radius: 12px;
+	margin-bottom: 20px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* CARDS */
+.card-box {
+	padding: 20px;
+	border-radius: 15px;
+	color: #fff;
+	text-align: center;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.bg1 {
+	background: #6777ef;
+}
+
+.bg2 {
+	background: #63ed7a;
+}
+
+.bg3 {
+	background: #ffa426;
+}
+
+.bg4 {
+	background: #fc544b;
+}
+
+/* TABLE */
+.table-card {
+	background: #fff;
+	border-radius: 15px;
+	padding: 20px;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* BELL */
+#notifCount {
+	position: absolute;
+	top: -8px;
+	right: -8px;
+	background: red;
+	color: #fff;
+	padding: 3px 7px;
+	font-size: 12px;
+	border-radius: 50%;
+}
+
+/* NOTIFICATION */
+#notificationList {
+	display: none;
+	position: fixed;
+	top: 70px;
+	right: 20px;
+	width: 300px;
+	z-index: 9999;
+}
+</style>
+
+<script>
+	(function() {
+		let role = localStorage.getItem("role");
+		if (role)
+			role = role.replace("ROLE_", "").toUpperCase();
+
+		if (!role || role !== "TRAINER") {
+			alert("Access denied");
+			window.location.href = "login.html";
+		}
+	})();
+</script>
+
+</head>
+
+<body>
+
+	<!-- SIDEBAR -->
+	<div class="sidebar">
+		<div class="brand">🎓 Smart Trainer</div>
+
+		<a href="trainer_dashboard.html" class="active"> <i
+			class="fas fa-home me-2"></i>Dashboard
+		</a> <a href="create_batch.html"> <i class="fas fa-plus me-2"></i>Create
+			Batch
+		</a> <a href="trainer_batches.html"> <i
+			class="fas fa-layer-group me-2"></i>My Batches
+		</a> <a href="training_sessions.html"> <i
+			class="fas fa-layer-group me-2"></i>Create Session
+		</a> <a href="practical_project.html"> <i
+			class="fas fa-laptop-code"></i> Practicals & Projects
+		</a> <a href="mock_interview.html"><i
+			class="fas fa-microphone me-2"></i>Mock Interviews</a> <a
+			href="update_progress.html"> <i class="fas fa-chart-line me-2"></i>Progress
+		</a> <a href="notification.html"> <i class="fas fa-bell me-2"></i>Notifications
+		</a> <a href="#"> <i class="fas fa-cog me-2"></i>Settings
+		</a> <a href="#" onclick="logout()"> <i
+			class="fas fa-sign-out-alt me-2"></i>Logout
+		</a>
+
+
+	</div>
+
+	<!-- MAIN -->
+	<div class="main">
+
+		<!-- TOPBAR -->
+		<div class="topbar">
+			<h5 class="mb-0">Trainer Dashboard</h5>
+
+			<!-- 🔔 Bell -->
+			<div onclick="toggleNotifications()"
+				style="position: fixed; top: 15px; right: 20px; cursor: pointer; z-index: 9999;">
+				<i class="fas fa-bell" style="font-size: 22px; color: #333;"></i> <span
+					id="notifCount">0</span>
+			</div>
+		</div>
+
+		<!-- CARDS -->
+		<div class="row mb-4">
+			<div class="col-md-3">
+				<div class="card-box bg1">
+					<h4 id="totalBatches">0</h4>
+					<p>Assigned</p>
+				</div>
+			</div>
+
+			<div class="col-md-3">
+				<div class="card-box bg2">
+					<h4 id="activeBatches">0</h4>
+					<p>Active</p>
+				</div>
+			</div>
+
+			<div class="col-md-3">
+				<div class="card-box bg3">
+					<h4 id="completedBatches">0</h4>
+					<p>Completed</p>
+				</div>
+			</div>
+
+			<div class="col-md-3">
+				<div class="card-box bg4">
+					<h4 id="pending">0</h4>
+					<p>Pending</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- TABLE -->
+		<div class="table-card">
+			<h5>My Assigned Batches</h5>
+
+			<table class="table text-center mt-3">
+				<thead>
+					<tr>
+						<th>Batch</th>
+						<th>Start</th>
+						<th>End</th>
+						<th>Progress</th>
+					</tr>
+				</thead>
+
+				<tbody id="trainerBatchTable"></tbody>
+			</table>
+		</div>
+
+	</div>
+
+	<!-- NOTIFICATIONS -->
+	<div id="notificationList"></div>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+	<script src="script.js"></script>
+
+</body>
+</html>

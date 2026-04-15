@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Trainers</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Manage Trainers</h1>
+
+<button onclick="goBack()">⬅ Back</button>
+
+<div class="form">
+    <input type="hidden" id="id">
+
+    <input id="name" placeholder="Name">
+    <input id="email" placeholder="Email">
+    <input id="password" placeholder="Password">
+    <input type="file" id="photo">
+
+    <button onclick="saveTrainer()">Save</button>
+</div>
+
+<h2>Trainer List</h2>
+<div id="list" class="grid"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
