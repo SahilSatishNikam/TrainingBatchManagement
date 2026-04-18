@@ -18,6 +18,7 @@ public class TrainingSystemApplication {
 	        return args -> {
 	            System.out.println("1234 -> " + encoder.encode("1234"));
 	            System.out.println("5678 -> " + encoder.encode("5678"));
+	            System.out.println("admin123 -> " + encoder.encode("admin123"));
 	        };
 	    }
 }
