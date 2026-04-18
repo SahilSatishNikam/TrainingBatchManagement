@@ -941,13 +941,9 @@ function connectSocket() {
 
 		console.log("✅ WebSocket Connected");
 
-		stompClient.subscribe("/topic/notifications", (message) => {
-
-			console.log("📩 RECEIVED:", message.body);
-
-			const data = JSON.parse(message.body);
-			showNotification(data.message);
-
+		stompClient.subscribe("/user/queue/notifications", function(message) {
+		    const data = JSON.parse(message.body);
+		    showNotification(data.message);
 		});
 
 	}, (error) => {
@@ -1180,25 +1176,30 @@ async function loadBatchDropdown() {
 
 async function loadPracticals(batchId) {
 
-	try {
-		const res = await fetch(`${BASE_URL}/trainer/practical/${batchId}`, {
-			headers: {
-				"Authorization": "Bearer " + localStorage.getItem("token")
-			}
-		});
+    const table = document.getElementById("practicalTable");
 
-		if (!res.ok) {
-			const text = await res.text();
-			console.error("ERROR:", text);
-			throw new Error("Failed to fetch practicals");
-		}
+    // ✅ STOP if page doesn't have table
+    if (!table) {
+        console.warn("⚠️ Not a practical page");
+        return;
+    }
 
-		const data = await res.json();
-		renderPracticals(data);
+    try {
+        const res = await fetch(`${BASE_URL}/trainer/practical/${batchId}`, {
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        });
 
-	} catch (err) {
-		console.error("Load Practicals Error:", err);
-	}
+        if (!res.ok) throw new Error("Failed to fetch");
+
+        const data = await res.json();
+
+        renderPracticals(data);
+
+    } catch (err) {
+        console.error("Load Practicals Error:", err);
+    }
 }
 async function updateStatus(id, status) {
 	await fetch(`${BASE_URL}/trainer/practical/${id}/status?status=${status}`, {
@@ -1270,42 +1271,39 @@ async function deletePractical(id) {
 
 
 function renderPracticals(list) {
-	const table = document.getElementById("practicalTable");
 
-	if (!list || list.length === 0) {
-		table.innerHTML = `<tr><td colspan="4">No Practicals Found</td></tr>`;
-		return;
-	}
+    const table = document.getElementById("practicalTable");
 
-	table.innerHTML = "";
+    // ✅ HARD STOP (prevents crash 100%)
+    if (!table) {
+        console.warn("⚠️ practicalTable not found - skipping render");
+        return;
+    }
 
-	list.forEach(p => {
-		table.innerHTML += `
+    if (!list || list.length === 0) {
+        table.innerHTML = `<tr><td colspan="4">No Practicals Found</td></tr>`;
+        return;
+    }
+
+    let html = "";
+
+    list.forEach(p => {
+        html += `
             <tr>
                 <td>${p.title}</td>
-
-                <td>
-                    <select onchange="updateStatus(${p.id}, this.value)" 
-                        class="form-select form-select-sm">
-
-                        <option ${p.status === 'ASSIGNED' ? 'selected' : ''}>ASSIGNED</option>
-                        <option ${p.status === 'SUBMITTED' ? 'selected' : ''}>SUBMITTED</option>
-                        <option ${p.status === 'COMPLETED' ? 'selected' : ''}>COMPLETED</option>
-
-                    </select>
-                </td>
-
+                <td>${p.status}</td>
                 <td>${p.marks ?? '-'}</td>
-
                 <td>
-                    <button class="btn btn-sm btn-danger"
+                    <button class="btn btn-danger btn-sm"
                         onclick="deletePractical(${p.id})">
                         Delete
                     </button>
                 </td>
             </tr>
         `;
-	});
+    });
+
+    table.innerHTML = html;
 }
 //create project
 
@@ -1612,28 +1610,26 @@ window.onload = () => {
 	if (document.getElementById("mockBatch")) {
 		loadMockBatchDropdown();
 	}
+	
+	if (document.getElementById("trainerDropdown") || document.getElementById("editTrainerDropdown")) {
+	    loadTrainerDropdown();
+	}
 
 	const completedInput = document.getElementById("completedDays");
 	if (completedInput) {
 		completedInput.addEventListener("input", updateProgressUI);
 	}
-	if (document.getElementById("batchSelect")) {
+	if (document.getElementById("batchSelect") && document.getElementById("practicalTable")) {
 
-		const dropdown = document.getElementById("batchSelect");
+	    const dropdown = document.getElementById("batchSelect");
 
-		// Load batches
-		loadBatchDropdown();
+	    loadBatchDropdown();
 
-		// ✅ LOAD PRACTICALS ON CHANGE
-		dropdown.addEventListener("change", function() {
-			const batchId = this.value;
-
-			if (batchId) {
-				loadPracticals(batchId);
-			} else {
-				document.getElementById("practicalTable").innerHTML = "";
-			}
-		});
+	    dropdown.addEventListener("change", function() {
+	        if (this.value) {
+	            loadPracticals(this.value);
+	        }
+	    });
 	}
 	connectSocket();
 };

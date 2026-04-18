@@ -32,11 +32,12 @@ public class JwtFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
 
-        return path.startsWith("/ws")
+        return path.startsWith("/auth")   // ✅ ADD THIS LINE (CRITICAL)
+                || path.startsWith("/ws")
                 || path.startsWith("/topic")
                 || path.startsWith("/app");
     }
-
+    
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
