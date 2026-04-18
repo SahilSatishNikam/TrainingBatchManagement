@@ -22,6 +22,7 @@ public class TrainingSystemApplication {
 	            	    encoder.matches("sahil@12",
 	            	    "$2a$10$CdgiCKkgz7V9J0t/o7GyxeRv.EG8LsKRJxsU4i6rzzYfi4bXmTv2q")
 	            	);
+	            System.out.println("admin123 -> " + encoder.encode("admin123"));
 	        };
 	    }
 }
