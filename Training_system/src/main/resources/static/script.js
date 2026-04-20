@@ -1637,3 +1637,51 @@ window.onload = () => {
 	}
 	connectSocket();
 };
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    function counter(el, target, duration, isPercent = false) {
+        let startTime = null;
+
+        function animate(time) {
+            if (!startTime) startTime = time;
+
+            let progress = time - startTime;
+            let value = Math.min(progress / duration * target, target);
+
+            el.innerHTML = isPercent
+                ? Math.floor(value) + "%"
+                : Math.floor(value).toLocaleString() + "+";
+
+            if (progress < duration) {
+                requestAnimationFrame(animate);
+            }
+        }
+
+        requestAnimationFrame(animate);
+    }
+
+    setTimeout(() => {
+        counter(document.getElementById("students"), 1200, 1500);
+        counter(document.getElementById("batches"), 35, 1500);
+        counter(document.getElementById("accuracy"), 100, 1500, true);
+    }, 3000);
+
+});
+document.addEventListener("DOMContentLoaded", () => {
+
+    const cards = document.querySelectorAll(".card");
+
+    const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+
+            document.querySelector(".left").style.animation = "slideLeft 1s forwards";
+            document.querySelector(".center").style.animation = "zoomIn 1s forwards";
+            document.querySelector(".right").style.animation = "slideRight 1s forwards";
+
+        }
+    }, { threshold: 0.3 });
+
+    observer.observe(document.querySelector(".cards"));
+});
