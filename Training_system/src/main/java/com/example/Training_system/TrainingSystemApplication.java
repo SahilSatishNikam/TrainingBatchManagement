@@ -18,6 +18,10 @@ public class TrainingSystemApplication {
 	        return args -> {
 	            System.out.println("1234 -> " + encoder.encode("1234"));
 	            System.out.println("5678 -> " + encoder.encode("5678"));
+	            System.out.println(
+	            	    encoder.matches("sahil@12",
+	            	    "$2a$10$CdgiCKkgz7V9J0t/o7GyxeRv.EG8LsKRJxsU4i6rzzYfi4bXmTv2q")
+	            	);
 	            System.out.println("admin123 -> " + encoder.encode("admin123"));
 	            System.out.println(encoder.encode("admin123"));
 	        };

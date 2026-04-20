@@ -12,7 +12,10 @@ public class User {
     private String name;
     private String lastName;
     private String gender;
-    private String mobile;
+   
+    @Column(unique = true)
+    private String mobile; // already exists in your code 👍
+    
     private String department;
     private String designation;
 

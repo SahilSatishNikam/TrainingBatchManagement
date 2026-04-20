@@ -24,7 +24,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginResponse login(LoginRequest req) {
 
-        User user = repo.findByEmailIgnoreCase(req.getEmail())
+    	String email = req.getEmail().trim().toLowerCase(); // ✅ FIX HERE
+        
+        System.out.println("EMAIL FROM REQUEST: [" + req.getEmail() + "]");
+
+        User user = repo.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (!encoder.matches(req.getPassword(), user.getPassword())) {
@@ -34,5 +38,7 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtUtil.generateToken(user.getEmail());
 
         return new LoginResponse(token, user.getRole().toString());
+        
+        
     }
 }

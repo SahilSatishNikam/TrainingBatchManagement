@@ -154,26 +154,34 @@ body {
 
     <!-- CREATE SESSION -->
     <div class="card p-3 mb-3">
-        <h5>Add Session</h5>
+    <h5>Add Session</h5>
 
-        <div class="row">
-            <div class="col-md-3">
-                <select id="batchSelect" class="form-control"></select>
-            </div>
+    <div class="row">
 
-            <div class="col-md-3">
-                <input id="topic" class="form-control" placeholder="Topic">
-            </div>
-
-            <div class="col-md-3">
-                <input type="date" id="sessionDate" class="form-control">
-            </div>
-
-            <div class="col-md-3">
-                <button class="btn btn-primary w-100" onclick="createSession()">Add</button>
-            </div>
+        <!-- ✅ Batch Dropdown -->
+        <div class="col-md-3">
+            <select id="batchSelect" class="form-control">
+                <option value="">Select Batch</option>
+            </select>
         </div>
+
+        <!-- Topic -->
+        <div class="col-md-3">
+            <input id="topic" class="form-control" placeholder="Topic">
+        </div>
+
+        <!-- Date -->
+        <div class="col-md-3">
+            <input type="date" id="sessionDate" class="form-control">
+        </div>
+
+        <!-- Button -->
+        <div class="col-md-3 mt-2">
+            <button class="btn btn-primary w-100" onclick="createSession()">Add</button>
+        </div>
+
     </div>
+</div>
 
     <!-- SESSION TABLE -->
     <div class="card p-3">

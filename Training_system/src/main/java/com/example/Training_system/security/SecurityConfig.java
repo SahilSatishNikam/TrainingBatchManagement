@@ -50,6 +50,7 @@ public class SecurityConfig {
                     "/trainer_dashboard.html",
                     "/update_progress.html",
                     "/script.js",
+                    "/progress.js",
                     "/style.css",
                     "/favicon.ico",
                     "/**/*.js",

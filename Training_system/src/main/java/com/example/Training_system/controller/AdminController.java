@@ -1,24 +1,18 @@
 package com.example.Training_system.controller;
 
-
 import com.example.Training_system.dto.UserRequestDTO;
 import com.example.Training_system.entity.Batch;
 import com.example.Training_system.service.BatchService;
 import com.example.Training_system.service.NotificationService;
 import com.example.Training_system.service.UserService;
 
-import jakarta.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.*;
+import java.util.*;
 
 @RestController
 @RequestMapping("/admin")
@@ -30,21 +24,21 @@ public class AdminController {
 
     @Autowired
     private BatchService batchService;
-    
+
     @Autowired
     private NotificationService notificationService;
 
     // ================= DASHBOARD =================
     @GetMapping("/dashboard")
-    public Map<String, Object> getDashboard() {
-
-        Map<String, Object> data = new HashMap<>();
+    public ResponseEntity<?> getDashboard() {
 
         List<Batch> allBatches = batchService.getAllBatchEntities();
 
         List<Batch> ongoing = allBatches.stream()
                 .filter(b -> "ONGOING".equalsIgnoreCase(b.getStatus()))
                 .toList();
+
+        Map<String, Object> data = new HashMap<>();
 
         data.put("totalTrainers", service.getAllTrainerDTOs().size());
         data.put("totalBatches", allBatches.size());
@@ -75,56 +69,74 @@ public class AdminController {
             return m;
         }).toList());
 
-        return data;
+        return ResponseEntity.ok(data);
     }
 
-    // ================= TRAINERS =================
+    // ================= CREATE TRAINER =================
     @PostMapping("/create-trainer")
     public ResponseEntity<?> createTrainer(
-            @Valid @ModelAttribute UserRequestDTO dto,
-            @RequestParam("photo") MultipartFile photo
-    ) throws Exception {
-
-        String fileName = null;
-
-        if (photo != null && !photo.isEmpty()) {
-            fileName = System.currentTimeMillis() + "_" + photo.getOriginalFilename();
-
-            Path path = Path.of("uploads", fileName);
-            Files.createDirectories(path.getParent());
-            Files.write(path, photo.getBytes());
+            @ModelAttribute UserRequestDTO dto,
+            @RequestParam(required = false) MultipartFile photo
+    ) {
+        try {
+            String fileName = savePhoto(photo);
+            return ResponseEntity.ok(service.createTrainer(dto, fileName));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Create failed: " + e.getMessage());
         }
-
-        return ResponseEntity.ok(service.createTrainer(dto, fileName));
     }
 
+    // ================= UPDATE TRAINER =================
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTrainer(
             @PathVariable Long id,
             @ModelAttribute UserRequestDTO dto,
             @RequestParam(required = false) MultipartFile photo
-    ) throws Exception {
-
-        String fileName = null;
-
-        if (photo != null && !photo.isEmpty()) {
-            fileName = System.currentTimeMillis() + "_" + photo.getOriginalFilename();
-
-            Path path = Path.of("uploads", fileName);
-            Files.createDirectories(path.getParent());
-            Files.write(path, photo.getBytes());
+    ) {
+        try {
+            String fileName = savePhoto(photo);
+            return ResponseEntity.ok(service.updateTrainer(id, dto, fileName));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Update failed: " + e.getMessage());
         }
-
-        return ResponseEntity.ok(service.updateTrainer(id, dto, fileName));
     }
 
+    // ================= DELETE TRAINER =================
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTrainer(@PathVariable Long id) {
-        return ResponseEntity.ok(Map.of("message", service.deleteTrainer(id)));
+        return ResponseEntity.ok(Map.of(
+                "message", service.deleteTrainer(id)
+        ));
     }
 
+    // ================= GET ALL TRAINERS =================
     @GetMapping("/trainers")
     public ResponseEntity<?> getAllTrainers() {
         return ResponseEntity.ok(service.getAllTrainerDTOs());
+    }
+
+    // ================= FILE UPLOAD (COMMON METHOD) =================
+    private String savePhoto(MultipartFile photo) throws Exception {
+
+        if (photo == null || photo.isEmpty()) {
+            return null;
+        }
+
+        if (!photo.getContentType().startsWith("image/")) {
+            throw new RuntimeException("Only image files allowed");
+        }
+
+        String fileName = System.currentTimeMillis() + "_" +
+                Objects.requireNonNull(photo.getOriginalFilename())
+                        .replaceAll("\\s+", "_");
+
+        Path uploadPath = Paths.get("uploads");
+        Files.createDirectories(uploadPath);
+
+        Files.copy(photo.getInputStream(),
+                uploadPath.resolve(fileName),
+                StandardCopyOption.REPLACE_EXISTING);
+
+        return fileName;
     }
 }
