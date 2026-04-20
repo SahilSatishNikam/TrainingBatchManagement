@@ -738,9 +738,12 @@ async function handleBatchChange() {
 
 	selectedBatch = batch;
 
-	document.getElementById("totalDays").value = batch.totalDays || 0;
-	document.getElementById("completedDays").value = batch.completedDays || 0;
+	const total = batch.totalDays ?? batch.total_days ?? 0;
+	const completed = batch.completedDays ?? batch.completed_days ?? 0;
 
+	document.getElementById("totalDays").value = total;
+	document.getElementById("completedDays").value = completed;
+	
 	updateProgressUI();
 }
 async function submitProgress() {
@@ -816,8 +819,8 @@ function renderRow(t, index) {
 }
 
 function updateProgressUI() {
-	const total = Number(document.getElementById("totalDays").value) || 0;
-	const completed = Number(document.getElementById("completedDays").value) || 0;
+	const total = Number(document.getElementById("totalDays")?.value || 0);
+	const completed = Number(document.getElementById("completedDays")?.value || 0);
 
 	let percent = 0;
 
@@ -825,10 +828,23 @@ function updateProgressUI() {
 		percent = Math.min((completed / total) * 100, 100);
 	}
 
-	document.getElementById("progressBar").style.width = percent + "%";
-	document.getElementById("progressText").innerText = percent.toFixed(1) + "%";
-}
+	// Progress bar
+	const bar = document.getElementById("progressBar");
+	if (bar) bar.style.width = percent + "%";
 
+	// Text
+	const text = document.getElementById("progressText");
+	if (text) text.innerText = percent.toFixed(1) + "%";
+
+	// ✅ FIXED STATS (THIS WAS YOUR ISSUE)
+	const totalCard = document.getElementById("totalCard");
+	const completedCard = document.getElementById("completedCard");
+	const remainingCard = document.getElementById("remainingCard");
+
+	if (totalCard) totalCard.innerText = total;
+	if (completedCard) completedCard.innerText = completed;
+	if (remainingCard) remainingCard.innerText = total - completed;
+}
 
 function createTrainerBatch() {
 
@@ -929,26 +945,22 @@ let stompClient = null;
 
 function connectSocket() {
 
-	if (typeof SockJS === "undefined") {
-		console.error("❌ SockJS not loaded");
-		return;
-	}
+	const socket = new SockJS("http://localhost:8080/ws");
+	  stompClient = Stomp.over(socket);
 
-	const socket = new SockJS(BASE_URL + "/ws");
-	stompClient = Stomp.over(socket);
+	  stompClient.connect({}, function () {
 
-	stompClient.connect({}, () => {
+	      console.log("✅ Connected to WebSocket");
 
-		console.log("✅ WebSocket Connected");
+	      stompClient.subscribe("/topic/notifications", function (message) {
 
-		stompClient.subscribe("/user/queue/notifications", function(message) {
-		    const data = JSON.parse(message.body);
-		    showNotification(data.message);
-		});
+	          const data = JSON.parse(message.body);
 
-	}, (error) => {
-		console.error("❌ WebSocket Error:", error);
-	});
+	          console.log("📩 Notification:", data.message);
+
+	          showNotification(data.message);
+	      });
+	  });
 }
 
 let notifCount = 0;
@@ -964,6 +976,9 @@ function showNotification(message, time = null) {
 
 	// Save to localStorage
 	let history = JSON.parse(localStorage.getItem("notifications") || "[]");
+	
+	const emptyMsg = document.getElementById("emptyMsg");
+	if (emptyMsg) emptyMsg.style.display = "none";
 
 	const newNotif = {
 		message: message,
@@ -987,7 +1002,7 @@ function showNotification(message, time = null) {
 
 	container.prepend(div);
 
-	setTimeout(() => div.remove(), 5000);
+	alert("🔔 " + message);
 }
 
 /* ================= BELL TOGGLE ================= */
@@ -1175,25 +1190,10 @@ async function loadBatchDropdown() {
 //create practical 
 
 async function loadPracticals(batchId) {
-
-    const table = document.getElementById("practicalTable");
-
-    // ✅ STOP if page doesn't have table
-    if (!table) {
-        console.warn("⚠️ Not a practical page");
-        return;
-    }
-
     try {
-        const res = await fetch(`${BASE_URL}/trainer/practical/${batchId}`, {
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            }
-        });
+        const data = await apiRequest(`/trainer/practical/${batchId}`);
 
-        if (!res.ok) throw new Error("Failed to fetch");
-
-        const data = await res.json();
+        if (!data) return;
 
         renderPracticals(data);
 
@@ -1201,6 +1201,7 @@ async function loadPracticals(batchId) {
         console.error("Load Practicals Error:", err);
     }
 }
+
 async function updateStatus(id, status) {
 	await fetch(`${BASE_URL}/trainer/practical/${id}/status?status=${status}`, {
 		method: "PUT",
@@ -1271,12 +1272,11 @@ async function deletePractical(id) {
 
 
 function renderPracticals(list) {
-
     const table = document.getElementById("practicalTable");
 
-    // ✅ HARD STOP (prevents crash 100%)
+    // ✅ FIX: prevent crash
     if (!table) {
-        console.warn("⚠️ practicalTable not found - skipping render");
+        console.warn("practicalTable not found in HTML");
         return;
     }
 
@@ -1285,25 +1285,16 @@ function renderPracticals(list) {
         return;
     }
 
-    let html = "";
-
-    list.forEach(p => {
-        html += `
-            <tr>
-                <td>${p.title}</td>
-                <td>${p.status}</td>
-                <td>${p.marks ?? '-'}</td>
-                <td>
-                    <button class="btn btn-danger btn-sm"
-                        onclick="deletePractical(${p.id})">
-                        Delete
-                    </button>
-                </td>
-            </tr>
-        `;
-    });
-
-    table.innerHTML = html;
+    table.innerHTML = list.map(p => `
+        <tr>
+            <td>${p.title}</td>
+            <td>${p.status}</td>
+            <td>${p.marks ?? '-'}</td>
+            <td>
+                <button onclick="deletePractical(${p.id})">Delete</button>
+            </td>
+        </tr>
+    `).join("");
 }
 //create project
 
@@ -1573,6 +1564,202 @@ async function loadProjectDropdown() {
 	};
 }
 
+/* =====================================================
+   PROGRESS PAGE - SAFE ADDITIONAL FUNCTIONS (DO NOT EDIT EXISTING CODE)
+   ===================================================== */
+
+/* ================= SAFE INIT FOR PROGRESS PAGE ================= */
+function initProgressPage() {
+    const dropdown = document.getElementById("batchSelect");
+
+    if (!dropdown) return;
+
+    // prevent duplicate binding
+    if (!dropdown.dataset.bound) {
+        dropdown.dataset.bound = "true";
+
+        dropdown.addEventListener("change", function () {
+            handleProgressBatchChange(this.value);
+        });
+    }
+
+    loadProgressPageSafe();
+}
+
+/* ================= SAFE LOAD PROGRESS PAGE ================= */
+async function loadProgressPageSafe() {
+    const dropdown = document.getElementById("batchSelect");
+    if (!dropdown) return;
+
+    const data = await apiRequest("/trainer/my-batches");
+    if (!data) return;
+
+    dropdown.innerHTML = `<option value="">Select Batch</option>`;
+
+    data.forEach(b => {
+        const progress = safeProgressCalc(b);
+
+        const option = document.createElement("option");
+        option.value = b.id;
+        option.textContent = `${b.batchName} (${progress}%)`;
+        dropdown.appendChild(option);
+    });
+
+    // ✅ MOVE THIS AFTER DROPDOWN BUILD
+    if (data.length > 0) {
+        dropdown.value = data[0].id;
+        handleProgressBatchChange(data[0].id);
+    }
+}
+/* ================= SAFE BATCH CHANGE ================= */
+async function handleProgressBatchChange(batchId) {
+    if (!batchId) return;
+
+    const hidden = document.getElementById("batchId");
+    if (hidden) hidden.value = batchId;
+
+    const batch = await apiRequest(`/trainer/batch/${batchId}`);
+    if (!batch) return;
+
+    // safe field binding
+	setSafeValue("totalDays", batch.totalDays ?? batch.total_days ?? 0);
+	setSafeValue("completedDays", batch.completedDays ?? batch.completed_days ?? 0);
+    window.currentBatch = batch;
+
+    safeUpdateUI(batch);
+}
+
+/* ================= SAFE UI UPDATE ================= */
+function safeUpdateUI(batch) {
+    if (!batch) return;
+
+	const total = batch.totalDays ?? batch.total_days ?? 0;
+	const completed = batch.completedDays ?? batch.completed_days ?? 0;
+	
+    let percent = total > 0 ? (completed / total) * 100 : 0;
+    percent = Math.min(percent, 100);
+
+    // progress bar
+    const bar = document.getElementById("progressBar");
+    if (bar) bar.style.width = percent.toFixed(1) + "%";
+
+    const text = document.getElementById("progressText");
+    if (text) text.innerText = percent.toFixed(1) + "%";
+
+    // circle safe update
+    const circle = document.getElementById("progressCircle");
+    if (circle) {
+        const radius = 50;
+        const circumference = 2 * Math.PI * radius;
+
+        circle.style.strokeDasharray = circumference;
+
+        const offset =
+            circumference - (percent / 100) * circumference;
+
+        circle.style.strokeDashoffset = offset;
+    }
+
+    const circleText = document.getElementById("progressPercent");
+    if (circleText) circleText.innerText = percent.toFixed(1) + "%";
+
+    // stats
+    setSafeText("totalCard", total);
+    setSafeText("completedCard", completed);
+    setSafeText("remainingCard", total - completed);
+
+    // motivation
+    const motivation = document.getElementById("motivationText");
+    if (motivation) {
+        if (percent >= 100) motivation.innerText = "🎉 Batch Completed!";
+        else if (percent >= 70) motivation.innerText = "🔥 Almost There!";
+        else if (percent >= 30) motivation.innerText = "💪 Keep Going!";
+        else motivation.innerText = "🚀 Start Strong!";
+    }
+
+    updateSafeMilestones(percent);
+}
+
+/* ================= SAFE SUBMIT ================= */
+async function submitProgressSafe() {
+
+    const id = document.getElementById("batchId")?.value;
+
+    if (!id) {
+        alert("Please select batch");
+        return;
+    }
+
+    const completed = Number(document.getElementById("completedDays")?.value || 0);
+    const total = Number(document.getElementById("totalDays")?.value || 0);
+
+    if (completed > total) {
+        alert("Completed days cannot exceed total days");
+        return;
+    }
+
+    // ✅ UPDATE PROGRESS
+    const res = await apiRequest(`/trainer/batch/${id}/progress`, "PUT", {
+        days: completed
+    });
+
+    if (!res) {
+        alert("Update failed");
+        return;
+    }
+
+    // ✅ FIXED HERE 👇
+    await apiRequest(`/admin/notify-progress/${id}`, "POST");
+
+    alert("Progress Updated Successfully ✅");
+
+    handleProgressBatchChange(id);
+}
+
+/* ================= MILESTONE SAFE ================= */
+function updateSafeMilestones(percent) {
+    const beginner = document.getElementById("beginner");
+    const intermediate = document.getElementById("intermediate");
+    const advanced = document.getElementById("advanced");
+
+    if (beginner) beginner.classList.remove("active");
+    if (intermediate) intermediate.classList.remove("active");
+    if (advanced) advanced.classList.remove("active");
+
+    if (percent >= 0 && beginner) beginner.classList.add("active");
+    if (percent >= 40 && intermediate) intermediate.classList.add("active");
+    if (percent >= 80 && advanced) advanced.classList.add("active");
+}
+
+/* ================= HELPERS ================= */
+function setSafeValue(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.value = value ?? 0;
+}
+
+function setSafeText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.innerText = value ?? 0;
+}
+
+function safeProgressCalc(b) {
+    if (!b) return 0;
+
+    const total = b.totalDays ?? b.total_days ?? 0;
+    const completed = b.completedDays ?? b.completed_days ?? 0;
+
+    if (total > 0) {
+        return Math.round((completed / total) * 100);
+    }
+
+    return b.progress ?? 0;
+}
+/* ================= AUTO INIT ================= */
+window.addEventListener("load", () => {
+    if (document.getElementById("batchSelect")) {
+        initProgressPage();
+    }
+});
 
 window.onload = () => {
 
@@ -1594,10 +1781,6 @@ window.onload = () => {
 		loadTrainerDashboardSummary();
 	}
 
-	if (document.getElementById("batchSelect")) {
-		loadProgressPage();
-
-	}
 
 	if (document.getElementById("projectBatch")) {
 		loadProjectDropdown();
@@ -1610,26 +1793,33 @@ window.onload = () => {
 	if (document.getElementById("mockBatch")) {
 		loadMockBatchDropdown();
 	}
-	
-	if (document.getElementById("trainerDropdown") || document.getElementById("editTrainerDropdown")) {
-	    loadTrainerDropdown();
-	}
 
 	const completedInput = document.getElementById("completedDays");
 	if (completedInput) {
-		completedInput.addEventListener("input", updateProgressUI);
+		completedInput.addEventListener("input", () => {
+		    if (window.currentBatch) {
+		        safeUpdateUI({
+		            ...window.currentBatch,
+		            completedDays: Number(completedInput.value)
+		        });
+		    }
+		});
 	}
-	if (document.getElementById("batchSelect") && document.getElementById("practicalTable")) {
-
-	    const dropdown = document.getElementById("batchSelect");
-
+	
+	if (document.getElementById("practicalTable")) {
 	    loadBatchDropdown();
 
-	    dropdown.addEventListener("change", function() {
-	        if (this.value) {
-	            loadPracticals(this.value);
-	        }
-	    });
+	    const dropdown = document.getElementById("batchSelect"); // ✅ FIX
+
+	    if (dropdown) {
+	        dropdown.addEventListener("change", function () {
+	            const batchId = this.value;
+
+	            if (batchId) {
+	                loadPracticals(batchId);
+	            }
+	        });
+	    }
 	}
 	connectSocket();
 };

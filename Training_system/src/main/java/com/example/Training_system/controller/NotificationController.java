@@ -3,6 +3,7 @@ package com.example.Training_system.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,5 +52,16 @@ public class NotificationController {
         notificationService.sendToTrainer(phone, message);
 
         return "Notification sent to trainer";
+    }
+    
+    @PostMapping("/notify-progress/{batchId}")
+    public String notifyProgress(@PathVariable Long batchId) {
+
+        String message = "📊 Progress updated for Batch ID: " + batchId;
+
+        // ✅ ONLY UI (NO WhatsApp/SMS)
+        notificationService.sendToUI(message);
+
+        return "Progress notification sent";
     }
 }

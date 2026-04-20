@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TwilioConfig {
 
-    @Value("${twilio.sid}")
+    @Value("${twilio.account.sid}")
     private String sid;
 
-    @Value("${twilio.token}")
+    @Value("${twilio.auth.token}")
     private String token;
 
     @PostConstruct

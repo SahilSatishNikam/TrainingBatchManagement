@@ -32,10 +32,17 @@ public class JwtFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
 
-        return path.startsWith("/auth")   // ✅ ADD THIS LINE (CRITICAL)
+        return path.startsWith("/auth")
                 || path.startsWith("/ws")
                 || path.startsWith("/topic")
-                || path.startsWith("/app");
+                || path.startsWith("/app")
+
+                // ✅ STATIC FILES (CRITICAL FIX)
+                || path.endsWith(".html")
+                || path.endsWith(".js")
+                || path.endsWith(".css")
+                || path.endsWith(".ico")
+                || path.startsWith("/uploads");
     }
     
     @Override
@@ -51,7 +58,7 @@ public class JwtFilter extends OncePerRequestFilter {
             System.out.println("🔐 AUTH HEADER: " + authHeader);
 
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                System.out.println("❌ No token found, continuing filter chain");
+            	System.out.println("ℹ️ No token (public request): " + request.getRequestURI());
                 filterChain.doFilter(request, response);
                 return;
             }
