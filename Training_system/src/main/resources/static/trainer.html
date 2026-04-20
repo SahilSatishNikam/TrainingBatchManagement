@@ -9,99 +9,173 @@
 
 <style>
 :root {
-  --primary: linear-gradient(135deg,#6777ef,#9c88ff);
-  --bg:#f4f6f9;
+    --bg: #0b0b0f;
+    --card: #111118;
+    --border: rgba(255,255,255,0.06);
+    --text: #ffffff;
+    --muted: #9aa0a6;
+    --purple: #a855f7;
+    --purple-dark: #6d28d9;
+}
+.section-title {
+    color: #ffffff;
+    font-weight: 600;
 }
 
+/* BODY */
 body {
-  margin:0;
-  display:flex;
-  background:var(--bg);
-  font-family:'Poppins',sans-serif;
+    margin: 0;
+    display: flex;
+    background: radial-gradient(circle at top, #111122, #050508);
+    color: white;
+    font-family: 'times new roman', sans-serif;
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {opacity:0; transform: translateY(10px);}
+    to {opacity:1; transform: translateY(0);}
 }
 
 /* SIDEBAR */
-.sidebar{
-  width:240px;
-  height:100vh;
-  position:fixed;
-  background:var(--primary);
-  color:#fff;
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    position: fixed;
+    background: #0d0d14;
+    border-right: 1px solid var(--border);
 }
 
-.sidebar .brand{
-  padding:20px;
-  text-align:center;
-  font-size:22px;
-  font-weight:bold;
+.sidebar .brand {
+    font-size: 20px;
+    padding: 20px;
+    font-weight: bold;
+    color: var(--purple);
+    letter-spacing: 1px;
+    animation: glow 2s infinite alternate;
 }
 
-.sidebar a{
-  display:flex;
-  align-items:center;
-  padding:14px 20px;
-  color:#eee;
-  text-decoration:none;
+@keyframes glow {
+    from { text-shadow: 0 0 5px #a855f7; }
+    to { text-shadow: 0 0 20px #a855f7; }
 }
 
-.sidebar a:hover{
-  background:rgba(255,255,255,0.15);
+.sidebar a {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: 0.3s;
 }
 
-.sidebar a.active{
-  background:rgba(255,255,255,0.25);
-  border-left:4px solid #fff;
+.sidebar a:hover {
+    background: rgba(168,85,247,0.1);
+    color: white;
+    transform: translateX(5px);
+}
+
+.sidebar a.active {
+    background: rgba(168,85,247,0.15);
+    border-left: 3px solid var(--purple);
+    color: white;
 }
 
 /* MAIN */
-.main{
-  margin-left:240px;
-  width:100%;
-  padding:20px;
+.main {
+    margin-left: 240px;
+    width: 100%;
+    padding: 25px;
 }
 
 /* TOPBAR */
-.topbar{
-  background:#fff;
-  padding:15px 20px;
-  border-radius:12px;
-  margin-bottom:20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  box-shadow:0 4px 12px rgba(0,0,0,0.05);
+.topbar {
+    background: #111118;
+    padding: 15px 20px;
+    border-radius: 14px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
 }
 
-/* CARD */
+/* ===== SEARCH ===== */
+.search{
+  border-radius:20px;
+  padding:8px 15px;
+  border:1px solid var(--border);
+  background:#0d0f14;
+  color:white;
+  transition:0.3s;
+}
+
+.search:focus{
+  border-color:var(--purple);
+  box-shadow:0 0 12px var(--purple-glow);
+  transform:scale(1.03);
+  outline:none;
+}
+
+/* ===== CARD ===== */
 .card{
+  background:linear-gradient(145deg,#1a1d26,#12141c);
+  border-radius:16px;
+  padding:20px;
+  border:1px solid var(--border);
+  box-shadow:0 10px 30px rgba(0,0,0,0.6);
+  transition:0.3s;
+}
+
+/* ===== TABLE ===== */
+.clean-table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0 12px;
+  color:var(--text);
+}
+
+/* HEADER */
+.clean-table thead th{
+  color:var(--muted);
+  font-size:13px;
+  text-transform:uppercase;
+  padding:10px;
   border:none;
-  border-radius:15px;
-  padding:15px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.05);
 }
 
-/* TABLE */
-.clean-table thead{
-  background:#6777ef;
-  color:#fff;
+/* ROW CARD STYLE */
+.clean-table tbody tr{
+  background:var(--card-dark);
+  transition:all 0.3s ease;
 }
 
-.clean-table th{
-  border:none;
-  font-size:14px;
-}
-
+/* CELLS */
 .clean-table td{
   padding:14px;
-  border-top:1px solid #eee;
-  vertical-align:middle;
+  border:none;
 }
 
-.clean-table tr:hover{
-  background:#f5f7ff;
+/* Rounded row edges */
+.clean-table tbody tr td:first-child{
+  border-top-left-radius:12px;
+  border-bottom-left-radius:12px;
 }
 
-/* TRAINER BOX */
+.clean-table tbody tr td:last-child{
+  border-top-right-radius:12px;
+  border-bottom-right-radius:12px;
+}
+
+/* HOVER EFFECT */
+.clean-table tbody tr:hover{
+  transform:translateY(-5px) scale(1.01);
+  background:linear-gradient(135deg,#1f2330,#181c25);
+  box-shadow:0 10px 25px rgba(0,0,0,0.7);
+}
+
+/* ===== TRAINER BOX ===== */
 .trainer-box{
   display:flex;
   align-items:center;
@@ -109,60 +183,175 @@ body {
 }
 
 .trainer-box img{
-  width:40px;
-  height:40px;
+  width:42px;
+  height:42px;
   border-radius:50%;
-  object-fit:cover;
+  border:2px solid var(--purple);
+  transition:0.3s;
+}
+
+.clean-table tbody tr:hover .trainer-box img{
+  transform:scale(1.1);
+  box-shadow:0 0 12px var(--purple-glow);
 }
 
 .trainer-name{
-  font-weight:600;
+  font-weight:bold;
 }
 
 .trainer-email{
   font-size:12px;
-  color:#888;
+  color:var(--muted);
 }
 
-/* STATUS */
+/* ===== STATUS ===== */
 .status{
-  padding:5px 12px;
+  padding:6px 14px;
   border-radius:20px;
   font-size:12px;
+  font-weight:600;
 }
 
 .status.active{
-  background:#d4f8e8;
-  color:#1eae60;
+  background:rgba(46,213,115,0.15);
+  color:#2ed573;
+  box-shadow:0 0 8px rgba(46,213,115,0.4);
 }
 
 .status.inactive{
-  background:#ffe5e5;
-  color:#e74c3c;
+  background:rgba(255,71,87,0.15);
+  color:#ff4757;
+  box-shadow:0 0 8px rgba(255,71,87,0.4);
 }
 
-/* ACTION BUTTONS */
+/* ===== ACTION BUTTONS ===== */
 .action-btn button{
   border:none;
   padding:6px 10px;
-  border-radius:6px;
+  border-radius:8px;
   margin:2px;
+  transition:all 0.3s ease;
 }
 
 .edit-btn{
-  background:#fff3cd;
+  background:rgba(255,193,7,0.15);
+  color:#ffc107;
+}
+
+.edit-btn:hover{
+  transform:scale(1.1);
+  box-shadow:0 0 12px rgba(255,193,7,0.6);
 }
 
 .delete-btn{
-  background:#ffe5e5;
+  background:rgba(255,71,87,0.15);
+  color:#ff4757;
 }
 
-/* SEARCH */
-.search{
-  border-radius:20px;
-  padding:8px 15px;
-  border:1px solid #ddd;
-  width:220px;
+.delete-btn:hover{
+  transform:scale(1.1);
+  box-shadow:0 0 12px rgba(255,71,87,0.6);
+}
+
+/* ===== MODAL DARK ===== */
+.modal-content{
+  background:var(--card);
+  color:var(--text);
+  border-radius:12px;
+}
+
+.modal-header{
+  border-bottom:1px solid var(--border);
+}
+
+.modal-footer{
+  border-top:1px solid var(--border);
+}
+
+.form-control, .form-select{
+  background:#0d0f14;
+  border:1px solid var(--border);
+  color:white;
+}
+
+.form-control:focus{
+  border-color:var(--purple);
+  box-shadow:0 0 10px var(--purple-glow);
+}
+
+/* ===== RESPONSIVE ===== */
+
+/* Tablet */
+@media(max-width:992px){
+  .sidebar{
+    transform:translateX(-100%);
+    z-index:1000;
+  }
+
+  .sidebar.active{
+    transform:translateX(0);
+  }
+
+  .main{
+    margin-left:0;
+  }
+}
+
+/* Mobile Table → Cards */
+@media(max-width:768px){
+
+  .clean-table thead{
+    display:none;
+  }
+
+  .clean-table,
+  .clean-table tbody,
+  .clean-table tr,
+  .clean-table td{
+    display:block;
+    width:100%;
+  }
+
+  .clean-table tr{
+    margin-bottom:15px;
+    background:var(--card);
+    padding:12px;
+    border-radius:12px;
+  }
+
+  .clean-table td{
+    text-align:left;
+    padding:8px;
+    border:none;
+  }
+
+  .clean-table td::before{
+    content:attr(data-label);
+    font-weight:bold;
+    display:block;
+    color:var(--muted);
+    font-size:12px;
+  }
+
+  .topbar{
+    flex-direction:column;
+    gap:10px;
+    align-items:flex-start;
+  }
+
+  .search{
+    width:100%;
+  }
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{
+  width:6px;
+}
+
+::-webkit-scrollbar-thumb{
+  background:#333;
+  border-radius:10px;
 }
 </style>
 </head>
@@ -171,7 +360,7 @@ body {
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-  <div class="brand">🚀 Smart Admin</div>
+  <div class="brand">Smart Admin</div>
 
   <a href="admin_dashboard.html">
         <i class="fas fa-home me-2"></i> Dashboard
@@ -221,7 +410,7 @@ body {
 <table class="table clean-table align-middle text-center">
 <thead>
 <tr>
-  <th>#</th>
+  <th>No</th>
   <th>Trainer</th>
   <th>Department</th>
   <th>Mobile</th>
