@@ -1,10 +1,1098 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<style>
+body { font-family: Arial; padding: 20px; }
+
+.form {
+    background: #f5f5f5;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+input { margin: 5px; padding: 8px; }
+
+button {
+    padding: 8px;
+    background: green;
+    color: white;
+    border: none;
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.card {
+    border: 1px solid gray;
+    padding: 10px;
+    width: 200px;
+}
+
+.card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+}
+
+/* LOGIN PAGE */
+
+.login-body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    font-family: Arial, sans-serif;
+}
+
+.login-container {
+    background: white;
+    padding: 30px;
+    width: 300px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.login-container h2 {
+    margin-bottom: 20px;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.login-container input:focus {
+    border-color: #4facfe;
+    outline: none;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: #4facfe;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-container button:hover {
+    background: #2f80ed;
+}
+
+.custom-input {
+  border-radius: 8px;
+  height: 45px;
+  border: 1px solid #ddd;
+}
+
+.input-group-text {
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.modal-content {
+  border-radius: 12px;
+}
+
+.modal-header {
+  border-bottom: none;
+}
+
+.btn-primary {
+  background: #1a73e8;
+  border: none;
+  border-radius: 25px;
+}
+
+.btn-danger {
+  border-radius: 25px;
+}
+
+
+
+/* gauri css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+* {
+    font-family: "Times New Roman", Times, serif;
+}
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    color: white;
+    background: #050816;
+}
+
+/* HERO */
+.hero {
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    overflow: hidden;
+}
+
+/* IMAGE LAYER */
+.hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background: url('https://images.unsplash.com/photo-1605379399642-870262d3d051?q=80&w=1974&auto=format&fit=crop') no-repeat center/cover;
+
+    animation: zoomEffect 20s ease-in-out infinite alternate;
+
+    z-index: -2;
+}
+
+/* OVERLAY */
+.hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(5,8,22,0.95), rgba(124,58,237,0.5));
+    z-index: -1;
+}
+
+/* CONTENT */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 150px 60px;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+}
+
+/* BUTTON */
+.btn {
+    padding: 12px 25px;
+    border-radius: 25px;
+    margin-top: 20px;
+    cursor: pointer;
+    border: none;
+}
+
+.primary {
+    background: linear-gradient(45deg, #7c3aed, #2563eb);
+    color: white;
+}
+
+.secondary {
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+}
+
+.desc {
+    margin-top: 20px;
+    color: #cbd5e1;
+}
+
+/* STATS */
+.stats {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+    padding: 30px 0;
+}
+
+.stat h2 {
+    font-size: 2.3rem;
+}
+
+/* ANIMATION */
+.fade {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 1s forwards;
+}
+
+.delay1 { animation-delay: 0.5s; }
+.delay2 { animation-delay: 1.2s; }
+.delay3 { animation-delay: 2s; }
+.delay4 { animation-delay: 2.8s; }
+
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ZOOM */
+@keyframes zoomEffect {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.2); }
+}
+
+/* ========================= */
+/* 🔥 FEATURES SECTION FINAL */
+/* ========================= */
+
+.features {
+    text-align: center;
+    padding: 120px 60px;
+    background: #0a0f2c;
+    color: white;
+}
+
+/* 🔥 HEADING (48px) */
+.features h2 {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    letter-spacing: -1px;
+}
+
+/* 🔥 SUBTITLE (18px) */
+.features .subtitle {
+    font-size: 18px;
+    color: #94a3b8;
+    max-width: 650px;
+    margin: 0 auto 80px;
+    line-height: 1.7;
+}
+
+/* LAYOUT */
+.card-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+/* CARD */
+.card {
+    width: 320px;
+    padding: 40px 30px;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    transition: all 0.4s ease;
+    opacity: 0;
+    position: relative;
+}
+
+/* GLOW BORDER */
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 25px;
+    padding: 1px;
+    background: linear-gradient(45deg, #7c3aed, #2563eb);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: 0.4s;
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+.card:hover {
+    transform: translateY(-12px) scale(1.05);
+    box-shadow: 0 20px 40px rgba(124,58,237,0.3);
+}
+
+/* ICON */
+.icon {
+    font-size: 38px;
+    margin-bottom: 20px;
+}
+
+/* 🔥 TITLE (22px) */
+.card h3 {
+    font-size: 22px;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+/* 🔥 TEXT (15px) */
+.card p {
+    font-size: 15px;
+    color: #cbd5e1;
+    line-height: 1.6;
+}
+
+/* ========================= */
+/* 🔥 ENTRY ANIMATION */
+/* ========================= */
+
+.features h2,
+.features .subtitle,
+.card {
+    opacity: 0;
+}
+
+.features.show h2 {
+    animation: fadeUp 1s ease forwards;
+}
+
+.features.show .subtitle {
+    animation: fadeUp 1s ease forwards;
+    animation-delay: 0.3s;
+}
+
+.features.show .card.left {
+    animation: slideLeft 1s ease forwards;
+    animation-delay: 0.8s;
+}
+
+.features.show .card.center {
+    animation: slideUp 1s ease forwards;
+    animation-delay: 1.2s;
+}
+
+.features.show .card.right {
+    animation: slideRight 1s ease forwards;
+    animation-delay: 1.6s;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+    from {
+        transform: translateY(40px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideLeft {
+    from {
+        transform: translateX(-120px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(120px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideRight {
+    from {
+        transform: translateX(120px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ========================= */
+/* 🔥 RESPONSIVE */
+/* ========================= */
+
+@media (max-width: 768px) {
+
+    .features {
+        padding: 80px 20px;
+    }
+
+    .features h2 {
+        font-size: 32px;
+    }
+
+    .features .subtitle {
+        font-size: 16px;
+    }
+
+    .card {
+        width: 100%;
+    }
+}
+/* HOW ITS WORK */
+/* SECTION */
+.how {
+    padding: 140px 20px;
+    background: #050816;
+    color: white;
+    text-align: center;
+}
+
+/* HEADING */
+.how h2 {
+    font-size: 48px;
+    margin-bottom: 80px;
+    letter-spacing: -1px;
+}
+
+/* TIMELINE */
+.timeline {
+    position: relative;
+    max-width: 800px;
+    margin: auto;
+}
+
+/* CENTER LINE */
+.timeline::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(to bottom, #7c3aed, #2563eb);
+    transform: translateX(-50%);
+    box-shadow: 0 0 15px rgba(124,58,237,0.6);
+}
+
+/* STEP */
+.step {
+    position: relative;
+    width: 50%;
+    padding: 30px 40px;
+    opacity: 0;
+}
+
+/* LEFT / RIGHT */
+.step:nth-child(odd) {
+    left: 0;
+    text-align: right;
+}
+
+.step:nth-child(even) {
+    left: 50%;
+    text-align: left;
+}
+
+/* DOT */
+.dot {
+    position: absolute;
+    top: 40px;
+    width: 16px;
+    height: 16px;
+    background: #7c3aed;
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(124,58,237,0.8);
+}
+
+/* DOT POSITION */
+.step:nth-child(odd) .dot {
+    right: -8px;
+}
+
+.step:nth-child(even) .dot {
+    left: -8px;
+}
+
+/* CONTENT */
+.content h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.content p {
+    font-size: 18px;
+    color: #94a3b8;
+    line-height: 1.6;
+}
+
+/* 🔥 ANIMATIONS */
+@keyframes leftSlide {
+    from {
+        transform: translateX(-80px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes rightSlide {
+    from {
+        transform: translateX(80px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* APPLY */
+.how.show .step:nth-child(odd) {
+    animation: leftSlide 1s forwards;
+}
+
+.how.show .step:nth-child(even) {
+    animation: rightSlide 1s forwards;
+}
+
+/* DELAYS */
+.how.show .step:nth-child(1) { animation-delay: 0.3s; }
+.how.show .step:nth-child(2) { animation-delay: 0.6s; }
+.how.show .step:nth-child(3) { animation-delay: 0.9s; }
+
+/* ========================= */
+/* 🔥 FOOTER MAIN */
+/* ========================= */
+
+.footer {
+    background: radial-gradient(circle at top, #0b0f2a, #050816);
+    padding: 80px 60px 30px;
+    color: #cbd5e1;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ========================= */
+/* GRID */
+/* ========================= */
+
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+}
+
+/* ========================= */
+/* COLUMNS */
+/* ========================= */
+
+.footer-col {
+    transition: 0.3s;
+}
+
+.footer-col:hover {
+    transform: translateY(-6px);
+}
+
+.footer-col h2,
+.footer-col h3 {
+    color: #ffffff;
+    margin-bottom: 20px;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+/* TEXT */
+.footer-col p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #94a3b8;
+    font-size: 15px;
+}
+
+/* ========================= */
+/* LOGO */
+/* ========================= */
+
+.logo {
+    font-size: 22px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.logo:hover {
+    color: #7c3aed;
+    text-shadow: 0 0 15px #7c3aed;
+}
+
+/* ========================= */
+/* LINKS */
+/* ========================= */
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-col ul li {
+    margin-bottom: 12px;
+}
+
+.footer-col ul li a {
+    position: relative;
+    text-decoration: none;
+    color: #94a3b8;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+/* underline effect */
+.footer-col ul li a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 0%;
+    height: 2px;
+    background: #7c3aed;
+    transition: 0.3s;
+}
+
+.footer-col ul li a:hover {
+    color: #7c3aed;
+}
+
+.footer-col ul li a:hover::after {
+    width: 100%;
+}
+
+/* ========================= */
+/* SOCIAL ICONS */
+/* ========================= */
+
+.socials {
+    margin-top: 10px;
+}
+
+.socials a {
+    display: inline-block;
+    font-size: 20px;
+    margin-right: 15px;
+    transition: 0.3s;
+}
+
+/* 🔥 DEFAULT COLORS (ALWAYS VISIBLE) */
+.socials a:nth-child(1) { color: #1877f2; } /* Facebook */
+.socials a:nth-child(2) { color: #e1306c; } /* Instagram */
+.socials a:nth-child(3) { color: #1da1f2; } /* Twitter */
+
+/* ✨ HOVER EFFECT */
+.socials a:hover {
+    transform: translateY(-6px) scale(1.2);
+    filter: brightness(1.3);
+    text-shadow: 0 0 10px currentColor,
+                 0 0 25px currentColor;
+}
+
+
+/* ========================= */
+/* FOOTER BOTTOM */
+/* ========================= */
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 14px;
+    color: #64748b;
+}
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+
+@media (max-width: 992px) {
+    .footer-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .footer {
+        padding: 60px 20px;
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .socials {
+        justify-content: center;
+    }
+}
+.socials a {
+    background: rgba(255,255,255,0.05);
+    padding: 10px;
+    border-radius: 50%;
+}
+
+/* NAVBAR */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 18px 60px;
+    font-size: 18px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+
+    background: rgba(10,10,20,0.6);
+    backdrop-filter: blur(12px);
+    z-index: 1000;
+}
+
+/* LEFT (LOGO UPDATED) */
+.logo {
+    justify-self: start;
+    display: flex;              /* ⭐ important */
+    align-items: center;        /* ⭐ vertical align */
+    gap: 10px;
+    font-weight: 600;
+}
+
+/* LOGO ICON */
+.logo-icon {
+    width: 50px;
+    height: 50px;
+    filter: drop-shadow(0 0 10px rgba(124,58,237,0.5));
+    transition: 0.3s;
+}
+
+/* LOGO TEXT */
+.logo-text {
+    font-size: 24px;
+    background: linear-gradient(45deg, #ffffff, #38bdf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.5px;
+}
+
+/* HOVER EFFECT */
+.logo:hover .logo-icon {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 20px rgba(124,58,237,0.8));
+}
+
+/* CENTER */
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    list-style: none;
+}
+
+/* RIGHT */
+.nav-right {
+    justify-self: end;
+}
+
+/* BUTTON */
+.nav-btn {
+    background: linear-gradient(45deg, #7c3aed, #2563eb);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+}
+
+</style>
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <title>Batch Management System</title>
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body>
 
+<!-- ✅ NAVBAR (separate file use) -->
+<nav class="navbar" th:fragment="navbar">
+    
+    <!-- LOGO WITH ICON -->
+    <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 100 100">
+            <defs>
+                <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#7c3aed"/>
+                    <stop offset="100%" stop-color="#2563eb"/>
+                </linearGradient>
+            </defs>
+
+            <!-- Cloud -->
+            <path d="M30 60 Q20 60 20 50 Q20 40 30 40 Q35 30 50 30 Q65 30 70 40 Q80 40 80 50 Q80 60 70 60 Z"
+                  fill="url(#cloudGrad)"/>
+
+            <!-- Arrow -->
+            <path d="M35 55 Q50 40 70 45"
+                  stroke="white"
+                  stroke-width="4"
+                  fill="none"
+                  stroke-linecap="round"/>
+
+            <polygon points="68,42 78,45 70,52" fill="white"/>
+        </svg>
+
+        <span class="logo-text">FortuneCloud</span>
+    </div>
+
+    <!-- CENTER LINKS -->
+    <ul class="nav-links">
+        <li>Home</li>
+        <li>About</li>
+        <li>Contact Us</li>
+    </ul>
+
+    <!-- RIGHT BUTTON -->
+    <div class="nav-right">
+        <button class="nav-btn">Sign in</button>
+    </div>
+
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+
+    <div class="hero-content">
+        <h1 class="fade delay1">
+  Manage students, batches<br>
+  and attendance smarter<br>
+  than ever before.
+</h1>
+
+        <div class="buttons fade delay2">
+            <button class="btn primary">Request Demo</button>
+            <button class="btn secondary">View Dashboard</button>
+        </div>
+
+ 
+    </div>
+
+    <!-- ✅ STATS -->
+    <div class="stats fade delay4">
+        <div class="stat">
+            <h2 id="students">0</h2>
+            <p>Students Managed</p>
+        </div>
+
+        <div class="stat">
+            <h2 id="batches">0</h2>
+            <p>Active Batches</p>
+        </div>
+
+        <div class="stat">
+            <h2 id="accuracy">0%</h2>
+            <p>Accuracy</p>
+        </div>
+    </div>
+
+</section>
+<section class="features">
+    <h2>Why Choose Our System</h2>
+
+    <p class="subtitle">
+        Manage students, batches, and attendance with a powerful and easy-to-use system designed for efficiency and accuracy.
+    </p>
+
+    <div class="card-container">
+        <div class="card left">
+            <div class="icon">🎓</div>
+            <h3>Student Management</h3>
+            <p>Easily add, update and manage student records in one place.</p>
+        </div>
+
+        <div class="card center">
+            <div class="icon">📊</div>
+            <h3>Batch Tracking</h3>
+            <p>Organize batches and monitor progress seamlessly.</p>
+        </div>
+
+        <div class="card right">
+            <div class="icon">⏱️</div>
+            <h3>Attendance System</h3>
+            <p>Track attendance with real-time accuracy and insights.</p>
+        </div>
+    </div>
+</section>
+
+</script>
+<!-- HERO -->
+<section class="how">
+    <h2>How It Works</h2>
+
+    <div class="timeline">
+
+        <div class="step">
+            <div class="dot"></div>
+            <div class="content">
+                <h3>Admin Setup</h3>
+                <p>Create users, assign batches and manage trainers efficiently.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="dot"></div>
+            <div class="content">
+                <h3>Trainer Management</h3>
+                <p>Manage batches, update sessions, practicals and activities.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="dot"></div>
+            <div class="content">
+                <h3>Track Progress</h3>
+                <p>Monitor attendance, performance and analytics in real-time.</p>
+            </div>
+        </div>
+
+    </div>
+</section>
+<script>
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add("show");
+        }
+    });
+}, {
+    threshold: 0.3
+});
+
+const howSection = document.querySelector(".how");
+
+if (howSection) {
+    observer.observe(howSection);
+}
+</script>
+<script>
+document.addEventListener("mousemove", e => {
+    document.body.style.setProperty('--x', e.clientX + 'px');
+    document.body.style.setProperty('--y', e.clientY + 'px');
+});
+</script>
+
+<div id="footer"></div>
+
+<div th:replace="fragments/footer :: footer"></div>
+<footer class="footer">
+    <div class="footer-container">
+
+        <!-- LOGO + ABOUT -->
+        <div class="footer-col">
+            <h2 class="logo">BatchSys</h2>
+            <p>Smart system to manage students, batches and attendance.</p>
+        </div>
+
+        <!-- CONTACT -->
+        <div class="footer-col">
+            <h3>Contact</h3>
+            <p>Email: support@batchsys.com</p>
+            <p>Phone: +91 98765 43210</p>
+        </div>
+
+        <!-- QUICK LINKS -->
+        <div class="footer-col">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Features</a></li>
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+
+        <!-- SOCIAL -->
+        <div class="footer-col">
+            <h3>Follow Us</h3>
+            <div class="socials">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2026 Batch Management System | All Rights Reserved</p>
+    </div>
+</footer>
+
 </body>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const section = document.querySelector(".features");
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("show");
+            }
+        });
+    }, {
+        threshold: 0.3
+    });
+
+    if (section) {
+        observer.observe(section);
+    }
+
+});
+
+
+function animateValue(id, start, end, duration, suffix="") {
+
+    const obj = document.getElementById(id);
+    const range = end - start;
+    let current = start;
+    const increment = end > start ? 1 : -1;
+    const stepTime = Math.abs(Math.floor(duration / range));
+
+    const timer = setInterval(function () {
+
+        current += increment;
+        obj.innerHTML = current + suffix;
+
+        if (current == end) {
+            clearInterval(timer);
+        }
+
+    }, stepTime);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    animateValue("students", 0, 1200, 2000);
+    animateValue("batches", 0, 85, 2000);
+    animateValue("accuracy", 0, 98, 2000, "%");
+
+});
+
+
+</script>
 </html>
