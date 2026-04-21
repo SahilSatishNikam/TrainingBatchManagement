@@ -12,124 +12,249 @@
 	rel="stylesheet">
 
 <style>
+/* =========================
+   ROOT THEME
+========================= */
 :root {
-	--primary: linear-gradient(135deg, #6777ef, #9c88ff);
-	--bg: #f4f6f9;
+  --bg: #0b0b14;
+  --card: rgba(255, 255, 255, 0.03);
+  --border: rgba(255, 255, 255, 0.08);
+  --text: #f5f5ff;
+  --muted: #b8b8d1;
+  --purple: #8b5cf6;
+  --purple-glow: rgba(139, 92, 246, 0.35);
 }
 
+/* =========================
+   GLOBAL
+========================= */
 body {
-	margin: 0;
-	display: flex;
-	background: var(--bg);
-	font-family: 'Poppins', sans-serif;
+  margin: 0;
+  display: flex;
+  background: radial-gradient(circle at top right, #141427, #0b0b14);
+  color: var(--text);
+  font-family: "Times New Roman", serif;
+  overflow-x: hidden;
 }
 
-/* SIDEBAR */
+/* =========================
+   SIDEBAR
+========================= */
 .sidebar {
-	width: 240px;
-	height: 100vh;
-	position: fixed;
-	background: var(--primary);
-	color: #fff;
+  width: 240px;
+  height: 100vh;
+  position: fixed;
+  background: #0d0f1a;
+  border-right: 1px solid var(--border);
+  transition: 0.3s ease;
+  animation: slideLeft 0.6s ease;
+}
+
+@keyframes slideLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
 .sidebar .brand {
-	padding: 20px;
-	text-align: center;
-	font-size: 22px;
-	font-weight: bold;
+  padding: 20px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
 }
 
 .sidebar a {
-	display: flex;
-	align-items: center;
-	padding: 14px 20px;
-	color: #eee;
-	text-decoration: none;
-	transition: 0.3s;
+  display: flex;
+  align-items: center;
+  padding: 14px 20px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: 0.3s;
+  border-left: 3px solid transparent;
 }
 
 .sidebar a:hover {
-	background: rgba(255, 255, 255, 0.15);
+  background: rgba(139, 92, 246, 0.12);
+  color: #fff;
+  transform: translateX(5px);
+  border-left: 3px solid var(--purple);
 }
 
 .sidebar a.active {
-	background: rgba(255, 255, 255, 0.25);
-	border-left: 4px solid #fff;
+  background: rgba(139, 92, 246, 0.18);
+  color: #fff;
+  border-left: 3px solid var(--purple);
 }
 
-/* MAIN */
+/* =========================
+   MAIN AREA
+========================= */
 .main {
-	margin-left: 240px;
-	width: 100%;
-	padding: 20px;
+  margin-left: 240px;
+  width: 100%;
+  padding: 20px;
 }
 
-/* TOPBAR */
+/* =========================
+   TOPBAR
+========================= */
 .topbar {
-	background: #fff;
-	padding: 15px 20px;
-	border-radius: 12px;
-	margin-bottom: 20px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  padding: 15px 20px;
+  border-radius: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  animation: fadeDown 0.6s ease;
 }
 
-/* CARDS */
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================
+   DASHBOARD CARDS
+========================= */
 .card-box {
-	padding: 20px;
-	border-radius: 15px;
-	color: #fff;
-	text-align: center;
-	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  padding: 22px;
+  border-radius: 16px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  transition: 0.3s;
+  position: relative;
+  overflow: hidden;
 }
 
-.bg1 {
-	background: #6777ef;
+/* hover glow */
+.card-box:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 25px var(--purple-glow);
 }
 
-.bg2 {
-	background: #63ed7a;
+/* animated glow pulse */
+.card-box::before {
+  content: "";
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(circle, var(--purple-glow), transparent);
+  top: -50%;
+  left: -50%;
+  opacity: 0;
+  transition: 0.4s;
 }
 
-.bg3 {
-	background: #ffa426;
+.card-box:hover::before {
+  opacity: 1;
 }
 
-.bg4 {
-	background: #fc544b;
-}
+/* colors */
+.bg1 { background: linear-gradient(135deg, #7b2cff, #5b21b6); }
+.bg2 { background: linear-gradient(135deg, #22c55e, #16a34a); }
+.bg3 { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.bg4 { background: linear-gradient(135deg, #ef4444, #b91c1c); }
 
-/* TABLE */
+/* =========================
+   TABLE CARD
+========================= */
 .table-card {
-	background: #fff;
-	border-radius: 15px;
-	padding: 20px;
-	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  backdrop-filter: blur(12px);
+  animation: fadeUp 0.6s ease;
 }
 
-/* BELL */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================
+   TABLE STYLE
+========================= */
+.table {
+  color: var(--text);
+}
+
+.table thead {
+  color: var(--muted);
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.table td, .table th {
+  padding: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.table tbody tr {
+  transition: 0.3s;
+}
+
+.table tbody tr:hover {
+  background: rgba(139, 92, 246, 0.08);
+  transform: scale(1.01);
+}
+
+/* =========================
+   BELL NOTIFICATION
+========================= */
 #notifCount {
-	position: absolute;
-	top: -8px;
-	right: -8px;
-	background: red;
-	color: #fff;
-	padding: 3px 7px;
-	font-size: 12px;
-	border-radius: 50%;
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: red;
+  color: white;
+  font-size: 11px;
+  padding: 3px 6px;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
 }
 
-/* NOTIFICATION */
-#notificationList {
-	display: none;
-	position: fixed;
-	top: 70px;
-	right: 20px;
-	width: 300px;
-	z-index: 9999;
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* =========================
+   RESPONSIVE DESIGN
+========================= */
+
+/* tablet */
+@media (max-width: 992px) {
+  .sidebar {
+    transform: translateX(-100%);
+    position: absolute;
+    z-index: 999;
+  }
+
+  .main {
+    margin-left: 0;
+  }
+}
+
+/* mobile */
+@media (max-width: 768px) {
+  .row {
+    flex-direction: column;
+  }
+
+  .card-box {
+    margin-bottom: 15px;
+  }
+
+  .topbar {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
 }
 </style>
 
