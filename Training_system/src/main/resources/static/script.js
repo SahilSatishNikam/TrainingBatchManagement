@@ -139,7 +139,7 @@ async function loadDashboard() {
                         <div class="progress">
                             <div class="progress-bar ${color}" style="width:${progress}%"></div>
                         </div>
-                        <small>${progress}%</small>
+                         <small>${Math.round(progress)}%</small>
                     </td>
                 </tr>
             `;
@@ -530,7 +530,7 @@ async function loadHistory() {
 
 	const yearEl = document.getElementById("year");
 	const monthEl = document.getElementById("month");
-	const table = document.getElementById("tableBody");
+	const table = document.getElementById("tableBody1");
 
 	// ✅ SAFE CHECK (prevents null crash)
 	if (!table) {
@@ -918,7 +918,7 @@ async function loadMyBatchesPage() {
                             style="width:${progress}%">
                         </div>
                     </div>
-                    <small>${progress}%</small>
+                    <small>${Math.round(progress)}%</small>
                 </td>
 
                 <td>
@@ -963,7 +963,7 @@ function connectSocket() {
 	  });
 }
 
-let notifCount = 0;
+let notifCount = JSON.parse(localStorage.getItem("notifications") || "[]").length;
 
 
 
@@ -1569,22 +1569,7 @@ async function loadProjectDropdown() {
    ===================================================== */
 
 /* ================= SAFE INIT FOR PROGRESS PAGE ================= */
-function initProgressPage() {
-    const dropdown = document.getElementById("batchSelect");
 
-    if (!dropdown) return;
-
-    // prevent duplicate binding
-    if (!dropdown.dataset.bound) {
-        dropdown.dataset.bound = "true";
-
-        dropdown.addEventListener("change", function () {
-            handleProgressBatchChange(this.value);
-        });
-    }
-
-    loadProgressPageSafe();
-}
 
 /* ================= SAFE LOAD PROGRESS PAGE ================= */
 async function loadProgressPageSafe() {
@@ -1755,62 +1740,222 @@ function safeProgressCalc(b) {
     return b.progress ?? 0;
 }
 
-async function load() {
+/*async function load() {
 
-    batches = await apiRequest("/admin/batches");
+    const data = await apiRequest("/admin/batches");
 
-    if (!batches) return;
+    if (!data || !Array.isArray(data)) {
+        console.warn("No batch data");
+        return;
+    }
 
-    let total = batches.length;
+    let total = data.length;
     let active = 0, completed = 0, delayed = 0;
 
     const table = document.getElementById("tableBody");
     const select = document.getElementById("batchSelect");
 
+    if (!table || !select) return;
+
     table.innerHTML = "";
-    select.innerHTML = "<option>Select Batch</option>";
+    select.innerHTML = `<option value="">Select Batch</option>`;
 
-    batches.forEach(b => {
+    data.forEach(b => {
 
-        const progress = b.totalDays > 0
-            ? Math.round((b.completedDays / b.totalDays) * 100)
-            : 0;
+        // ✅ NORMALIZE FIELDS (IMPORTANT FIX)
+        const totalDays = Number(b.totalDays ?? b.total_days ?? 0);
+        let completedDays = Number(b.completedDays ?? b.completed_days ?? 0);
 
-        let status = "On Track";
-        let badge = "bg-success";
+        // safety fix
+        if (completedDays > totalDays) {
+            completedDays = totalDays;
+        }
 
-        const today = new Date();
-        const start = new Date(b.startDate);
-        const expected = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+        // ✅ ALWAYS CALCULATE PROGRESS (DON’T TRUST API)
+        let progress = 0;
+        if (totalDays > 0) {
+            progress = Math.round((completedDays / totalDays) * 100);
+        } else {
+            progress = Number(b.progress ?? 0);
+        }
 
-        if (progress === 100) {
+        // clamp
+        progress = Math.min(progress, 100);
+
+        // trainer name safe
+        const trainerName =
+            b.trainerName ||
+            (b.trainer
+                ? `${b.trainer.name || ""} ${b.trainer.lastName || ""}`.trim()
+                : "-");
+
+        // ✅ STATUS LOGIC FIXED
+        let status = "";
+        let badge = "";
+
+        if (progress >= 100) {
             status = "Completed";
             badge = "bg-primary";
             completed++;
         }
-        else if (b.completedDays < expected) {
+        else if (progress < 30) {
             status = "Delayed";
             badge = "bg-danger";
             delayed++;
         }
         else {
+            status = "On Track";
+            badge = "bg-success";
             active++;
         }
 
+        // TABLE ROW
         table.innerHTML += `
         <tr>
-            <td>${b.batchName}</td>
-            <td>${b.trainer?.name || "-"}</td>
-            <td>
-                <div class="progress">
-                    <div class="progress-bar" style="width:${progress}%"></div>
-                </div>
-                ${progress}%
-            </td>
-            <td><span class="badge ${badge}">${status}</span></td>
-        </tr>`;
+            <td>${b.batchName || "-"}</td>
+            <td>${trainerName}</td>
 
-        select.innerHTML += `<option value="${b.id}">${b.batchName}</option>`;
+            <td style="width:220px;">
+                <div class="progress">
+                    <div class="progress-bar ${badge}" 
+                         style="width:${progress}%">
+                    </div>
+                </div>
+                <small>${progress}%</small>
+            </td>
+
+            <td>
+                <span class="badge ${badge}">
+                    ${status}
+                </span>
+            </td>
+        </tr>
+        `;
+
+        // DROPDOWN
+        select.innerHTML += `
+            <option value="${b.id}">
+                ${b.batchName} (${progress}%)
+            </option>
+        `;
+    });
+
+    // KPI UPDATE
+    document.getElementById("total").innerText = total;
+    document.getElementById("active").innerText = active;
+    document.getElementById("completed").innerText = completed;
+    document.getElementById("delayed").innerText = delayed;
+}
+// ================= SAFE SELECT =================
+function initBatchSelectListener() {
+
+    const batchSelectEl = document.getElementById("batchSelect");
+    if (!batchSelectEl) return;
+
+    batchSelectEl.addEventListener("change", async function () {
+
+        const id = this.value;
+        if (!id) return;
+
+        const b = await apiRequest(`/trainer/batch/${id}`);
+        if (!b) return;
+
+        const total = Number(b.totalDays ?? b.total_days ?? 0);
+        let completed = Number(b.completedDays ?? b.completed_days ?? 0);
+
+        if (completed > total) completed = total;
+
+        const remaining = total - completed;
+
+        const progress = total > 0
+            ? Math.round((completed / total) * 100)
+            : 0;
+
+        document.getElementById("tDays").innerText = total;
+        document.getElementById("cDays").innerText = completed;
+        document.getElementById("rDays").innerText = remaining;
+
+        document.getElementById("bar").style.width = progress + "%";
+        document.getElementById("percent").innerText = progress + "%";
+    });
+}*/
+
+function getProgress(b) {
+    const total = Number(b.totalDays ?? b.total_days ?? 0);
+    const completed = Number(b.completedDays ?? b.completed_days ?? 0);
+
+    if (total > 0) {
+        return Math.min(Math.round((completed / total) * 100), 100);
+    }
+
+    return Number(b.progress ?? 0);
+}
+
+function getStatus(progress) {
+    if (progress >= 100) return { text: "Completed", class: "bg-primary" };
+    if (progress < 30) return { text: "Delayed", class: "bg-danger" };
+    return { text: "On Track", class: "bg-success" };
+}
+
+/* ================= LOAD PAGE ================= */
+async function loadAdminProgress() {
+    const data = await apiRequest("/admin/batches");
+    if (!data) return;
+
+    renderTable(data);
+    updateKPIs(data);
+    loadDropdown(data);
+}
+
+/* ================= TABLE ================= */
+function renderTable(data) {
+    const table = document.getElementById("tableBody");
+    if (!table) return;
+
+    table.innerHTML = "";
+
+    data.forEach(b => {
+        const progress = getProgress(b);
+        const status = getStatus(progress);
+
+        const trainer =
+            b.trainerName ||
+            (b.trainer
+                ? `${b.trainer.name || ""} ${b.trainer.lastName || ""}`.trim()
+                : "-");
+
+        table.innerHTML += `
+            <tr>
+                <td>${b.batchName || "-"}</td>
+                <td>${trainer}</td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar ${status.class}" 
+                             style="width:${progress}%"></div>
+                    </div>
+                    <small>${Math.round(progress)}%</small>
+                </td>
+                <td>
+                    <span class="badge ${status.class}">
+                        ${status.text}
+                    </span>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+/* ================= KPI ================= */
+function updateKPIs(data) {
+    let total = data.length;
+    let active = 0, completed = 0, delayed = 0;
+
+    data.forEach(b => {
+        const progress = getProgress(b);
+
+        if (progress >= 100) completed++;
+        else if (progress < 30) delayed++;
+        else active++;
     });
 
     document.getElementById("total").innerText = total;
@@ -1819,109 +1964,147 @@ async function load() {
     document.getElementById("delayed").innerText = delayed;
 }
 
-// ================= SAFE SELECT =================
-function initBatchSelectListener() {
+/* ================= DROPDOWN ================= */
+function loadDropdown(data) {
+    const select = document.getElementById("batchSelect");
+    if (!select) return;
 
-    const batchSelectEl = document.getElementById("batchSelect");
+    select.innerHTML = `<option value="">Select Batch</option>`;
 
-    if (!batchSelectEl) return; // ✅ prevents crash
+    data.forEach(b => {
+        const progress = getProgress(b);
 
-    batchSelectEl.addEventListener("change", async function () {
+        select.innerHTML += `
+            <option value="${b.id}">
+                ${b.batchName} (${progress}%)
+            </option>
+        `;
+    });
+}
 
+/* ================= RIGHT PANEL ================= */
+function initBatchSelect() {
+    const select = document.getElementById("batchSelect");
+    if (!select) return;
+
+    select.addEventListener("change", async function () {
         const id = this.value;
         if (!id) return;
 
-        const b = await apiRequest(`/trainer/batch/${id}`);
+        console.log("Loading batch:", id);
 
-        if (!b) return;
+        // ✅ FIXED ENDPOINT
+        const b = await apiRequest(`/admin/batch/${id}`);
+        if (!b) {
+            console.warn("No batch data");
+            return;
+        }
 
-        const progress = b.totalDays > 0
-            ? Math.round((b.completedDays / b.totalDays) * 100)
+        console.log("Batch Data:", b);
+
+        // ✅ SAFE FIELD ACCESS
+        const total = Number(b.totalDays ?? b.total_days ?? 0);
+        let completed = Number(b.completedDays ?? b.completed_days ?? 0);
+
+        if (completed > total) completed = total;
+
+        const remaining = total - completed;
+
+        const progress = total > 0
+            ? Math.round((completed / total) * 100)
             : 0;
 
-        document.getElementById("tDays").innerText = b.totalDays;
-        document.getElementById("cDays").innerText = b.completedDays;
-        document.getElementById("rDays").innerText = b.totalDays - b.completedDays;
+        // ✅ UPDATE UI
+        document.getElementById("tDays").innerText = total;
+        document.getElementById("cDays").innerText = completed;
+        document.getElementById("rDays").innerText = remaining;
 
         document.getElementById("bar").style.width = progress + "%";
         document.getElementById("percent").innerText = progress + "%";
     });
 }
 
+function onBatchSelect(batch) {
+
+    document.getElementById("tDays").innerText = batch.totalDays;
+    document.getElementById("cDays").innerText = batch.completedDays;
+
+    const remaining = batch.totalDays - batch.completedDays;
+    document.getElementById("rDays").innerText = remaining;
+
+    const percent = Math.round((batch.completedDays * 100) / batch.totalDays);
+
+    document.getElementById("percent").innerText = percent + "%";
+
+    const bar = document.getElementById("bar");
+    bar.style.width = percent + "%";
+    bar.innerText = percent + "%";
+}
+
 /* ================= AUTO INIT ================= */
+
 window.addEventListener("load", () => {
-    if (document.getElementById("batchSelect")) {
-        initProgressPage();
+
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    const currentPage = window.location.pathname.split("/").pop();
+
+    const protectedPages = [
+        "admin_dashboard.html",
+        "trainer_dashboard.html"
+    ];
+
+    // ✅ ALWAYS FORCE LOGIN PAGE CLEAN
+    if (currentPage === "login.html") {
+        localStorage.clear();
     }
+
+    // ✅ BLOCK DIRECT ACCESS TO DASHBOARD
+    if (!token && protectedPages.includes(currentPage)) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    /* ===== NORMAL LOAD ===== */
+
+    if (document.getElementById("trainers")) loadDashboard();
+    if (document.getElementById("trainerTable")) loadTrainers();
+
+    if (role === "ADMIN" && document.getElementById("batchTable")) {
+        loadBatches();
+    }
+
+    if (role === "TRAINER" && document.getElementById("batchTable")) {
+        loadMyBatchesPage();
+    }
+
+    if (document.getElementById("trainerBatchTable")) {
+        loadTrainerBatches();
+        loadTrainerDashboardSummary();
+    }
+
+    if (document.getElementById("projectBatch")) {
+        loadProjectDropdown();
+    }
+
+    if (document.getElementById("notificationList")) {
+        loadOldNotificationsStyled();
+    }
+
+    if (document.getElementById("mockBatch")) {
+        loadMockBatchDropdown();
+    }
+
+    if (document.getElementById("practicalTable")) {
+        loadBatchDropdown();
+    }
+
+	if (document.getElementById("trainerDropdown")) {
+	    loadTrainerDropdown();
+	}
+	
+	loadAdminProgress();
+	initBatchSelect();
+    connectSocket();
 });
-
-window.onload = () => {
-
-	const role = localStorage.getItem("role");
-
-	if (document.getElementById("trainers")) loadDashboard();
-	if (document.getElementById("trainerTable")) loadTrainers();
-
-	if (role === "ADMIN" && document.getElementById("batchTable")) {
-		loadBatches();
-	}
-
-	if (role === "TRAINER" && document.getElementById("batchTable")) {
-		loadMyBatchesPage();
-	}
-
-	if (document.getElementById("trainerBatchTable")) {
-		loadTrainerBatches();
-		loadTrainerDashboardSummary();
-	}
-
-
-	if (document.getElementById("projectBatch")) {
-		loadProjectDropdown();
-	}
-
-	if (document.getElementById("notificationList")) {
-		loadOldNotificationsStyled(); // ✅ SAFE NOW
-	}
-
-	if (document.getElementById("mockBatch")) {
-		loadMockBatchDropdown();
-	}
-
-	const completedInput = document.getElementById("completedDays");
-	if (completedInput) {
-		completedInput.addEventListener("input", () => {
-		    if (window.currentBatch) {
-		        safeUpdateUI({
-		            ...window.currentBatch,
-		            completedDays: Number(completedInput.value)
-		        });
-		    }
-		});
-	}
-	
-	if (document.getElementById("practicalTable")) {
-	    loadBatchDropdown();
-
-	    const dropdown = document.getElementById("batchSelect"); // ✅ FIX
-
-	    if (dropdown) {
-	        dropdown.addEventListener("change", function () {
-	            const batchId = this.value;
-
-	            if (batchId) {
-	                loadPracticals(batchId);
-	            }
-	        });
-	    }
-	}
-	connectSocket();
-	
-	initBatchSelectListener();
-	
-	// ✅ ADD THIS LINE
-	   if (document.getElementById("tableBody")) {
-	       load();
-	   }
-
-};

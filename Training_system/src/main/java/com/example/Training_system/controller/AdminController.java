@@ -49,6 +49,12 @@ public class AdminController {
                         .filter(b -> "COMPLETED".equalsIgnoreCase(b.getStatus()))
                         .count()
         );
+        
+        long delayed = allBatches.stream()
+                .filter(b -> "DELAYED".equalsIgnoreCase(b.getStatus()))
+                .count();
+
+        data.put("delayedBatches", delayed);
 
         data.put("batchList", ongoing.stream().map(b -> {
             Map<String, Object> m = new HashMap<>();
@@ -65,6 +71,9 @@ public class AdminController {
             m.put("startDate", b.getStartDate());
             m.put("endDate", b.getEndDate());
             m.put("progress", b.getProgressPercentage());
+
+            m.put("totalDays", b.getTotalDays());       // ✅ ADD
+            m.put("completedDays", b.getCompletedDays()); // ✅ ADD
 
             return m;
         }).toList());
