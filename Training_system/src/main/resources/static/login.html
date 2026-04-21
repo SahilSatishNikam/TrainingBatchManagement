@@ -134,25 +134,36 @@ h2 {
     color: #d1b3ff;
 }
 
-/* ================= INPUT ================= */
+/* ================= INPUT FIX ================= */
 .form-control {
-    border: 1px solid #6a0dad;
-    color: #fff;
+    background-color: #0f0f1f; /* darker but cleaner */
+    border: 1px solid #a855f7;
+    color: #ffffff; /* ✅ visible text */
     border-radius: 8px;
-    padding: 10px;
+    padding: 12px;
+    font-size: 15px;
     transition: 0.3s;
 }
 
+/* Placeholder */
 .form-control::placeholder {
-    color: #aaa;
+    color: #cbd5e1; /* lighter visible placeholder */
+    opacity: 1;
 }
 
+/* Focus */
 .form-control:focus {
-    border-color: #bb86fc;
-    box-shadow: 0 0 8px #bb86fc;
-    background-color: #1a1a2e;
+    border-color: #c084fc;
+    box-shadow: 0 0 10px rgba(168,85,247,0.8);
+    background-color: #0f0f1f;
+    color: #ffffff;
 }
 
+/* Autofill fix (VERY IMPORTANT) */
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #0f0f1f inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
 /* ================= BUTTON ================= */
 .btn-primary {
     background: rgba(255, 255, 255, 0.08);
