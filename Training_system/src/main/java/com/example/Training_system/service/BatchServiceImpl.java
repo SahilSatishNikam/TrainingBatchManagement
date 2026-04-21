@@ -45,9 +45,19 @@ public class  BatchServiceImpl implements BatchService {
 
         Batch savedBatch = batchRepository.save(batch);
 
-        // ✅ SEND NOTIFICATION (CORRECT PLACE)
-        notificationService.sendToAll("📢 New batch created: " + savedBatch.getBatchName());
+     // 🔥 Collect trainer phones
+     List<String> phones = userRepository.findAll()
+             .stream()
+             .filter(u -> u.getRole() != null && u.getRole().name().equals("TRAINER"))
+             .map(User::getMobile)
+             .filter(m -> m != null && !m.isBlank())
+             .toList();
 
+     // ✅ BOTH SYSTEMS
+     notificationService.sendToAll(
+             "📢 New batch created: " + savedBatch.getBatchName(),
+             phones
+     );
         return savedBatch;
     }
    
@@ -122,29 +132,33 @@ public class  BatchServiceImpl implements BatchService {
     @Override
     public Batch updateProgress(Long id, int days, Authentication auth) {
 
+        // ✅ Fetch batch
         Batch batch = batchRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Batch not found"));
 
+        // ✅ Get logged-in trainer
         User trainer = userRepository.findByEmailIgnoreCase(auth.getName())
                 .orElseThrow(() -> new RuntimeException("Trainer not found"));
 
+        // ✅ Security check
         if (!batch.getTrainer().getId().equals(trainer.getId())) {
             throw new RuntimeException("Unauthorized access");
         }
 
+        // ✅ Validations
         if (days < 0) {
-            throw new RuntimeException("Days cannot be negative");
+            throw new RuntimeException("Completed days cannot be negative");
         }
 
         if (batch.getTotalDays() <= 0) {
-            throw new RuntimeException("Total days not set");
+            throw new RuntimeException("Invalid total days");
         }
 
         if (days > batch.getTotalDays()) {
             throw new RuntimeException("Completed days cannot exceed total days");
         }
 
-        // ✅ UPDATE
+        // ✅ Update
         batch.setCompletedDays(days);
 
         if (days == 0) {
@@ -155,20 +169,27 @@ public class  BatchServiceImpl implements BatchService {
             batch.setStatus("COMPLETED");
         }
 
-        Batch updatedBatch = batchRepository.save(batch);
+        Batch updated = batchRepository.save(batch);
 
-        // ✅ ONLY ONE NOTIFICATION HERE
-        String msg = "📊 " + updatedBatch.getBatchName() +
-                " progress updated: " +
-                updatedBatch.getCompletedDays() + "/" +
-                updatedBatch.getTotalDays() +
-                " (" + updatedBatch.getProgressPercentage() + "%)";
+        // ✅ Calculate %
+        int progress = (int) Math.round(
+                (updated.getCompletedDays() * 100.0) / updated.getTotalDays()
+        );
 
-        System.out.println("🔥 Sending Notification: " + msg);
+        // ✅ Message
+        String message = "📊 Batch: " + updated.getBatchName() + "\n" +
+                         "👨‍🏫 Trainer: " + updated.getTrainer().getName() + "\n" +
+                         "📈 Progress: " + updated.getCompletedDays() + "/" +
+                         updated.getTotalDays() + " (" + progress + "%)\n" +
+                         "📌 Status: " + updated.getStatus();
 
-        notificationService.sendToAll(msg);
+        // 🔥 Send ONLY to that trainer
+        notificationService.sendToTrainer(
+                updated.getTrainer().getMobile(),
+                message
+        );
 
-        return updatedBatch;
+        return updated;
     }
     // ✅ SECURE GET BATCH (IMPORTANT FIX)
     public Batch getBatchByIdForTrainer(Long id, Authentication auth) {

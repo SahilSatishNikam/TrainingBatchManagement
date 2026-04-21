@@ -7,7 +7,7 @@ public class LoginRequest {
 		return email;
 	}
 	public void setEmail(String email) {
-		this.email = email;
+		 this.email = email != null ? email.trim() : null;
 	}
 	public String getPassword() {
 		return password;

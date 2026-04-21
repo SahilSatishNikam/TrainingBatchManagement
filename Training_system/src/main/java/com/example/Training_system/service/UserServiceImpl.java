@@ -24,10 +24,7 @@ public class UserServiceImpl implements UserService {
     public UserResponseDTO createAdmin(UserRequestDTO dto, String fileName) {
 
         validateEmail(dto.getEmail(), null);
-
-        if (dto.getPassword() == null || dto.getPassword().isBlank()) {
-            throw new RuntimeException("Password is required");
-        }
+        validatePassword(dto.getPassword());
 
         User user = new User();
         mapDtoToEntity(dto, user);
@@ -35,87 +32,44 @@ public class UserServiceImpl implements UserService {
         user.setRole(Role.ADMIN);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
-        if (fileName != null) {
-            user.setPhoto("/uploads/" + fileName);
-        }
+        setPhoto(user, fileName);
 
         return convert(userRepository.save(user));
     }
 
     // ================= CREATE TRAINER =================
-    public  UserResponseDTO createTrainer(UserRequestDTO dto, String fileName) {
+    @Override
+    public UserResponseDTO createTrainer(UserRequestDTO dto, String fileName) {
+
+        validateEmail(dto.getEmail(), null);
+        validatePassword(dto.getPassword());
 
         User user = new User();
-
-        user.setName(dto.getName());
-        user.setLastName(dto.getLastName());
-        user.setGender(dto.getGender());
-        user.setMobile(dto.getMobile());
-
-        // ✅ FIX: handle null safely
-        user.setDepartment(dto.getDepartment() != null ? dto.getDepartment() : "");
-        user.setJoiningDate(dto.getJoiningDate() != null ? dto.getJoiningDate() : "");
-
-        user.setDesignation(dto.getDesignation());
-        user.setAddress(dto.getAddress());
-        user.setDob(dto.getDob());
-        user.setEducation(dto.getEducation());
-        user.setEmail(dto.getEmail());
-
-        // ⚠️ Always encode password
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-
-        // ✅ SAFE parsing
-        try {
-            user.setSalary(dto.getSalary() != null && !dto.getSalary().isBlank()
-                    ? Double.parseDouble(dto.getSalary())
-                    : null);
-        } catch (Exception e) {
-            user.setSalary(null);
-        }
-
-        user.setSubject(dto.getSubject());
-
-        try {
-            user.setExperience(dto.getExperience() != null && !dto.getExperience().isBlank()
-                    ? Integer.parseInt(dto.getExperience())
-                    : null);
-        } catch (Exception e) {
-            user.setExperience(null);
-        }
-
-        user.setStatus(dto.getStatus());
-        user.setBio(dto.getBio());
-
-        // ✅ FIX: correct photo path
-        if (fileName != null) {
-            user.setPhoto("/uploads/" + fileName);
-        }
+        mapDtoToEntity(dto, user);
 
         user.setRole(Role.TRAINER);
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+
+        setPhoto(user, fileName);
 
         return convert(userRepository.save(user));
     }
-    // ================= UPDATE =================
+
+    // ================= UPDATE TRAINER =================
     @Override
     public UserResponseDTO updateTrainer(Long id, UserRequestDTO dto, String fileName) {
 
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Trainer not found"));
 
-        if (dto.getEmail() != null) {
-            validateEmail(dto.getEmail(), id);
-        }
-
         mapDtoToEntity(dto, user);
 
+        // update password only if provided
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
 
-        if (fileName != null && !fileName.isBlank()) {
-            user.setPhoto("/uploads/" + fileName);
-        }
+        setPhoto(user, fileName);
 
         return convert(userRepository.save(user));
     }
@@ -141,57 +95,78 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
-    // ================= EMAIL VALIDATION =================
+    // ================= COMMON METHODS =================
+
     private void validateEmail(String email, Long userId) {
 
         if (email == null || email.isBlank()) {
             throw new RuntimeException("Email is required");
         }
 
-        userRepository.findByEmailIgnoreCase(email)
+        String normalizedEmail = email.trim().toLowerCase(); // ✅ FIX
+
+        userRepository.findByEmailIgnoreCase(normalizedEmail)
                 .ifPresent(existing -> {
                     if (userId == null || !existing.getId().equals(userId)) {
                         throw new RuntimeException("Email already exists");
                     }
                 });
     }
+    private void validatePassword(String password) {
+        if (password == null || password.isBlank()) {
+            throw new RuntimeException("Password is required");
+        }
+    }
 
-    // ================= MAPPING =================
+    private void setPhoto(User user, String fileName) {
+        if (fileName != null && !fileName.isBlank()) {
+            user.setPhoto("/uploads/" + fileName);
+        }
+    }
+
     private void mapDtoToEntity(UserRequestDTO dto, User user) {
 
         if (dto.getName() != null) user.setName(dto.getName());
         if (dto.getLastName() != null) user.setLastName(dto.getLastName());
-        if (dto.getEmail() != null) user.setEmail(dto.getEmail());
+        if (dto.getEmail() != null) {
+            user.setEmail(dto.getEmail().trim().toLowerCase()); // ✅ FIX
+        }
 
         user.setGender(dto.getGender());
         user.setMobile(dto.getMobile());
-        user.setDepartment(dto.getDepartment());
+        user.setDepartment(defaultValue(dto.getDepartment()));
         user.setDesignation(dto.getDesignation());
         user.setAddress(dto.getAddress());
         user.setDob(dto.getDob());
-        user.setJoiningDate(dto.getJoiningDate());
+        user.setJoiningDate(defaultValue(dto.getJoiningDate()));
         user.setEducation(dto.getEducation());
 
-        try {
-            if (dto.getSalary() != null && !dto.getSalary().isBlank()) {
-                user.setSalary(Double.parseDouble(dto.getSalary()));
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Invalid salary");
-        }
-
+        user.setSalary(parseDouble(dto.getSalary()));
         user.setSubject(dto.getSubject());
-
-        try {
-            if (dto.getExperience() != null && !dto.getExperience().isBlank()) {
-                user.setExperience(Integer.parseInt(dto.getExperience()));
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Invalid experience");
-        }
+        user.setExperience(parseInteger(dto.getExperience()));
 
         user.setStatus(dto.getStatus());
         user.setBio(dto.getBio());
+    }
+
+    private Double parseDouble(String value) {
+        try {
+            return (value != null && !value.isBlank()) ? Double.parseDouble(value) : null;
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid salary");
+        }
+    }
+
+    private Integer parseInteger(String value) {
+        try {
+            return (value != null && !value.isBlank()) ? Integer.parseInt(value) : null;
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid experience");
+        }
+    }
+
+    private String defaultValue(String value) {
+        return value != null ? value : "";
     }
 
     private UserResponseDTO convert(User user) {
