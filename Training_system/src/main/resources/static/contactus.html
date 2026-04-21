@@ -231,31 +231,302 @@ font-weight:700;
   -webkit-text-fill-color: transparent;
   font-weight: 700;
 }
+
+/* ========================= */
+/* 🔥 FOOTER MAIN */
+/* ========================= */
+
+.footer {
+    background: radial-gradient(circle at top, #0b0f2a, #050816);
+    padding: 80px 60px 30px;
+    color: #cbd5e1;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ========================= */
+/* GRID */
+/* ========================= */
+
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+}
+
+/* ========================= */
+/* COLUMNS */
+/* ========================= */
+
+.footer-col {
+    transition: 0.3s;
+}
+
+.footer-col:hover {
+    transform: translateY(-6px);
+}
+
+.footer-col h2,
+.footer-col h3 {
+    color: #ffffff;
+    margin-bottom: 20px;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+/* TEXT */
+.footer-col p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #94a3b8;
+    font-size: 15px;
+}
+
+/* ========================= */
+/* LOGO */
+/* ========================= */
+
+.logo {
+    font-size: 22px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.logo:hover {
+    color: #7c3aed;
+    text-shadow: 0 0 15px #7c3aed;
+}
+
+/* ========================= */
+/* LINKS */
+/* ========================= */
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-col ul li {
+    margin-bottom: 12px;
+}
+
+.footer-col ul li a {
+    position: relative;
+    text-decoration: none;
+    color: #94a3b8;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+/* underline effect */
+.footer-col ul li a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 0%;
+    height: 2px;
+    background: #7c3aed;
+    transition: 0.3s;
+}
+
+.footer-col ul li a:hover {
+    color: #7c3aed;
+}
+
+.footer-col ul li a:hover::after {
+    width: 100%;
+}
+
+/* ========================= */
+/* SOCIAL ICONS */
+/* ========================= */
+
+.socials {
+    margin-top: 10px;
+}
+
+.socials a {
+    display: inline-block;
+    font-size: 20px;
+    margin-right: 15px;
+    transition: 0.3s;
+}
+
+/* 🔥 DEFAULT COLORS (ALWAYS VISIBLE) */
+.socials a:nth-child(1) { color: #1877f2; } /* Facebook */
+.socials a:nth-child(2) { color: #e1306c; } /* Instagram */
+.socials a:nth-child(3) { color: #1da1f2; } /* Twitter */
+
+/* ✨ HOVER EFFECT */
+.socials a:hover {
+    transform: translateY(-6px) scale(1.2);
+    filter: brightness(1.3);
+    text-shadow: 0 0 10px currentColor,
+                 0 0 25px currentColor;
+}
+
+
+/* ========================= */
+/* FOOTER BOTTOM */
+/* ========================= */
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 14px;
+    color: #64748b;
+}
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+
+@media (max-width: 992px) {
+    .footer-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .footer {
+        padding: 60px 20px;
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .socials {
+        justify-content: center;
+    }
+}
+.socials a {
+    background: rgba(255,255,255,0.05);
+    padding: 10px;
+    border-radius: 50%;
+}
+
+/* NAVBAR */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 18px 60px;
+    font-size: 18px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+
+    background: rgba(10,10,20,0.6);
+    backdrop-filter: blur(12px);
+    z-index: 1000;
+}
+
+/* LEFT (LOGO UPDATED) */
+.logo {
+    justify-self: start;
+    display: flex;              /* ⭐ important */
+    align-items: center;        /* ⭐ vertical align */
+    gap: 10px;
+    font-weight: 600;
+}
+
+/* LOGO ICON */
+.logo-icon {
+    width: 50px;
+    height: 50px;
+    filter: drop-shadow(0 0 10px rgba(124,58,237,0.5));
+    transition: 0.3s;
+}
+
+/* LOGO TEXT */
+.logo-text {
+    font-size: 24px;
+    background: linear-gradient(45deg, #ffffff, #38bdf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.5px;
+}
+
+/* HOVER EFFECT */
+.logo:hover .logo-icon {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 20px rgba(124,58,237,0.8));
+}
+
+/* CENTER */
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    list-style: none;
+}
+
+/* RIGHT */
+.nav-right {
+    justify-self: end;
+}
+
+/* BUTTON */
+.nav-btn {
+    background: linear-gradient(45deg, #7c3aed, #2563eb);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+}
 </style>
 
 </head>
 
 <body>
 
-<!-- Navbar -->
+<nav class="navbar" th:fragment="navbar">
+    
+    <!-- LOGO WITH ICON -->
+    <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 100 100">
+            <defs>
+                <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#7c3aed"/>
+                    <stop offset="100%" stop-color="#2563eb"/>
+                </linearGradient>
+            </defs>
 
-<nav class="navbar navbar-expand-lg">
-<div class="container">
+            <!-- Cloud -->
+            <path d="M30 60 Q20 60 20 50 Q20 40 30 40 Q35 30 50 30 Q65 30 70 40 Q80 40 80 50 Q80 60 70 60 Z"
+                  fill="url(#cloudGrad)"/>
 
-<a class="navbar-brand text-white" href="#">Batch Trainer</a>
+            <!-- Arrow -->
+            <path d="M35 55 Q50 40 70 45"
+                  stroke="white"
+                  stroke-width="4"
+                  fill="none"
+                  stroke-linecap="round"/>
 
-<ul class="navbar-nav ms-auto">
+            <polygon points="68,42 78,45 70,52" fill="white"/>
+        </svg>
 
-<li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-<li class="nav-item"><a class="nav-link" href="#">About</a></li>
-<li class="nav-item"><a class="nav-link" href="#">Courses</a></li>
-<li class="nav-item"><a class="nav-link" href="#">Trainers</a></li>
-<li class="nav-item"><a class="nav-link" href="#">Batches</a></li>
-<li class="nav-item"><a class="nav-link text-purple" href="#">Contact</a></li>
+        <span class="logo-text">FortuneCloud</span>
+    </div>
 
-</ul>
+    <!-- CENTER LINKS -->
+    <ul class="nav-links">
+        <li>Home</li>
+        <li>About</li>
+        <li>Contact Us</li>
+    </ul>
 
-</div>
+    <!-- RIGHT BUTTON -->
+    <div class="nav-right">
+        <button class="nav-btn">Sign in</button>
+    </div>
+
 </nav>
 
 
@@ -459,12 +730,48 @@ src="https://maps.google.com/maps?q=pimpri%20chinchwad&t=&z=13&ie=UTF8&iwloc=&ou
 
 
 
-<!-- Footer -->
+<footer class="footer">
+    <div class="footer-container">
 
-<footer class="text-center">
+        <!-- LOGO + ABOUT -->
+        <div class="footer-col">
+            <h2 class="logo">BatchSys</h2>
+            <p>Smart system to manage students, batches and attendance.</p>
+        </div>
 
-<p>© 2024 Batch Trainer Management System. All rights reserved.</p>
+        <!-- CONTACT -->
+        <div class="footer-col">
+            <h3>Contact</h3>
+            <p>Email: support@batchsys.com</p>
+            <p>Phone: +91 98765 43210</p>
+        </div>
 
+        <!-- QUICK LINKS -->
+        <div class="footer-col">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Features</a></li>
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+
+        <!-- SOCIAL -->
+        <div class="footer-col">
+            <h3>Follow Us</h3>
+            <div class="socials">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2026 Batch Management System | All Rights Reserved</p>
+    </div>
 </footer>
 
 </body>
