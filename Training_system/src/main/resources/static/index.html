@@ -830,7 +830,48 @@ body {
 <body>
 
 <!-- ✅ NAVBAR (separate file use) -->
-<div th:replace="fragments/navbar :: navbar"></div>
+<nav class="navbar" th:fragment="navbar">
+    
+    <!-- LOGO WITH ICON -->
+    <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 100 100">
+            <defs>
+                <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#7c3aed"/>
+                    <stop offset="100%" stop-color="#2563eb"/>
+                </linearGradient>
+            </defs>
+
+            <!-- Cloud -->
+            <path d="M30 60 Q20 60 20 50 Q20 40 30 40 Q35 30 50 30 Q65 30 70 40 Q80 40 80 50 Q80 60 70 60 Z"
+                  fill="url(#cloudGrad)"/>
+
+            <!-- Arrow -->
+            <path d="M35 55 Q50 40 70 45"
+                  stroke="white"
+                  stroke-width="4"
+                  fill="none"
+                  stroke-linecap="round"/>
+
+            <polygon points="68,42 78,45 70,52" fill="white"/>
+        </svg>
+
+        <span class="logo-text">FortuneCloud</span>
+    </div>
+
+    <!-- CENTER LINKS -->
+    <ul class="nav-links">
+        <li>Home</li>
+        <li>About</li>
+        <li>Contact Us</li>
+    </ul>
+
+    <!-- RIGHT BUTTON -->
+    <div class="nav-right">
+        <button class="nav-btn">Sign in</button>
+    </div>
+
+</nav>
 
 <!-- HERO -->
 <section class="hero">
@@ -957,6 +998,49 @@ document.addEventListener("mousemove", e => {
 <div id="footer"></div>
 
 <div th:replace="fragments/footer :: footer"></div>
+<footer class="footer">
+    <div class="footer-container">
+
+        <!-- LOGO + ABOUT -->
+        <div class="footer-col">
+            <h2 class="logo">BatchSys</h2>
+            <p>Smart system to manage students, batches and attendance.</p>
+        </div>
+
+        <!-- CONTACT -->
+        <div class="footer-col">
+            <h3>Contact</h3>
+            <p>Email: support@batchsys.com</p>
+            <p>Phone: +91 98765 43210</p>
+        </div>
+
+        <!-- QUICK LINKS -->
+        <div class="footer-col">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Features</a></li>
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+
+        <!-- SOCIAL -->
+        <div class="footer-col">
+            <h3>Follow Us</h3>
+            <div class="socials">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2026 Batch Management System | All Rights Reserved</p>
+    </div>
+</footer>
 
 </body>
 <script>
