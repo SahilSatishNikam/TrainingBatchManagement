@@ -2,142 +2,218 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Admin Progress Dashboard</title>
+<title>Admin Progress</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
 <style>
-:root {
-    --primary: linear-gradient(135deg, #667eea, #9c88ff);
-    --bg: #f4f6f9;
+:root{
+    --bg:#050508;
+    --card:rgba(17,17,24,0.7);
+    --border:rgba(255,255,255,0.06);
+    --purple:#a855f7;
+    --text:#fff;
 }
 
-body {
-    margin: 0;
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
-    background: var(--bg);
-    font-family: 'Poppins', sans-serif;
+body{
+    margin:0;
+    display:flex;
+    background: radial-gradient(circle at top,#111122,#050508);
+    color:white;
+    font-family:'Segoe UI';
 }
 
-/* ===== SIDEBAR ===== */
-.sidebar {
-    width: 230px;
-    height: 100%;
-    position: fixed;
-    background: var(--primary);
-    color: white;
+/* SIDEBAR (UNCHANGED) */
+.sidebar{
+    width:240px;
+    height:100vh;
+    position:fixed;
+    background:#0d0d14;
+    border-right:1px solid var(--border);
+}
+.sidebar .brand{
+    padding:20px;
+    font-weight:bold;
+    color:var(--purple);
+}
+.sidebar a{
+    display:flex;
+    padding:14px 20px;
+    color:#aaa;
+    text-decoration:none;
+}
+.sidebar a:hover,
+.sidebar a.active{
+    background:rgba(168,85,247,0.15);
+    color:#fff;
 }
 
-.sidebar .brand {
-    font-size: 20px;
-    padding: 18px;
-    text-align: center;
-    font-weight: bold;
+/* MAIN */
+.main{
+    margin-left:240px;
+    width:100%;
+    padding:25px;
 }
 
-.sidebar a {
-    display: flex;
-    align-items: center;
-    padding: 12px 18px;
-    color: #eee;
-    text-decoration: none;
-    transition: 0.3s;
-    font-size: 14px;
+/* HEADER */
+.header{
+    background:var(--card);
+    padding:15px 20px;
+    border-radius:14px;
+    margin-bottom:20px;
+    backdrop-filter:blur(10px);
 }
 
-.sidebar a:hover {
-    background: rgba(255,255,255,0.15);
+/* CIRCLE CARDS */
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
 }
 
-.sidebar a.active {
-    background: rgba(255,255,255,0.25);
-    border-left: 4px solid #fff;
+.circle-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:20px;
+    text-align:center;
+    transition:0.3s;
+    position:relative;
 }
 
-/* ===== MAIN ===== */
-.main {
-    margin-left: 230px;
-    width: calc(100% - 230px);
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
+.circle-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 0 25px rgba(168,85,247,0.4);
 }
 
-/* ===== TOPBAR ===== */
-.topbar {
-    background: white;
-    padding: 12px 18px;
-    border-radius: 10px;
-    margin-bottom: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* glowing bg */
+.circle-card::before{
+    content:"";
+    position:absolute;
+    width:200%;
+    height:200%;
+    background:radial-gradient(circle,rgba(168,85,247,0.2),transparent);
+    top:-60%;
+    left:-60%;
 }
 
-/* ===== KPI ===== */
-.kpi-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-bottom: 12px;
+/* SVG CIRCLE */
+.circle{
+    width:110px;
+    height:110px;
+    margin:auto;
+    position:relative;
 }
 
-.kpi {
-    color: white;
-    border-radius: 10px;
-    text-align: center;
-    padding: 10px;
+.circle svg{
+    transform:rotate(-90deg);
 }
 
-.kpi h2 {
-    margin: 5px 0 0;
-    font-size: 24px;
+.circle circle{
+    fill:none;
+    stroke-width:8;
 }
 
-.total { background:#667eea; }
-.active { background:#007bff; }
-.completed { background:#28a745; }
-.delayed { background:#dc3545; }
-
-/* ===== TABLE CARD ===== */
-.table-card {
-    flex: 1;
-    background: white;
-    border-radius: 10px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
+.bg{
+    stroke:#222;
 }
 
-/* TABLE FIX HEIGHT */
-.table-responsive {
-    overflow-y: auto;
-    height: 100%;
+.progress{
+    stroke:var(--purple);
+    stroke-dasharray:314;
+    stroke-dashoffset:314;
+    transition:1.2s ease;
+}
+
+/* TEXT INSIDE */
+.circle-text{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-size:22px;
+    font-weight:bold;
+}
+
+/* TABLE */
+.table-box{
+    margin-top:30px;
+    background:var(--card);
+    border-radius:16px;
+    padding:20px;
+    border:1px solid var(--border);
+    backdrop-filter:blur(10px);
+}
+
+table{
+    width:100%;
+    border-spacing:0 10px;
+}
+
+thead th{
+    color:#aaa;
+    font-size:13px;
+    text-transform:uppercase;
+}
+
+tbody tr{
+    background:#0f0f18;
+    transition:0.3s;
+}
+
+tbody tr:hover{
+    transform:translateY(-5px);
+    box-shadow:0 0 15px rgba(168,85,247,0.3);
+    background:linear-gradient(135deg,#111122,#0a0a12);
+}
+
+td{
+    padding:14px;
 }
 
 /* PROGRESS BAR */
-.progress {
-    height: 12px;
-    border-radius: 10px;
+.bar{
+    height:8px;
+    background:#1a1a22;
+    border-radius:10px;
+    overflow:hidden;
 }
 
-.progress-bar {
-    font-size: 10px;
+.bar-fill{
+    height:100%;
+    background:linear-gradient(90deg,#a855f7,#7e22ce);
+    transition:0.5s;
 }
 
-/* STATUS BADGE */
-.badge-status {
-    padding: 5px 10px;
-    border-radius: 8px;
-    font-size: 12px;
+/* BADGE */
+.badge-custom{
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:12px;
 }
 
-.completed-badge { background:#28a745; color:white; }
-.active-badge { background:#007bff; color:white; }
-.delayed-badge { background:#dc3545; color:white; }
+.active-b{
+    background:rgba(34,197,94,0.15);
+    color:#22c55e;
+}
+.completed-b{
+    background:rgba(59,130,246,0.15);
+    color:#3b82f6;
+}
+.delayed-b{
+    background:rgba(239,68,68,0.15);
+    color:#ef4444;
+}
+
+/* ENTRY ANIMATION */
+.fade-in{
+    animation:fade 0.7s ease;
+}
+@keyframes fade{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
+}
 </style>
 </head>
 
@@ -145,7 +221,7 @@ body {
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-    <div class="brand">🚀 Smart Admin</div>
+    <div class="brand">Smart Admin</div>
 
     <a href="admin_dashboard.html"><i class="fas fa-home me-2"></i>Dashboard</a>
     <a href="add_trainer.html"><i class="fas fa-user-plus me-2"></i>Add Trainers</a>
@@ -153,47 +229,116 @@ body {
     <a href="assign-batch.html"><i class="fas fa-box me-2"></i>Batches</a>
     <a href="batch-history.html"><i class="fas fa-history me-2"></i>History</a>
     <a href="admin_progress.html" class="active"><i class="fas fa-chart-line me-2"></i>Progress</a>
-    <a href="notification.html"><i class="fas fa-bell me-2"></i>Notifications</a>
-    <a href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+    <a href="admin_notification.html"><i class="fas fa-bell me-2"></i>Notifications</a>
+    <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
-    <!-- TOPBAR -->
-    <div class="topbar">
-        <h6 class="mb-0">📊 Training Progress</h6>
-        <i class="fas fa-bell"></i>
-    </div>
+<div class="header">
+    <h4>📊 Training Progress</h4>
+</div>
 
-    <!-- KPI -->
-    <div class="kpi-row">
-        <div class="kpi total">TOTAL<h2 id="total">0</h2></div>
-        <div class="kpi active">ACTIVE<h2 id="active">0</h2></div>
-        <div class="kpi completed">COMPLETED<h2 id="completed">0</h2></div>
-        <div class="kpi delayed">DELAYED<h2 id="delayed">0</h2></div>
-    </div>
+<!-- CIRCLE STATS -->
+<div class="stats fade-in">
 
-    <!-- TABLE -->
-    <div class="table-card">
-        <h6>Batch Performance</h6>
-
-        <div class="table-responsive">
-            <table class="table table-sm align-middle">
-                <thead>
-                    <tr>
-                        <th>Batch</th>
-                        <th>Trainer</th>
-                        <th style="width:40%">Progress</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
+    <div class="circle-card">
+        <div class="circle">
+            <svg width="110" height="110">
+                <circle class="bg" cx="55" cy="55" r="50"/>
+                <circle id="c1" class="progress" cx="55" cy="55" r="50"/>
+            </svg>
+            <div id="total" class="circle-text">0</div>
         </div>
+        <p>TOTAL</p>
+    </div>
+
+    <div class="circle-card">
+        <div class="circle">
+            <svg width="110" height="110">
+                <circle class="bg" cx="55" cy="55" r="50"/>
+                <circle id="c2" class="progress" cx="55" cy="55" r="50"/>
+            </svg>
+            <div id="active" class="circle-text">0</div>
+        </div>
+        <p>ACTIVE</p>
+    </div>
+
+    <div class="circle-card">
+        <div class="circle">
+            <svg width="110" height="110">
+                <circle class="bg" cx="55" cy="55" r="50"/>
+                <circle id="c3" class="progress" cx="55" cy="55" r="50"/>
+            </svg>
+            <div id="completed" class="circle-text">0</div>
+        </div>
+        <p>COMPLETED</p>
+    </div>
+
+    <div class="circle-card">
+        <div class="circle">
+            <svg width="110" height="110">
+                <circle class="bg" cx="55" cy="55" r="50"/>
+                <circle id="c4" class="progress" cx="55" cy="55" r="50"/>
+            </svg>
+            <div id="delayed" class="circle-text">0</div>
+        </div>
+        <p>DELAYED</p>
     </div>
 
 </div>
+
+<!-- TABLE -->
+<div class="table-box fade-in">
+    <h5>Batch Performance</h5>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Batch</th>
+                <th>Trainer</th>
+                <th>Progress</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody id="tableBody"></tbody>
+    </table>
+</div>
+
+</div>
+
+<script>
+function logout(){
+    localStorage.clear();
+    window.location.href="login.html";
+}
+
+/* 🔥 AUTO CIRCLE ANIMATION */
+function animateCircle(id,value,max=100){
+    const circle=document.getElementById(id);
+    const radius=50;
+    const circumference=2*Math.PI*radius;
+
+    circle.style.strokeDasharray=circumference;
+
+    let percent=(value/max)*100;
+    const offset=circumference-(percent/100)*circumference;
+
+    setTimeout(()=>{
+        circle.style.strokeDashoffset=offset;
+    },300);
+}
+
+/* 🔥 RUN AFTER BACKEND LOAD */
+setTimeout(()=>{
+    animateCircle("c1",document.getElementById("total").innerText,50);
+    animateCircle("c2",document.getElementById("active").innerText,50);
+    animateCircle("c3",document.getElementById("completed").innerText,50);
+    animateCircle("c4",document.getElementById("delayed").innerText,50);
+},1200);
+</script>
 
 <script src="script.js"></script>
 

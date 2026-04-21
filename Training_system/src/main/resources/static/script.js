@@ -1899,6 +1899,10 @@ function getStatus(progress) {
 
 /* ================= LOAD PAGE ================= */
 async function loadAdminProgress() {
+
+    // ✅ ADD THIS SAFETY CHECK
+    if (!document.getElementById("tableBody")) return;
+
     const data = await apiRequest("/admin/batches");
     if (!data) return;
 
@@ -1906,7 +1910,6 @@ async function loadAdminProgress() {
     updateKPIs(data);
     loadDropdown(data);
 }
-
 /* ================= TABLE ================= */
 function renderTable(data) {
     const table = document.getElementById("tableBody");
@@ -1947,6 +1950,7 @@ function renderTable(data) {
 
 /* ================= KPI ================= */
 function updateKPIs(data) {
+
     let total = data.length;
     let active = 0, completed = 0, delayed = 0;
 
@@ -1962,6 +1966,12 @@ function updateKPIs(data) {
     document.getElementById("active").innerText = active;
     document.getElementById("completed").innerText = completed;
     document.getElementById("delayed").innerText = delayed;
+
+    /* 🔥 ANIMATE CIRCLES */
+    animateCircle("c1", total, total);
+    animateCircle("c2", active, total);
+    animateCircle("c3", completed, total);
+    animateCircle("c4", delayed, total);
 }
 
 /* ================= DROPDOWN ================= */
@@ -1981,6 +1991,22 @@ function loadDropdown(data) {
         `;
     });
 }
+
+function animateCircle(id, value, max) {
+    const circle = document.getElementById(id);
+    const radius = 50;
+    const circumference = 2 * Math.PI * radius;
+
+    circle.style.strokeDasharray = circumference;
+
+    const percent = max ? (value / max) * 100 : value;
+    const offset = circumference - (percent / 100) * circumference;
+
+    setTimeout(() => {
+        circle.style.strokeDashoffset = offset;
+    }, 300);
+}
+
 
 /* ================= RIGHT PANEL ================= */
 function initBatchSelect() {
@@ -2104,7 +2130,13 @@ window.addEventListener("load", () => {
 	    loadTrainerDropdown();
 	}
 	
-	loadAdminProgress();
+	if (document.getElementById("tableBody")) {
+	    loadAdminProgress();
+	}
+	
+	if (document.getElementById("batchSelect")) {
+	    loadProgressPageSafe();
+	}
 	initBatchSelect();
     connectSocket();
 });
