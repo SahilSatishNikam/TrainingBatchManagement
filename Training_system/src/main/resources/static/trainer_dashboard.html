@@ -4,55 +4,37 @@
 <meta charset="UTF-8">
 <title>Trainer Dashboard</title>
 
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-	rel="stylesheet">
-<link
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-	rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
 <style>
-/* =========================
-   ROOT THEME
-========================= */
+/* ================= THEME ================= */
 :root {
   --bg: #0b0b14;
-  --card: rgba(255, 255, 255, 0.03);
+  --card: rgba(255, 255, 255, 0.04);
   --border: rgba(255, 255, 255, 0.08);
   --text: #f5f5ff;
   --muted: #b8b8d1;
   --purple: #8b5cf6;
-  --purple-glow: rgba(139, 92, 246, 0.35);
+  --purple2: #a78bfa;
+  --glow: rgba(139, 92, 246, 0.45);
 }
 
-/* =========================
-   GLOBAL
-========================= */
 body {
   margin: 0;
   display: flex;
-  background: radial-gradient(circle at top right, #141427, #0b0b14);
+  background: radial-gradient(circle at top right, #1a1a2e, #0b0b14);
   color: var(--text);
-  font-family: "Times New Roman", serif;
-  overflow-x: hidden;
+  font-family: "Segoe UI", sans-serif;
 }
 
-/* =========================
-   SIDEBAR
-========================= */
+/* ================= SIDEBAR ================= */
 .sidebar {
   width: 240px;
   height: 100vh;
   position: fixed;
-  background: #0d0f1a;
+  background: linear-gradient(180deg, #111326, #0b0b14);
   border-right: 1px solid var(--border);
-  transition: 0.3s ease;
-  animation: slideLeft 0.6s ease;
-}
-
-@keyframes slideLeft {
-  from { transform: translateX(-100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
 }
 
 .sidebar .brand {
@@ -60,7 +42,9 @@ body {
   text-align: center;
   font-size: 22px;
   font-weight: bold;
-  color: white;
+  background: linear-gradient(45deg, #8b5cf6, #c4b5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .sidebar a {
@@ -70,141 +54,99 @@ body {
   color: var(--muted);
   text-decoration: none;
   transition: 0.3s;
-  border-left: 3px solid transparent;
 }
 
-.sidebar a:hover {
-  background: rgba(139, 92, 246, 0.12);
-  color: #fff;
-  transform: translateX(5px);
-  border-left: 3px solid var(--purple);
-}
-
+.sidebar a:hover,
 .sidebar a.active {
-  background: rgba(139, 92, 246, 0.18);
+  background: rgba(139, 92, 246, 0.15);
   color: #fff;
-  border-left: 3px solid var(--purple);
+  border-left: 4px solid var(--purple);
+  box-shadow: 0 0 12px var(--glow);
 }
 
-/* =========================
-   MAIN AREA
-========================= */
+/* ================= MAIN ================= */
 .main {
   margin-left: 240px;
   width: 100%;
-  padding: 20px;
+  padding: 25px;
 }
 
-/* =========================
-   TOPBAR
-========================= */
+/* ================= TOPBAR ================= */
 .topbar {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--card);
   border: 1px solid var(--border);
   padding: 15px 20px;
   border-radius: 14px;
+  backdrop-filter: blur(12px);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  backdrop-filter: blur(10px);
-  animation: fadeDown 0.6s ease;
 }
 
-@keyframes fadeDown {
-  from { opacity: 0; transform: translateY(-15px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* =========================
-   DASHBOARD CARDS
-========================= */
+/* ================= CARDS ================= */
 .card-box {
-  padding: 22px;
+  padding: 25px;
   border-radius: 16px;
   text-align: center;
-  color: white;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-  transition: 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-
-/* hover glow */
-.card-box:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 0 25px var(--purple-glow);
-}
-
-/* animated glow pulse */
-.card-box::before {
-  content: "";
-  position: absolute;
-  width: 150%;
-  height: 150%;
-  background: radial-gradient(circle, var(--purple-glow), transparent);
-  top: -50%;
-  left: -50%;
-  opacity: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
   transition: 0.4s;
 }
 
-.card-box:hover::before {
-  opacity: 1;
+.card-box:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 0 25px var(--glow);
 }
 
-/* colors */
-.bg1 { background: linear-gradient(135deg, #7b2cff, #5b21b6); }
-.bg2 { background: linear-gradient(135deg, #22c55e, #16a34a); }
-.bg3 { background: linear-gradient(135deg, #f59e0b, #d97706); }
-.bg4 { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+.card-box::after {
+  content: "";
+  display: block;
+  height: 3px;
+  margin-top: 10px;
+  background: linear-gradient(90deg, #8b5cf6, #c4b5fd);
+}
 
-/* =========================
-   TABLE CARD
-========================= */
+.card-box h4 {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.card-box p {
+  color: var(--muted);
+}
+
+/* ================= TABLE ================= */
 .table-card {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 20px;
-  backdrop-filter: blur(12px);
-  animation: fadeUp 0.6s ease;
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* =========================
-   TABLE STYLE
-========================= */
 .table {
   color: var(--text);
 }
 
 .table thead {
-  color: var(--muted);
-  font-size: 13px;
-  text-transform: uppercase;
-}
-
-.table td, .table th {
-  padding: 14px;
-  border-bottom: 1px solid var(--border);
-}
-
-.table tbody tr {
-  transition: 0.3s;
+  color: var(--purple2);
 }
 
 .table tbody tr:hover {
-  background: rgba(139, 92, 246, 0.08);
-  transform: scale(1.01);
+  background: rgba(139, 92, 246, 0.1);
 }
 
-/* =========================
-   BELL NOTIFICATION
-========================= */
+/* ================= PROGRESS ================= */
+.progress {
+  background: #1c1c2b;
+  height: 10px;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, #8b5cf6, #c4b5fd);
+}
+
+/* ================= NOTIFICATION ================= */
 #notifCount {
   position: absolute;
   top: -6px;
@@ -212,167 +154,111 @@ body {
   background: red;
   color: white;
   font-size: 11px;
-  padding: 3px 6px;
+  padding: 4px 6px;
   border-radius: 50%;
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
-}
-
-/* =========================
-   RESPONSIVE DESIGN
-========================= */
-
-/* tablet */
-@media (max-width: 992px) {
-  .sidebar {
-    transform: translateX(-100%);
-    position: absolute;
-    z-index: 999;
-  }
-
-  .main {
-    margin-left: 0;
-  }
-}
-
-/* mobile */
-@media (max-width: 768px) {
-  .row {
-    flex-direction: column;
-  }
-
-  .card-box {
-    margin-bottom: 15px;
-  }
-
-  .topbar {
-    flex-direction: column;
-    gap: 10px;
-    text-align: center;
-  }
 }
 </style>
 
 <script>
-	(function() {
-		let role = localStorage.getItem("role");
-		if (role)
-			role = role.replace("ROLE_", "").toUpperCase();
+(function() {
+    let role = localStorage.getItem("role");
+    if (role) role = role.replace("ROLE_", "").toUpperCase();
 
-		if (!role || role !== "TRAINER") {
-			alert("Access denied");
-			window.location.href = "login.html";
-		}
-	})();
+    if (!role || role !== "TRAINER") {
+        alert("Access denied");
+        window.location.href = "login.html";
+    }
+})();
 </script>
 
 </head>
 
 <body>
 
-	<!-- SIDEBAR -->
-	<div class="sidebar">
-		<div class="brand">🎓 Smart Trainer</div>
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="brand">🎓 Smart Trainer</div>
 
-		<a href="trainer_dashboard.html" class="active"> <i
-			class="fas fa-home me-2"></i>Dashboard
-		</a> <a href="create_batch.html"> <i class="fas fa-plus me-2"></i>Create
-			Batch
-		</a> <a href="trainer_batches.html"> <i
-			class="fas fa-layer-group me-2"></i>My Batches
-		</a> <a href="training_sessions.html"> <i
-			class="fas fa-layer-group me-2"></i>Create Session
-		</a> <a href="practical_project.html"> <i
-			class="fas fa-laptop-code"></i> Practicals & Projects
-		</a> <a href="mock_interview.html"><i
-			class="fas fa-microphone me-2"></i>Mock Interviews</a> <a
-			href="update_progress.html"> <i class="fas fa-chart-line me-2"></i>Progress
-		</a> <a href="trainer_notification.html"> <i class="fas fa-bell me-2"></i>Notifications
-		</a>  <a href="#" onclick="logout()"> <i
-			class="fas fa-sign-out-alt me-2"></i>Logout
-		</a>
+  <a href="trainer_dashboard.html" class="active"><i class="fas fa-home me-2"></i>Dashboard</a>
+  <a href="create_batch.html"><i class="fas fa-plus me-2"></i>Create Batch</a>
+  <a href="trainer_batches.html"><i class="fas fa-layer-group me-2"></i>My Batches</a>
+  <a href="training_sessions.html"><i class="fas fa-chalkboard-teacher me-2"></i>Sessions</a>
+  <a href="practical_project.html"><i class="fas fa-laptop-code me-2"></i>Practicals</a>
+  <a href="mock_interview.html"><i class="fas fa-microphone me-2"></i>Mock Interviews</a>
+  <a href="update_progress.html"><i class="fas fa-chart-line me-2"></i>Progress</a>
+  <a href="trainer_notification.html"><i class="fas fa-bell me-2"></i>Notifications</a>
+  <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+</div>
 
+<!-- MAIN -->
+<div class="main">
 
-	</div>
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <h5>Trainer Dashboard</h5>
 
-	<!-- MAIN -->
-	<div class="main">
+    <div onclick="toggleNotifications()" style="position:relative; cursor:pointer;">
+      <i class="fas fa-bell"></i>
+      <span id="notifCount">0</span>
+    </div>
+  </div>
 
-		<!-- TOPBAR -->
-		<div class="topbar">
-			<h5 class="mb-0">Trainer Dashboard</h5>
+  <!-- CARDS -->
+  <div class="row mt-4">
+    <div class="col-md-3">
+      <div class="card-box">
+        <h4 id="totalBatches">0</h4>
+        <p>Assigned</p>
+      </div>
+    </div>
 
-			<!-- 🔔 Bell -->
-			<div onclick="toggleNotifications()"
-				style="position: fixed; top: 15px; right: 20px; cursor: pointer; z-index: 9999;">
-				<i class="fas fa-bell" style="font-size: 22px; color: #333;"></i> <span
-					id="notifCount">0</span>
-			</div>
-		</div>
+    <div class="col-md-3">
+      <div class="card-box">
+        <h4 id="activeBatches">0</h4>
+        <p>Active</p>
+      </div>
+    </div>
 
-		<!-- CARDS -->
-		<div class="row mb-4">
-			<div class="col-md-3">
-				<div class="card-box bg1">
-					<h4 id="totalBatches">0</h4>
-					<p>Assigned</p>
-				</div>
-			</div>
+    <div class="col-md-3">
+      <div class="card-box">
+        <h4 id="completedBatches">0</h4>
+        <p>Completed</p>
+      </div>
+    </div>
 
-			<div class="col-md-3">
-				<div class="card-box bg2">
-					<h4 id="activeBatches">0</h4>
-					<p>Active</p>
-				</div>
-			</div>
+    <div class="col-md-3">
+      <div class="card-box">
+        <h4 id="pending">0</h4>
+        <p>Pending</p>
+      </div>
+    </div>
+  </div>
 
-			<div class="col-md-3">
-				<div class="card-box bg3">
-					<h4 id="completedBatches">0</h4>
-					<p>Completed</p>
-				</div>
-			</div>
+  <!-- TABLE -->
+  <div class="table-card mt-4">
+    <h5>My Assigned Batches</h5>
 
-			<div class="col-md-3">
-				<div class="card-box bg4">
-					<h4 id="pending">0</h4>
-					<p>Pending</p>
-				</div>
-			</div>
-		</div>
+    <table class="table text-center mt-3">
+      <thead>
+        <tr>
+          <th>Batch</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Progress</th>
+        </tr>
+      </thead>
+      <tbody id="trainerBatchTable"></tbody>
+    </table>
+  </div>
 
-		<!-- TABLE -->
-		<div class="table-card">
-			<h5>My Assigned Batches</h5>
+</div>
 
-			<table class="table text-center mt-3">
-				<thead>
-					<tr>
-						<th>Batch</th>
-						<th>Start</th>
-						<th>End</th>
-						<th>Progress</th>
-					</tr>
-				</thead>
+<!-- NOTIFICATIONS -->
+<div id="notificationList"></div>
 
-				<tbody id="trainerBatchTable"></tbody>
-			</table>
-		</div>
-
-	</div>
-
-	<!-- NOTIFICATIONS -->
-	<div id="notificationList"></div>
-
-	<script
-		src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
-	<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>

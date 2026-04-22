@@ -9,88 +9,150 @@
 
 <style>
 :root {
-    --primary: linear-gradient(135deg, #6777ef, #9c88ff);
-    --bg: #f4f6f9;
+  --bg:#0b0b14;
+  --card:rgba(255,255,255,0.03);
+  --border:rgba(255,255,255,0.08);
+  --text:#f5f5ff;
+  --muted:#b8b8d1;
+  --purple:#8b5cf6;
+  --purple-glow:rgba(139,92,246,0.35);
 }
 
-body {
-    margin: 0;
-    display: flex;
-    background: var(--bg);
-    font-family: 'Poppins', sans-serif;
+body{
+  margin:0;
+  display:flex;
+  background: radial-gradient(circle at top right,#141427,#0b0b14);
+  color:var(--text);
+  font-family:'Poppins',sans-serif;
 }
 
-/* ===== SIDEBAR ===== */
-.sidebar {
-    width: 240px;
-    height: 100vh;
-    position: fixed;
-    background: var(--primary);
-    color: white;
+/* SIDEBAR */
+.sidebar{
+  width:240px;
+  height:100vh;
+  position:fixed;
+  background:#0d0f1a;
+  border-right:1px solid var(--border);
 }
 
-.sidebar .brand {
-    font-size: 22px;
-    padding: 20px;
-    text-align: center;
-    font-weight: bold;
+.sidebar .brand{
+  padding:20px;
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
 }
 
-.sidebar a {
-    display: flex;
-    align-items: center;
-    padding: 14px 20px;
-    color: #eee;
-    text-decoration: none;
+.sidebar a{
+  display:flex;
+  align-items:center;
+  padding:14px 20px;
+  color:var(--muted);
+  text-decoration:none;
+  transition:0.3s;
 }
 
-.sidebar a:hover {
-    background: rgba(255,255,255,0.15);
+.sidebar a:hover{
+  background:rgba(139,92,246,0.15);
+  color:#fff;
+  transform:translateX(5px);
 }
 
-.sidebar a.active {
-    background: rgba(255,255,255,0.25);
-    border-left: 4px solid #fff;
+.sidebar a.active{
+  background:rgba(139,92,246,0.2);
+  border-left:3px solid var(--purple);
+  color:#fff;
 }
 
-/* ===== MAIN ===== */
-.main {
-    margin-left: 240px;
-    width: 100%;
-    padding: 20px;
+/* MAIN */
+.main{
+  margin-left:240px;
+  width:100%;
+  padding:20px;
 }
 
-/* ===== TOPBAR ===== */
-.topbar {
-    background: white;
-    padding: 15px 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+/* TOPBAR */
+.topbar{
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:15px 20px;
+  border-radius:14px;
+  margin-bottom:20px;
+  display:flex;
+  justify-content:space-between;
+  backdrop-filter:blur(10px);
 }
 
-/* ===== CARD ===== */
-.card {
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+/* CARD */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  backdrop-filter:blur(12px);
+  transition:0.3s;
 }
 
-.table thead {
-    background: #6777ef;
-    color: white;
+.card:hover{
+  box-shadow:0 0 25px var(--purple-glow);
+  transform:translateY(-3px);
+}
+
+/* INPUT */
+.form-control{
+  background:rgba(255,255,255,0.05);
+  border:1px solid var(--border);
+  color:white;
+  border-radius:10px;
+}
+
+.form-control:focus{
+  border-color:var(--purple);
+  box-shadow:0 0 10px var(--purple-glow);
+}
+
+/* BUTTON */
+.btn-primary{
+  background:linear-gradient(135deg,#8b5cf6,#6d28d9);
+  border:none;
+  border-radius:10px;
+}
+
+.btn-primary:hover{
+  box-shadow:0 0 15px var(--purple-glow);
+}
+
+/* TABLE */
+.table{
+  color:var(--text);
+}
+
+.table thead{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.table tbody tr:hover{
+  background:rgba(139,92,246,0.08);
+  transform:scale(1.01);
+}
+
+/* ANIMATION */
+.fadeUp{
+  animation:fadeUp 0.5s ease;
+}
+
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(15px);}
+  to{opacity:1; transform:translateY(0);}
 }
 </style>
 
 <script>
-// 🔒 Protect page
-(function () {
-    const role = localStorage.getItem("role");
-    if (!role || role !== "TRAINER") {
-        alert("Access denied");
-        window.location.href = "login.html";
-    }
+(function(){
+  const role = localStorage.getItem("role");
+  if(!role || role !== "TRAINER"){
+    alert("Access denied");
+    window.location.href="login.html";
+  }
 })();
 </script>
 
@@ -98,108 +160,120 @@ body {
 
 <body>
 
-<!-- ===== SIDEBAR ===== -->
+<!-- SIDEBAR -->
 <div class="sidebar">
-    <div class="brand">🎓 Smart Trainer</div>
+  <div class="brand">🎓 Smart Trainer</div>
 
-    <a href="trainer_dashboard.html">
-        <i class="fas fa-home me-2"></i>Dashboard
-    </a>
+  <a href="trainer_dashboard.html">
+    <i class="fas fa-home me-2"></i>Dashboard
+  </a>
 
-    <a href="create_batch.html">
-        <i class="fas fa-plus me-2"></i>Create Batch
-    </a>
+  <a href="create_batch.html">
+    <i class="fas fa-plus me-2"></i>Create Batch
+  </a>
 
-    <a href="trainer_batches.html">
-        <i class="fas fa-layer-group me-2"></i>My Batches
-    </a>
+  <a href="trainer_batches.html">
+    <i class="fas fa-layer-group me-2"></i>My Batches
+  </a>
 
-    <a href="training_sessions.html" class="active">
-        <i class="fas fa-layer-group me-2"></i>Create Session
-    </a>
+  <a href="training_sessions.html" class="active">
+    <i class="fas fa-book me-2"></i>Training Sessions
+  </a>
 
-    <a href="practical_project.html">
-        <i class="fas fa-laptop-code me-2"></i>Practicals & Projects
-    </a>
+  <a href="practical_project.html">
+    <i class="fas fa-laptop-code me-2"></i>Practicals
+  </a>
 
-    <a href="mock_interview.html">
-        <i class="fas fa-microphone me-2"></i>Mock Interviews
-    </a>
+  <a href="mock_interview.html">
+    <i class="fas fa-microphone me-2"></i>Mock Interviews
+  </a>
 
-    <a href="update_progress.html">
-        <i class="fas fa-chart-line me-2"></i>Progress
-    </a>
+  <a href="update_progress.html">
+    <i class="fas fa-chart-line me-2"></i>Progress
+  </a>
 
-    <a href="trainer_notification.html">
-        <i class="fas fa-bell me-2"></i>Notifications
-    </a>
+  <a href="trainer_notification.html">
+    <i class="fas fa-bell me-2"></i>Notifications
+  </a>
 
-    <a href="#" onclick="logout()">
-        <i class="fas fa-sign-out-alt me-2"></i>Logout
-    </a>
+  <a href="#" onclick="logout()">
+    <i class="fas fa-sign-out-alt me-2"></i>Logout
+  </a>
 </div>
 
-<!-- ===== MAIN ===== -->
+<!-- MAIN -->
 <div class="main">
 
-    <!-- TOPBAR -->
-    <div class="topbar">
-        <h5>📚 Training Sessions</h5>
-        <button class="btn btn-sm btn-primary" onclick="logout()">Logout</button>
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <h5>📚 Training Sessions</h5>
+    <button class="btn btn-sm btn-primary" onclick="logout()">Logout</button>
+  </div>
+
+  <!-- CREATE SESSION -->
+  <div class="card p-4 mb-4 fadeUp">
+
+    <h5 class="mb-3">➕ Add New Session</h5>
+
+    <div class="row g-3">
+
+      <!-- Batch -->
+      <div class="col-md-3">
+        <label class="small text-muted">Batch</label>
+        <select id="batchSelect" class="form-control" onchange="onBatchSelectChange()">
+          <option value="">Select Batch</option>
+        </select>
+      </div>
+
+      <!-- Topic -->
+      <div class="col-md-3">
+        <label class="small text-muted">Topic</label>
+        <input id="topic" class="form-control" placeholder="Enter topic">
+      </div>
+
+      <!-- Date -->
+      <div class="col-md-3">
+        <label class="small text-muted">Date</label>
+        <input type="date" id="sessionDate" class="form-control">
+      </div>
+
+      <!-- Button -->
+      <div class="col-md-3 d-flex align-items-end">
+        <button class="btn btn-primary w-100" onclick="createSession()">
+          <i class="fas fa-plus me-2"></i>Add Session
+        </button>
+      </div>
+
     </div>
+  </div>
 
-    <!-- CREATE SESSION -->
-    <div class="card p-3 mb-3">
-    <h5>Add Session</h5>
+  <!-- SESSION TABLE -->
+  <div class="card p-4 fadeUp">
+    <h5 class="mb-3">📋 Session List</h5>
 
-    <div class="row">
+    <table class="table text-center">
+      <thead>
+        <tr>
+          <th>Topic</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="sessionTable"></tbody>
+    </table>
+  </div>
 
-        <!-- ✅ Batch Dropdown -->
-        <div class="col-md-3">
-            <select id="batchSelect" class="form-control">
-                <option value="">Select Batch</option>
-            </select>
-        </div>
-
-        <!-- Topic -->
-        <div class="col-md-3">
-            <input id="topic" class="form-control" placeholder="Topic">
-        </div>
-
-        <!-- Date -->
-        <div class="col-md-3">
-            <input type="date" id="sessionDate" class="form-control">
-        </div>
-
-        <!-- Button -->
-        <div class="col-md-3 mt-2">
-            <button class="btn btn-primary w-100" onclick="createSession()">Add</button>
-        </div>
-
-    </div>
 </div>
 
-    <!-- SESSION TABLE -->
-    <div class="card p-3">
-        <h5>Session List</h5>
-
-        <table class="table table-hover text-center">
-            <thead>
-                <tr>
-                    <th>Topic</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="sessionTable"></tbody>
-        </table>
-    </div>
-
-</div>
+<script>
+function logout(){
+  localStorage.clear();
+  window.location.href="login.html";
+}
+</script>
 
 <script src="script.js"></script>
-
 
 </body>
 </html>

@@ -1096,36 +1096,31 @@ async function loadSessions(batchId) {
 	const table = document.getElementById("sessionTable");
 	if (!table) return;
 
+	table.innerHTML = `<tr><td colspan="4">Loading...</td></tr>`;
+
 	const data = await apiRequest(`/trainer/session/${batchId}`);
+
 	if (!data || !data.length) {
-		table.innerHTML = `<tr><td colspan="5">No sessions</td></tr>`;
+		table.innerHTML = `<tr><td colspan="4">No sessions</td></tr>`;
 		return;
 	}
 
 	table.innerHTML = data.map(s => `
-        <tr>
-            <td>${s.topic}</td>
-            <td>${s.sessionDate}</td>
-            <td>
-                <span class="badge ${s.status === 'COMPLETED' ? 'bg-success' : 'bg-warning'}">
-                    ${s.status}
-                </span>
-            </td>
-            <td>
-                <button class="btn btn-sm btn-success"
-                    onclick="markSessionDone(${s.id})">
-                    Done
-                </button>
-
-                <button class="btn btn-sm btn-danger"
-                    onclick="deleteSession(${s.id})">
-                    Delete
-                </button>
-            </td>
-        </tr>
-    `).join("");
+		<tr>
+			<td>${s.topic}</td>
+			<td>${s.sessionDate}</td>
+			<td>
+				<span class="badge ${s.status === 'COMPLETED' ? 'bg-success' : 'bg-warning'}">
+					${s.status}
+				</span>
+			</td>
+			<td>
+				<button class="btn btn-sm btn-success" onclick="markSessionDone(${s.id})">Done</button>
+				<button class="btn btn-sm btn-danger" onclick="deleteSession(${s.id})">Delete</button>
+			</td>
+		</tr>
+	`).join("");
 }
-
 // Create session
 async function createSession() {
 	const batchId = document.getElementById("batchSelect").value;
@@ -1181,9 +1176,10 @@ async function loadBatchDropdown() {
 	// ✅ AUTO LOAD FIRST BATCH PRACTICALS
 	const firstId = data[0]?.id;
 
+	// ✅ CORRECT
 	if (firstId) {
 		dropdown.value = firstId;
-		loadPracticals(firstId);
+		loadSessions(firstId); // 🔥 auto load sessions on page load
 	}
 }
 
@@ -1271,65 +1267,91 @@ async function deletePractical(id) {
 }
 
 
-function renderPracticals(list) {
+function renderPracticals(list){
+
     const table = document.getElementById("practicalTable");
 
-    // ✅ FIX: prevent crash
-    if (!table) {
-        console.warn("practicalTable not found in HTML");
+    if(!list || list.length===0){
+        table.innerHTML=`<tr><td colspan="4">No Practicals</td></tr>`;
         return;
     }
 
-    if (!list || list.length === 0) {
-        table.innerHTML = `<tr><td colspan="4">No Practicals Found</td></tr>`;
-        return;
-    }
+    table.innerHTML = list.map(p=>`
 
-    table.innerHTML = list.map(p => `
-        <tr>
-            <td>${p.title}</td>
-            <td>${p.status}</td>
-            <td>${p.marks ?? '-'}</td>
-            <td>
-                <button onclick="deletePractical(${p.id})">Delete</button>
-            </td>
-        </tr>
+    <tr>
+        <td>${p.title}</td>
+
+        <td>
+            <span class="status ${p.status==='COMPLETED'?'completed':'pending'}">
+                ${p.status}
+            </span>
+        </td>
+
+        <td>${p.marks ?? '-'}</td>
+
+        <td>
+
+            ${p.status !== 'COMPLETED' ? `
+            <button class="btn btn-status btn-sm"
+                onclick="updateStatus(${p.id},'COMPLETED')">
+                ✔ Complete
+            </button>
+            ` : ''}
+
+            <button class="btn btn-delete btn-sm"
+                onclick="deletePractical(${p.id})">
+                🗑 Delete
+            </button>
+
+        </td>
+    </tr>
+
     `).join("");
 }
 //create project
 
-async function loadProjects(batchId) {
-	const data = await apiRequest(`/trainer/project/${batchId}`);
-	const table = document.getElementById("projectTable");
+function loadProjects(batchId){
+    apiRequest(`/trainer/project/${batchId}`).then(data=>{
 
-	if (!table) return;
+        const table = document.getElementById("projectTable");
 
-	if (!data || !data.length) {
-		table.innerHTML = `<tr><td colspan="5">No projects found</td></tr>`;
-		return;
-	}
+        if(!data || data.length===0){
+            table.innerHTML=`<tr><td colspan="5">No Projects</td></tr>`;
+            return;
+        }
 
-	table.innerHTML = data.map(p => `
+        table.innerHTML = data.map(p=>`
+
         <tr>
             <td>${p.title}</td>
-            <td>${p.deadline || "-"}</td>
+            <td>${p.deadline || '-'}</td>
+
             <td>
-                <span class="badge ${p.status === 'COMPLETED' ? 'bg-success' : 'bg-warning'}">
+                <span class="status ${p.status==='COMPLETED'?'completed':'pending'}">
                     ${p.status}
                 </span>
             </td>
-            <td>${p.score ?? "-"}</td>
+
+            <td>${p.score ?? '-'}</td>
+
             <td>
-                <button class="btn btn-success btn-sm" onclick="markProjectDone(${p.id})">
-                    Done
-                </button>
-                <button class="btn btn-danger btn-sm" onclick="deleteProject(${p.id})">
+                ${p.status!=='COMPLETED'?`
+                <button class="btn btn-status btn-sm"
+                    onclick="markProjectDone(${p.id})">
+                    ✔ Complete
+                </button>`:''}
+
+                <button class="btn btn-delete btn-sm"
+                    onclick="deleteProject(${p.id})">
                     Delete
                 </button>
             </td>
         </tr>
-    `).join("");
+
+        `).join("");
+    });
 }
+
 async function createProject() {
 
 	const batchSelect = document.getElementById("projectBatch");
@@ -1573,16 +1595,18 @@ async function loadProjectDropdown() {
 
 /* ================= SAFE LOAD PROGRESS PAGE ================= */
 async function loadProgressPageSafe() {
+
     const dropdown = document.getElementById("batchSelect");
     if (!dropdown) return;
 
     const data = await apiRequest("/trainer/my-batches");
     if (!data) return;
 
+    // fill dropdown
     dropdown.innerHTML = `<option value="">Select Batch</option>`;
 
     data.forEach(b => {
-        const progress = safeProgressCalc(b);
+        const progress = calculateProgressSafe(b);
 
         const option = document.createElement("option");
         option.value = b.id;
@@ -1590,12 +1614,81 @@ async function loadProgressPageSafe() {
         dropdown.appendChild(option);
     });
 
-    // ✅ MOVE THIS AFTER DROPDOWN BUILD
+    // auto select first batch
     if (data.length > 0) {
         dropdown.value = data[0].id;
-        handleProgressBatchChange(data[0].id);
+        loadBatchProgress(data[0].id);
     }
+
+    // single event handler (IMPORTANT FIX)
+    dropdown.onchange = function () {
+        if (this.value) {
+            loadBatchProgress(this.value);
+        }
+    };
 }
+
+async function loadBatchProgress(batchId) {
+
+    const hidden = document.getElementById("batchId");
+    if (hidden) hidden.value = batchId;
+
+    const batch = await apiRequest(`/trainer/batch/${batchId}`);
+    if (!batch) return;
+
+    updateProgressUI(batch);
+}
+
+function updateProgressUI(batch) {
+
+    const total = batch.totalDays ?? batch.total_days ?? 0;
+    const completed = batch.completedDays ?? batch.completed_days ?? 0;
+
+    let percent = total > 0 ? (completed / total) * 100 : 0;
+    percent = Math.min(percent, 100);
+
+    // ✅ FIX: Bind inputs
+    setSafeValue("totalDays", total);
+    setSafeValue("completedDays", completed);
+
+    /* Progress Bar */
+    const bar = document.getElementById("progressBar");
+    if (bar) bar.style.width = percent + "%";
+
+    const text = document.getElementById("progressText");
+    if (text) text.innerText = percent.toFixed(1) + "%";
+
+    /* Circle */
+    const circle = document.getElementById("progressCircle");
+    if (circle) {
+        const radius = 55;
+        const circumference = 2 * Math.PI * radius;
+
+        circle.style.strokeDasharray = circumference;
+        circle.style.strokeDashoffset =
+            circumference - (percent / 100) * circumference;
+    }
+
+    const circleText = document.getElementById("progressPercent");
+    if (circleText) circleText.innerText = percent.toFixed(1) + "%";
+
+    /* Stats */
+    setSafeText("totalCard", total);
+    setSafeText("completedCard", completed);
+    setSafeText("remainingCard", total - completed);
+
+    /* Motivation */
+    const motivation = document.getElementById("motivationText");
+    if (motivation) {
+        if (percent >= 100) motivation.innerText = "🎉 Completed!";
+        else if (percent >= 70) motivation.innerText = "🔥 Almost There!";
+        else if (percent >= 30) motivation.innerText = "💪 Keep Going!";
+        else motivation.innerText = "🚀 Start Strong!";
+    }
+
+    updateSafeMilestones(percent);
+}
+
 /* ================= SAFE BATCH CHANGE ================= */
 async function handleProgressBatchChange(batchId) {
     if (!batchId) return;
@@ -1612,6 +1705,16 @@ async function handleProgressBatchChange(batchId) {
     window.currentBatch = batch;
 
     safeUpdateUI(batch);
+}
+
+function calculateProgressSafe(b) {
+    const total = b.totalDays ?? b.total_days ?? 0;
+    const completed = b.completedDays ?? b.completed_days ?? 0;
+
+    if (total > 0) {
+        return Math.round((completed / total) * 100);
+    }
+    return b.progress ?? 0;
 }
 
 /* ================= SAFE UI UPDATE ================= */
@@ -1679,11 +1782,10 @@ async function submitProgressSafe() {
     const total = Number(document.getElementById("totalDays")?.value || 0);
 
     if (completed > total) {
-        alert("Completed days cannot exceed total days");
+        alert("Completed cannot exceed total days");
         return;
     }
 
-    // ✅ UPDATE PROGRESS
     const res = await apiRequest(`/trainer/batch/${id}/progress`, "PUT", {
         days: completed
     });
@@ -1693,29 +1795,26 @@ async function submitProgressSafe() {
         return;
     }
 
-    // ✅ FIXED HERE 👇
-    await apiRequest(`/admin/notify-progress/${id}`, "POST");
+    alert("Progress Updated ✅");
 
-    alert("Progress Updated Successfully ✅");
-
-    handleProgressBatchChange(id);
+    // reload UI
+    loadBatchProgress(id);
 }
-
 /* ================= MILESTONE SAFE ================= */
 function updateSafeMilestones(percent) {
+
     const beginner = document.getElementById("beginner");
     const intermediate = document.getElementById("intermediate");
     const advanced = document.getElementById("advanced");
 
-    if (beginner) beginner.classList.remove("active");
-    if (intermediate) intermediate.classList.remove("active");
-    if (advanced) advanced.classList.remove("active");
+    beginner?.classList.remove("active");
+    intermediate?.classList.remove("active");
+    advanced?.classList.remove("active");
 
-    if (percent >= 0 && beginner) beginner.classList.add("active");
-    if (percent >= 40 && intermediate) intermediate.classList.add("active");
-    if (percent >= 80 && advanced) advanced.classList.add("active");
+    if (percent >= 0) beginner?.classList.add("active");
+    if (percent >= 40) intermediate?.classList.add("active");
+    if (percent >= 80) advanced?.classList.add("active");
 }
-
 /* ================= HELPERS ================= */
 function setSafeValue(id, value) {
     const el = document.getElementById(id);
@@ -1726,6 +1825,7 @@ function setSafeText(id, value) {
     const el = document.getElementById(id);
     if (el) el.innerText = value ?? 0;
 }
+
 
 function safeProgressCalc(b) {
     if (!b) return 0;
@@ -1972,6 +2072,14 @@ function updateKPIs(data) {
     animateCircle("c2", active, total);
     animateCircle("c3", completed, total);
     animateCircle("c4", delayed, total);
+}
+
+function onBatchSelectChange() {
+	const batchId = document.getElementById("batchSelect").value;
+
+	if (!batchId) return;
+
+	loadSessions(batchId); // ✅ THIS loads sessions automatically
 }
 
 /* ================= DROPDOWN ================= */

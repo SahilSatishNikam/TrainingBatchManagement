@@ -9,24 +9,30 @@
 
 <style>
 :root {
-  --primary: linear-gradient(135deg,#6777ef,#9c88ff);
-  --bg:#f4f6f9;
+  --bg:#0b0b14;
+  --card: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+  --text:#f5f5ff;
+  --muted:#b8b8d1;
+  --purple:#8b5cf6;
+  --glow: rgba(139,92,246,0.4);
 }
 
 body {
   margin:0;
   display:flex;
-  background:var(--bg);
-  font-family:'Poppins',sans-serif;
+  background: radial-gradient(circle at top right, #1a1a2e, #0b0b14);
+  color:var(--text);
+  font-family:'Segoe UI',sans-serif;
 }
 
-/* SIDEBAR (SAME AS DASHBOARD) */
+/* SIDEBAR */
 .sidebar{
   width:240px;
   height:100vh;
   position:fixed;
-  background:var(--primary);
-  color:#fff;
+  background:linear-gradient(180deg,#111326,#0b0b14);
+  border-right:1px solid var(--border);
 }
 
 .sidebar .brand{
@@ -34,74 +40,101 @@ body {
   text-align:center;
   font-size:22px;
   font-weight:bold;
+  background: linear-gradient(45deg,#8b5cf6,#c4b5fd);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
 
 .sidebar a{
   display:flex;
   align-items:center;
   padding:14px 20px;
-  color:#eee;
+  color:var(--muted);
   text-decoration:none;
+  transition:.3s;
 }
 
-.sidebar a:hover{
-  background:rgba(255,255,255,0.15);
-}
-
+.sidebar a:hover,
 .sidebar a.active{
-  background:rgba(255,255,255,0.25);
-  border-left:4px solid #fff;
+  background:rgba(139,92,246,0.15);
+  color:#fff;
+  border-left:4px solid var(--purple);
+  box-shadow:0 0 10px var(--glow);
 }
 
 /* MAIN */
 .main{
   margin-left:240px;
   width:100%;
-  padding:20px;
+  padding:25px;
 }
 
 /* TOPBAR */
 .topbar{
-  background:#fff;
+  background:var(--card);
+  border:1px solid var(--border);
   padding:15px 20px;
-  border-radius:12px;
-  margin-bottom:20px;
+  border-radius:14px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  box-shadow:0 4px 12px rgba(0,0,0,0.05);
 }
 
 /* CARD */
 .card-box{
-  background:#fff;
-  border-radius:15px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
   padding:25px;
   max-width:550px;
   margin:auto;
-  box-shadow:0 5px 15px rgba(0,0,0,0.05);
+  backdrop-filter: blur(12px);
+  transition:.4s;
+}
+
+.card-box:hover{
+  box-shadow:0 0 25px var(--glow);
 }
 
 /* INPUT */
 .form-control{
+  background:#1c1c2b;
+  border:none;
+  color:#fff;
   border-radius:10px;
+}
+
+.form-control:focus{
+  box-shadow:0 0 10px var(--glow);
 }
 
 /* BUTTON */
 .btn-primary{
-  background:#6777ef;
+  background: linear-gradient(90deg,#8b5cf6,#c4b5fd);
   border:none;
   border-radius:10px;
 }
 
 .btn-primary:hover{
-  background:#5563d6;
+  box-shadow:0 0 15px var(--glow);
+}
+
+/* PREVIEW BOX */
+.preview-box{
+  background:#1c1c2b;
+  padding:15px;
+  border-radius:12px;
+  margin-top:15px;
+  text-align:center;
+  border:1px solid var(--border);
 }
 </style>
 
 <script>
 (function(){
-  const role = localStorage.getItem("role");
+  let role = localStorage.getItem("role");
+  if(role) role = role.replace("ROLE_","").toUpperCase();
+
   if(role !== "TRAINER"){
     alert("Access denied");
     window.location.href="login.html";
@@ -117,57 +150,28 @@ body {
 <div class="sidebar">
   <div class="brand">🎓 Smart Trainer</div>
 
- <a href="trainer_dashboard.html">
-        <i class="fas fa-home me-2"></i>Dashboard
-    </a>
+  <a href="trainer_dashboard.html"><i class="fas fa-home me-2"></i>Dashboard</a>
+  <a href="create_batch.html" class="active"><i class="fas fa-plus me-2"></i>Create Batch</a>
+  <a href="trainer_batches.html"><i class="fas fa-layer-group me-2"></i>My Batches</a>
+  <a href="training_sessions.html"><i class="fas fa-chalkboard-teacher me-2"></i>Sessions</a>
+  <a href="practical_project.html"><i class="fas fa-laptop-code me-2"></i>Practicals</a>
+  <a href="mock_interview.html"><i class="fas fa-microphone me-2"></i>Mock Interviews</a>
+  <a href="update_progress.html"><i class="fas fa-chart-line me-2"></i>Progress</a>
+  <a href="trainer_notification.html"><i class="fas fa-bell me-2"></i>Notifications</a>
+  <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+</div>
 
-    <a href="create_batch.html"  class="active">
-        <i class="fas fa-plus me-2"></i>Create Batch
-    </a>
-
-    <a href="trainer_batches.html">
-        <i class="fas fa-layer-group me-2"></i>My Batches
-    </a>
-
-    <a href="training_sessions.html">
-        <i class="fas fa-layer-group me-2"></i>Create Session
-    </a>
-
-    <a href="practical_project.html">
-        <i class="fas fa-laptop-code me-2"></i>Practicals & Projects
-    </a>
-
-    <a href="mock_interview.html">
-        <i class="fas fa-microphone me-2"></i>Mock Interviews
-    </a>
-
-    <a href="update_progress.html">
-        <i class="fas fa-chart-line me-2"></i>Progress
-    </a>
-
-    <a href="trainer_notification.html">
-        <i class="fas fa-bell me-2"></i>Notifications
-    </a>
-
-    <a href="#">
-        <i class="fas fa-cog me-2"></i>Settings
-    </a>
-
-    <a href="#" onclick="logout()">
-        <i class="fas fa-sign-out-alt me-2"></i>Logout
-    </a>
-</div>  
 <!-- MAIN -->
 <div class="main">
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <h5 class="mb-0">Create New Batch</h5>
+  <h5>Create New Batch</h5>
   <span>Trainer Panel 🚀</span>
 </div>
 
-<!-- FORM CARD -->
-<div class="card-box">
+<!-- FORM -->
+<div class="card-box mt-4">
 
   <h5 class="text-center mb-4">Create Batch</h5>
 
@@ -182,16 +186,21 @@ body {
   </div>
 
   <div class="mb-3">
-    <label>End Date</label>
-    <input type="date" id="endDate" class="form-control">
-  </div>
-
-  <div class="mb-3">
     <label>Total Days</label>
     <input type="number" id="totalDays" class="form-control" placeholder="Enter total days">
   </div>
 
-  <button class="btn btn-primary w-100" onclick="createTrainerBatch()">
+  <div class="mb-3">
+    <label>End Date (Auto)</label>
+    <input type="date" id="endDate" class="form-control" readonly>
+  </div>
+
+  <!-- 🔥 Dynamic Preview -->
+  <div class="preview-box">
+    <div id="previewText">📅 Fill details to see preview</div>
+  </div>
+
+  <button class="btn btn-primary w-100 mt-3" onclick="createTrainerBatch()">
     Create Batch
   </button>
 
@@ -199,8 +208,29 @@ body {
 
 </div>
 
-<!-- YOUR JS -->
 <script src="script.js"></script>
+
+<!-- 🔥 DYNAMIC UI (NO BACKEND CHANGE) -->
+<script>
+function calculateEndDate() {
+    const start = document.getElementById("startDate").value;
+    const days = Number(document.getElementById("totalDays").value);
+
+    if (!start || !days) return;
+
+    const s = new Date(start);
+    s.setDate(s.getDate() + days);
+
+    const end = s.toISOString().split("T")[0];
+    document.getElementById("endDate").value = end;
+
+    document.getElementById("previewText").innerText =
+        `📊 Duration: ${days} days | Ends on ${end}`;
+}
+
+document.getElementById("startDate").addEventListener("input", calculateEndDate);
+document.getElementById("totalDays").addEventListener("input", calculateEndDate);
+</script>
 
 </body>
 </html>
