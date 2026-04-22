@@ -22,10 +22,11 @@ public class AuthController {
         try {
             LoginResponse response = service.login(request);
             return ResponseEntity.ok(response);
+
         } catch (RuntimeException e) {
             return ResponseEntity
                     .status(401)
-                    .body(Map.of("error", e.getMessage()));
+                    .body(new ErrorResponse(e.getMessage()));
         }
     }
 }

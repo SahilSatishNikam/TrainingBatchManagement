@@ -5,7 +5,7 @@
 <title>My Batches</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
 <style>
 :root {
@@ -15,7 +15,6 @@
   --text:#f5f5ff;
   --muted:#b8b8d1;
   --purple:#8b5cf6;
-  --glow: rgba(139,92,246,0.4);
 }
 
 body {
@@ -26,8 +25,8 @@ body {
   font-family:'Segoe UI',sans-serif;
 }
 
-/* ===== SIDEBAR ===== */
-.sidebar {
+/* SIDEBAR */
+.sidebar{
   width:240px;
   height:100vh;
   position:fixed;
@@ -35,17 +34,17 @@ body {
   border-right:1px solid var(--border);
 }
 
-.sidebar .brand {
-  font-size:22px;
+.sidebar .brand{
   padding:20px;
-  font-weight:bold;
   text-align:center;
+  font-size:22px;
+  font-weight:bold;
   background: linear-gradient(45deg,#8b5cf6,#c4b5fd);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
 
-.sidebar a {
+.sidebar a{
   display:flex;
   align-items:center;
   padding:14px 20px;
@@ -55,95 +54,55 @@ body {
 }
 
 .sidebar a:hover,
-.sidebar a.active {
+.sidebar a.active{
   background:rgba(139,92,246,0.15);
   color:#fff;
   border-left:4px solid var(--purple);
   box-shadow:0 0 10px var(--glow);
 }
 
-/* ===== MAIN ===== */
+/* MAIN */
 .main {
   margin-left:240px;
-  width:100%;
   padding:25px;
+  width:100%;
 }
 
-/* ===== TOPBAR ===== */
+/* TOP */
 .topbar {
-  background:var(--card);
-  border:1px solid var(--border);
-  padding:15px 20px;
-  border-radius:14px;
   display:flex;
   justify-content:space-between;
   align-items:center;
+  margin-bottom:15px;
 }
 
-/* ===== CARD ===== */
-.card {
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:16px;
-  backdrop-filter: blur(12px);
-}
-
-/* ===== SEARCH BOX ===== */
+/* SEARCH */
 .search-box {
   background:#1c1c2b;
   border:none;
-  color:#fff;
-  border-radius:10px;
   padding:8px 12px;
-  width:250px;
+  border-radius:8px;
+  color:white;
 }
 
-/* ===== TABLE ===== */
-.table {
-  color:var(--text);
+/* TABLE CARD */
+.card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:15px;
 }
 
-.table thead {
-  color:#a78bfa;
-}
-
-.table tbody tr {
-  transition:.3s;
-}
-
-.table tbody tr:hover {
-  background:rgba(139,92,246,0.1);
-}
-
-/* ===== PROGRESS ===== */
+/* PROGRESS */
 .progress {
   height:8px;
   background:#1c1c2b;
 }
 
 .progress-bar {
-  background: linear-gradient(90deg,#8b5cf6,#c4b5fd);
-  box-shadow:0 0 10px var(--glow);
+  background:linear-gradient(90deg,#8b5cf6,#c4b5fd);
 }
-
-/* ===== STATUS BADGE ===== */
-.badge-active { background:#22c55e; }
-.badge-pending { background:#f59e0b; }
-.badge-complete { background:#3b82f6; }
-
 </style>
-
-<script>
-(function () {
-    let role = localStorage.getItem("role");
-    if(role) role = role.replace("ROLE_","").toUpperCase();
-
-    if (!role || role !== "TRAINER") {
-        alert("Access denied");
-        window.location.href = "login.html";
-    }
-})();
-</script>
 
 </head>
 
@@ -153,70 +112,68 @@ body {
 <div class="sidebar">
   <div class="brand">🎓 Smart Trainer</div>
 
-  <a href="trainer_dashboard.html"><i class="fas fa-home me-2"></i>Dashboard</a>
-  <a href="create_batch.html"><i class="fas fa-plus me-2"></i>Create Batch</a>
-  <a href="trainer_batches.html" class="active"><i class="fas fa-layer-group me-2"></i>My Batches</a>
-  <a href="training_sessions.html"><i class="fas fa-chalkboard-teacher me-2"></i>Sessions</a>
-  <a href="practical_project.html"><i class="fas fa-laptop-code me-2"></i>Practicals</a>
-  <a href="mock_interview.html"><i class="fas fa-microphone me-2"></i>Mock Interviews</a>
-  <a href="update_progress.html"><i class="fas fa-chart-line me-2"></i>Progress</a>
-  <a href="trainer_notification.html"><i class="fas fa-bell me-2"></i>Notifications</a>
-  <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+  <a href="trainer_dashboard.html">Dashboard</a>
+  <a href="create_batch.html">Create Batch</a>
+  <a href="trainer_batches.html" class="active">My Batches</a>
+  <a href="training_sessions.html">Sessions</a>
+  <a href="practical_project.html">Practicals</a>
+  <a href="mock_interview.html">Mock Interviews</a>
+  <a href="update_progress.html">
+    <i class="fas fa-chart-line me-2"></i>Update Progress
+  </a>
+  <a href="#" onclick="logout()">Logout</a>
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
-<!-- TOPBAR -->
+<!-- HEADER -->
 <div class="topbar">
-  <h5>📊 My Batches</h5>
+  <h4>📊 My Batches</h4>
+
   <input type="text" id="searchInput" class="search-box" placeholder="Search batch...">
 </div>
 
 <!-- TABLE -->
-<div class="card p-3 mt-3">
+<div class="card">
 
-  <h5 class="mb-3">Assigned Batches</h5>
+<table class="table text-center text-light">
 
-  <table class="table text-center">
-    <thead>
-      <tr>
-        <th>Batch</th>
-        <th>Dates</th>
-        <th>Total Days</th>
-        <th>Completed</th>
-        <th>Progress</th>
-        <th>Status</th>
-        <th>Action</th>
-      </tr>
-    </thead>
+<thead>
+<tr>
+  <th>Batch</th>
+  <th>Dates</th>
+  <th>Total Days</th>
+  <th>Completed</th>
+  <th>Progress</th>
+  <th>Status</th>
+</tr>
+</thead>
 
-    <tbody id="batchTable"></tbody>
-  </table>
+<tbody id="batchTable"></tbody>
+
+</table>
+
+</div>
 
 </div>
 
-</div>
+<script src="script.js"></script>
 
 <script>
 function logout() {
-    localStorage.clear();
-    window.location.href = "login.html";
+  localStorage.clear();
+  window.location.href = "login.html";
 }
 
-/* 🔍 FRONTEND SEARCH FILTER */
+/* SEARCH FILTER */
 document.getElementById("searchInput").addEventListener("input", function () {
-    let filter = this.value.toLowerCase();
-    let rows = document.querySelectorAll("#batchTable tr");
-
-    rows.forEach(row => {
-        let text = row.innerText.toLowerCase();
-        row.style.display = text.includes(filter) ? "" : "none";
-    });
+  let filter = this.value.toLowerCase();
+  document.querySelectorAll("#batchTable tr").forEach(row => {
+    row.style.display = row.innerText.toLowerCase().includes(filter) ? "" : "none";
+  });
 });
 </script>
-
-<script src="script.js"></script>
 
 </body>
 </html>
