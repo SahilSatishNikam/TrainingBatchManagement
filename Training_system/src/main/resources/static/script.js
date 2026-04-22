@@ -61,38 +61,61 @@ async function apiRequest(endpoint, method = "GET", body = null, isFormData = fa
 	}
 }
 /* ================= LOGIN ================= */
-async function login() {
-	const email = document.getElementById("email").value;
-	const password = document.getElementById("password").value;
+function showToast(message, isError = true) {
+    const toastEl = document.getElementById("toast");
+    const toastMsg = document.getElementById("toastMsg");
 
-	try {
-		const data = await apiRequest("/auth/login", "POST", { email, password });
-		if (!data) {
-			alert("Login failed");
-			return;
-		}
+    toastMsg.innerText = message;
 
+    toastEl.classList.remove("bg-success", "bg-danger");
+    toastEl.classList.add(isError ? "bg-danger" : "bg-success");
 
-		const rawRole = data.role || "";
-		const role = rawRole.replace("ROLE_", "").toUpperCase();
-
-		localStorage.setItem("token", data.token);
-		localStorage.setItem("role", role);
-
-		if (role === "ADMIN") {
-			window.location.href = "admin_dashboard.html";
-		} else if (role === "TRAINER") {
-			window.location.href = "trainer_dashboard.html";
-		} else {
-			alert("Unknown role");
-		}
-
-	} catch {
-		alert("Invalid credentials");
-	}
+    const toast = new bootstrap.Toast(toastEl);
+    toast.show();
 }
 
+function login() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
 
+    if (!email || !password) {
+        showToast("Email and Password required!");
+        return;
+    }
+
+    fetch("http://localhost:8080/auth/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+    })
+    .then(async res => {
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.error || "Login failed");
+        }
+
+        return data;
+    })
+    .then(data => {
+        showToast("Login successful!", false);
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.role);
+
+        // ROLE BASED REDIRECT (IMPORTANT UPGRADE)
+        if (data.role === "ADMIN") {
+            window.location.href = "/admin_dashboard.html";
+        } else {
+            window.location.href = "/trainer_dashboard.html";
+        }
+    })
+    .catch(err => {
+        showToast(err.message);
+    });
+}
 async function loadDashboard() {
 	try {
 		if (!document.getElementById("trainers")) return;
@@ -189,36 +212,115 @@ function renderTrainerTable(data) {
 }
 
 /* ================= CREATE TRAINER ================= */
+/* ================= LIVE VALIDATION ================= */
+
+function bindValidationEvents() {
+	const nameEl = document.getElementById("name");
+	const emailEl = document.getElementById("email");
+	const passEl = document.getElementById("password");
+	const mobileEl = document.getElementById("mobile");
+
+	if (nameEl) nameEl.addEventListener("input", validateName);
+	if (emailEl) emailEl.addEventListener("input", validateEmail);
+	if (passEl) passEl.addEventListener("input", validatePasswordField);
+	if (mobileEl) mobileEl.addEventListener("input", validateMobile);
+}
+
+/* ---------- NAME ---------- */
+function validateName() {
+    const name = document.getElementById("name").value.trim();
+    const error = document.getElementById("nameError");
+
+    if (name.length < 2) {
+        error.innerText = "Name must be at least 2 characters";
+        return false;
+    }
+
+    error.innerText = "";
+    return true;
+}
+
+/* ---------- EMAIL ---------- */
+function validateEmail() {
+    const email = document.getElementById("email").value.trim();
+    const error = document.getElementById("emailError");
+
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!regex.test(email)) {
+        error.innerText = "Invalid email format";
+        return false;
+    }
+
+    error.innerText = "";
+    return true;
+}
+
+/* ---------- PASSWORD ---------- */
+function validatePasswordField() {
+    const password = document.getElementById("password").value;
+    const error = document.getElementById("passwordError");
+
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+    if (!regex.test(password)) {
+        error.innerText =
+            "Must include Uppercase, Lowercase, Number, Special char & 8+ chars";
+        return false;
+    }
+
+    error.innerText = "";
+    return true;
+}
+
+/* ---------- MOBILE ---------- */
+function validateMobile() {
+    const mobile = document.getElementById("mobile").value.trim();
+    const error = document.getElementById("mobileError");
+
+    if (mobile && !/^\d{10}$/.test(mobile)) {
+        error.innerText = "Mobile must be exactly 10 digits";
+        return false;
+    }
+
+    error.innerText = "";
+    return true;
+}
+
 async function saveTrainer() {
-	try {
-		const name = document.getElementById("name").value.trim();
-		const email = document.getElementById("email").value.trim();
-		if (!name || !email) {
-			alert("Name & Email required");
-			return;
-		}
 
-		const formData = new FormData();
-		[
-			"name", "lastName", "email", "password", "gender", "mobile",
-			"department", "designation", "dob", "joiningDate",
-			"education", "address", "salary", "subject",
-			"experience", "status", "bio"
-		].forEach(id => {
-			const el = document.getElementById(id);
-			if (el) formData.append(id, el.value);
-		});
+    const isValid =
+        validateName() &
+        validateEmail() &
+        validatePasswordField() &
+        validateMobile();
 
-		const photo = document.getElementById("photo")?.files[0];
-		if (photo) formData.append("photo", photo);
+    if (!isValid) {
+        return; // stop submit
+    }
 
-		await apiRequest("/admin/create-trainer", "POST", formData, true);
-		alert("Trainer created ✅");
-		loadTrainers();
+    const formData = new FormData();
 
-	} catch {
-		alert("Failed to save trainer");
-	}
+    [
+        "name", "lastName", "email", "password", "gender", "mobile",
+        "department", "designation", "dob", "joiningDate",
+        "education", "address", "salary", "subject",
+        "experience", "status", "bio"
+    ].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) formData.append(id, el.value);
+    });
+
+    const photo = document.getElementById("photo")?.files[0];
+    if (photo) formData.append("photo", photo);
+
+    try {
+        await apiRequest("/admin/create-trainer", "POST", formData, true);
+        alert("Trainer created ✅");
+        loadTrainers();
+    } catch (err) {
+        alert("Failed to save trainer");
+    }
 }
 
 /* ================= UPDATE TRAINER ================= */
@@ -228,7 +330,7 @@ async function updateTrainer() {
 		const formData = new FormData();
 
 		formData.append("name", document.getElementById("editName").value);
-		formData.append("lastName", document.getElementById("editLastName").value);
+		formData.append("lastname", document.getElementById("editLastName").value);
 		formData.append("email", document.getElementById("editEmail").value);
 		formData.append("mobile", document.getElementById("editMobile").value);
 		formData.append("gender", document.getElementById("editGender").value);
@@ -930,12 +1032,6 @@ async function loadMyBatchesPage() {
                     </span>
                 </td>
 
-                <td>
-                    <button class="btn btn-sm btn-info"
-                        onclick="openProgressModal(${b.id}, ${b.totalDays}, ${b.completedDays})">
-                        Update
-                    </button>
-                </td>
             </tr>
         `;
 	}).join("");
@@ -2245,6 +2341,9 @@ window.addEventListener("load", () => {
 	if (document.getElementById("batchSelect")) {
 	    loadProgressPageSafe();
 	}
+	
+	// ✅ ADD THIS LINE (IMPORTANT FIX)
+		bindValidationEvents();
 	initBatchSelect();
     connectSocket();
 });
