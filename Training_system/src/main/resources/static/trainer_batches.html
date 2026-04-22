@@ -10,26 +10,19 @@
 <style>
 :root {
   --bg:#0b0b14;
-  --card: rgba(255,255,255,0.05);
-  --border: rgba(255,255,255,0.1);
+  --card: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
   --text:#f5f5ff;
   --muted:#b8b8d1;
   --purple:#8b5cf6;
-<<<<<<< Updated upstream
-=======
-  --purple-light:#a78bfa;
-  --glow: rgba(139,92,246,0.6);
->>>>>>> Stashed changes
 }
 
-/* BODY */
 body {
   margin:0;
   display:flex;
   background: radial-gradient(circle at top right,#1a1a2e,#0b0b14);
   color:var(--text);
-  font-family:'Times New Roman', serif;
-  animation: fadeIn 0.8s ease;
+  font-family:'Segoe UI',sans-serif;
 }
 
 /* SIDEBAR */
@@ -37,28 +30,18 @@ body {
   width:240px;
   height:100vh;
   position:fixed;
-  background:#0d0d14;
+  background:linear-gradient(180deg,#111326,#0b0b14);
   border-right:1px solid var(--border);
 }
 
 .sidebar .brand{
   padding:20px;
   text-align:center;
-<<<<<<< Updated upstream
   font-size:22px;
   font-weight:bold;
   background: linear-gradient(45deg,#8b5cf6,#c4b5fd);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
-=======
-  color:var(--purple);
-  animation: glow 2s infinite alternate;
-}
-
-@keyframes glow {
-  from { text-shadow:0 0 5px #a855f7; }
-  to { text-shadow:0 0 20px #a855f7; }
->>>>>>> Stashed changes
 }
 
 .sidebar a{
@@ -70,21 +53,11 @@ body {
   transition:.3s;
 }
 
-<<<<<<< Updated upstream
 .sidebar a:hover,
 .sidebar a.active{
-=======
-.sidebar a:hover {
->>>>>>> Stashed changes
   background:rgba(139,92,246,0.15);
   color:#fff;
-  transform:translateX(6px);
-}
-
-.sidebar a.active {
-  background:rgba(139,92,246,0.2);
   border-left:4px solid var(--purple);
-  color:#fff;
   box-shadow:0 0 10px var(--glow);
 }
 
@@ -100,7 +73,6 @@ body {
   display:flex;
   justify-content:space-between;
   align-items:center;
-<<<<<<< Updated upstream
   margin-bottom:15px;
 }
 
@@ -111,39 +83,6 @@ body {
   padding:8px 12px;
   border-radius:8px;
   color:white;
-=======
-  animation: slideDown 0.6s ease;
-}
-
-/* SEARCH */
-.search-box {
-  background:#141426;
-  border:1px solid var(--border);
-  color:#fff;
-  border-radius:10px;
-  padding:8px 12px;
-  width:260px;
-  transition:.3s;
-}
-
-.search-box:focus {
-  outline:none;
-  box-shadow:0 0 10px var(--glow);
-}
-
-/* ===== CARD ===== */
-.card {
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:16px;
-  backdrop-filter: blur(12px);
-  animation: fadeUp 0.8s ease;
-  transition:.3s;
-}
-
-.card:hover {
-  box-shadow:0 0 25px var(--glow);
->>>>>>> Stashed changes
 }
 
 /* TABLE CARD */
@@ -154,278 +93,15 @@ body {
   padding:15px;
 }
 
-<<<<<<< Updated upstream
 /* PROGRESS */
-=======
-.table thead {
-  color:var(--purple-light);
-  font-weight:bold;
-}
-
-.table tbody tr {
-  transition:.3s;
-}
-
-.table tbody tr:hover {
-  background:rgba(139,92,246,0.12);
-  transform: scale(1.01);
-}
-/* ===== TABLE TITLE ===== */
-.table-title {
-  font-weight:bold;
-  letter-spacing:1px;
-  border-left:4px solid var(--purple);
-  padding-left:10px;
-}
-
-/* ===== CUSTOM TABLE ===== */
-.custom-table {
-  border-collapse: separate;
-  border-spacing: 0 12px;
-}
-
-/* HEADER */
-.custom-table thead th {
-  background: linear-gradient(90deg,#8b5cf6,#6366f1);
-  color:white;
-  border:none;
-  padding:14px;
-  font-size:14px;
-  text-transform:uppercase;
-  letter-spacing:1px;
-}
-
-/* ROW DESIGN */
-.custom-table tbody tr {
-  background: rgba(255,255,255,0.04);
-  border:1px solid var(--border);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-}
-
-/* ROUNDED ROWS */
-.custom-table tbody tr td:first-child {
-  border-top-left-radius:12px;
-  border-bottom-left-radius:12px;
-}
-.custom-table tbody tr td:last-child {
-  border-top-right-radius:12px;
-  border-bottom-right-radius:12px;
-}
-
-/* CELLS */
-.custom-table td {
-  padding:14px;
-  border-top:none;
-  border-bottom:none;
-  font-size:14px;
-}
-
-/* HOVER EFFECT */
-.custom-table tbody tr:hover {
-  transform: translateY(-4px) scale(1.01);
-  background: rgba(139,92,246,0.12);
-  box-shadow:0 10px 25px rgba(139,92,246,0.2);
-}
-
-/* ===== PROGRESS ENHANCED ===== */
-.progress {
-  height:10px;
-  border-radius:20px;
-  overflow:hidden;
-}
-
-.progress-bar {
-  font-size:10px;
-  font-weight:bold;
-  text-align:center;
-}
-
-/* ===== STATUS BADGES ===== */
-.badge-active {
-  background:rgba(34,197,94,0.2);
-  color:#22c55e;
-  border:1px solid #22c55e;
-}
-
-.badge-pending {
-  background:rgba(245,158,11,0.2);
-  color:#f59e0b;
-  border:1px solid #f59e0b;
-}
-
-.badge-complete {
-  background:rgba(59,130,246,0.2);
-  color:#3b82f6;
-  border:1px solid #3b82f6;
-}
-
-/* ===== ACTION BUTTON ===== */
-.btn-action {
-  font-size:13px;
-  padding:6px 14px;
-  border-radius:20px;
-  background: linear-gradient(90deg,#8b5cf6,#a78bfa);
-  border:none;
-  color:white;
-  transition:0.3s;
-}
-
-.btn-action:hover {
-  transform: scale(1.08);
-  box-shadow:0 0 12px rgba(139,92,246,0.6);
-}
-
-/* ===== MOBILE IMPROVEMENT ===== */
-@media (max-width:768px){
-  .custom-table thead {
-    display:none;
-  }
-
-  .custom-table tbody tr {
-    display:block;
-    margin-bottom:15px;
-    padding:10px;
-  }
-
-  .custom-table td {
-    display:flex;
-    justify-content:space-between;
-    padding:8px;
-    font-size:12px;
-  }
-
-  .custom-table td::before {
-    content: attr(data-label);
-    font-weight:bold;
-    color:var(--purple-light);
-  }
-}
-.table-title {
-    font-weight: bold;
-    letter-spacing: 1px;
-    border-left: 4px solid var(--purple);
-    padding-left: 10px;
-    color:white;
-}
-
-/* ===== PROGRESS ===== */
->>>>>>> Stashed changes
 .progress {
   height:8px;
   background:#1c1c2b;
-  border-radius:10px;
 }
 
 .progress-bar {
   background:linear-gradient(90deg,#8b5cf6,#c4b5fd);
 }
-<<<<<<< Updated upstream
-=======
-
-/* ===== BADGES ===== */
-.badge {
-  padding:6px 10px;
-  border-radius:8px;
-  font-size:12px;
-}
-
-.badge-active { background:#22c55e; }
-.badge-pending { background:#f59e0b; }
-.badge-complete { background:#3b82f6; }
-
-/* ===== BUTTON ===== */
-.btn-action {
-  background: linear-gradient(90deg,#8b5cf6,#c4b5fd);
-  border:none;
-  color:#fff;
-  padding:5px 12px;
-  border-radius:8px;
-  transition:.3s;
-}
-
-.btn-action:hover {
-  box-shadow:0 0 12px var(--glow);
-  transform: scale(1.05);
-}
-
-/* ===== ANIMATIONS ===== */
-@keyframes fadeIn {
-  from { opacity:0; }
-  to { opacity:1; }
-}
-
-@keyframes fadeUp {
-  from {
-    transform:translateY(30px);
-    opacity:0;
-  }
-  to {
-    transform:translateY(0);
-    opacity:1;
-  }
-}
-
-@keyframes slideDown {
-  from {
-    transform:translateY(-30px);
-    opacity:0;
-  }
-  to {
-    transform:translateY(0);
-    opacity:1;
-  }
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 900px) {
-
-  .sidebar {
-    width:70px;
-  }
-
-  .sidebar .brand {
-    font-size:14px;
-  }
-
-  .main {
-    margin-left:70px;
-  }
-
-  .search-box {
-    width:150px;
-  }
-}
-
-@media (max-width: 600px) {
-
-  body {
-    flex-direction:column;
-  }
-
-  .sidebar {
-    width:100%;
-    height:auto;
-    display:flex;
-    overflow-x:auto;
-  }
-
-  .sidebar a {
-    flex:1;
-    justify-content:center;
-    font-size:12px;
-  }
-
-  .main {
-    margin-left:0;
-    padding:15px;
-  }
-
-  .table {
-    font-size:12px;
-  }
-}
->>>>>>> Stashed changes
 </style>
 
 </head>
@@ -458,7 +134,6 @@ body {
   <input type="text" id="searchInput" class="search-box" placeholder="Search batch...">
 </div>
 
-<<<<<<< Updated upstream
 <!-- TABLE -->
 <div class="card">
 
@@ -478,31 +153,6 @@ body {
 <tbody id="batchTable"></tbody>
 
 </table>
-=======
-<div class="card p-4 mt-3">
-
-  <h4 class="mb-4 table-title">📚 Assigned Batches</h4>
-
-  <div class="table-responsive">
-    <table class="table custom-table text-center align-middle">
-      
-      <thead>
-        <tr>
-          <th>📦 Batch</th>
-          <th>📅 Dates</th>
-          <th>🗓 Days</th>
-          <th>✅ Done</th>
-          <th>📊 Progress</th>
-          <th>📌 Status</th>
-          <th>⚙ Action</th>
-        </tr>
-      </thead>
-
-      <tbody id="batchTable"></tbody>
-
-    </table>
-  </div>
->>>>>>> Stashed changes
 
 </div>
 
