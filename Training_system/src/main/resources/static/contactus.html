@@ -9,11 +9,116 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
+/* ================= NAVBAR ================= */
 
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 18px 60px;
+    font-size: 18px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+
+    background: rgba(10,10,20,0.6);
+    backdrop-filter: blur(12px);
+    z-index: 1000;
+}
+
+/* LEFT (LOGO) */
+.logo {
+    justify-self: start;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+}
+
+/* LOGO ICON */
+.logo-icon {
+    width: 50px;
+    height: 50px;
+    filter: drop-shadow(0 0 10px rgba(124,58,237,0.5));
+    transition: 0.3s;
+}
+
+/* LOGO TEXT */
+.logo-text {
+    font-size: 24px;
+    background: linear-gradient(45deg, #ffffff, #38bdf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.5px;
+}
+
+/* LOGO HOVER */
+.logo:hover .logo-icon {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 20px rgba(124,58,237,0.8));
+}
+
+/* CENTER NAV LINKS */
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    list-style: none;
+}
+
+.nav-links li {
+    list-style: none;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 500;
+    transition: 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+/* HOVER EFFECT */
+.nav-links a:hover {
+    background: #6c63ff;
+    color: #fff;
+}
+
+/* ACTIVE LINK */
+.nav-links a.active {
+    background: #6c63ff;
+    color: #fff;
+}
+
+/* RIGHT SIDE */
+.nav-right {
+    justify-self: end;
+}
+
+/* BUTTON */
+.nav-btn {
+    background: linear-gradient(45deg, #7c3aed, #2563eb);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* BUTTON HOVER */
+.nav-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(124,58,237,0.5);
+}
 body{
 background:#0b0b0f;
 color:white;
-font-family:Segoe UI;
+font-family:Times new roman;
 }
 
 /* navbar */
@@ -237,26 +342,51 @@ font-weight:700;
 
 <body>
 
-<!-- Navbar -->
+<!-- ✅ NAVBAR (separate file use) -->
+<nav class="navbar" th:fragment="navbar">
+    
+    <!-- LOGO WITH ICON -->
+    <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 100 100">
+            <defs>
+                <linearGradient id="cloudGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#7c3aed"/>
+                    <stop offset="100%" stop-color="#2563eb"/>
+                </linearGradient>
+            </defs>
 
-<nav class="navbar navbar-expand-lg">
-<div class="container">
+            <!-- Cloud -->
+            <path d="M30 60 Q20 60 20 50 Q20 40 30 40 Q35 30 50 30 Q65 30 70 40 Q80 40 80 50 Q80 60 70 60 Z"
+                  fill="url(#cloudGrad)"/>
 
-<a class="navbar-brand text-white" href="#">Batch Trainer</a>
+            <!-- Arrow -->
+            <path d="M35 55 Q50 40 70 45"
+                  stroke="white"
+                  stroke-width="4"
+                  fill="none"
+                  stroke-linecap="round"/>
 
-<ul class="navbar-nav ms-auto">
+            <polygon points="68,42 78,45 70,52" fill="white"/>
+        </svg>
 
-<li class="nav-item"><a class="nav-link" href="/home.html">Home</a></li>
-<li class="nav-item"><a class="nav-link" href="aboutus.html">About</a></li>
-<li class="nav-item"><a class="nav-link" href="#">Courses</a></li>
-<li class="nav-item"><a class="nav-link" href="#">Trainers</a></li>
-<li class="nav-item"><a class="nav-link" href="#">Batches</a></li>
-<li class="nav-item"><a class="nav-link text-purple" href="contactus.html">Contact</a></li>
+        <span class="logo-text">FortuneCloud</span>
+    </div>
 
+    <!-- CENTER LINKS -->
+   <ul class="nav-links">
+    <li><a href="/home.html">Home</a></li>
+    <li><a href="aboutus.html">About</a></li>
+    <li><a href="contactus.html">Contact</a></li>
 </ul>
-
+    <!-- RIGHT BUTTON -->
+   <div class="nav-right">
+    <a href="login.html">
+        <button class="nav-btn">Sign in</button>
+    </a>
 </div>
+
 </nav>
+
 
 
 <!-- Hero -->
