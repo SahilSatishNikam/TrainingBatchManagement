@@ -8,95 +8,158 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
 <style>
-:root {
-    --primary: linear-gradient(135deg, #6777ef, #9c88ff);
-    --bg: #f4f6f9;
+:root{
+    --purple:#7c4dff;
+    --dark:#0f0f1a;
+    --card:#1a1a2e;
+    --text:#ffffff;
 }
 
-body {
-    margin: 0;
-    display: flex;
-    background: var(--bg);
-    font-family: 'Poppins', sans-serif;
+/* BODY */
+body{
+    margin:0;
+    display:flex;
+    background:var(--dark);
+    color:var(--text);
+    font-family:'Poppins',sans-serif;
 }
 
 /* SIDEBAR */
-.sidebar {
-    width: 240px;
-    height: 100vh;
-    position: fixed;
-    background: var(--primary);
-    color: #fff;
+.sidebar{
+  width:240px;
+  height:100vh;
+  position:fixed;
+  background:linear-gradient(180deg,#111326,#0b0b14);
+  border-right:1px solid var(--border);
 }
 
-.sidebar .brand {
-    padding: 20px;
-    text-align: center;
-    font-size: 22px;
-    font-weight: bold;
+.sidebar .brand{
+  padding:20px;
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+  background: linear-gradient(45deg,#8b5cf6,#c4b5fd);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
 
-.sidebar a {
-    display: flex;
-    align-items: center;
-    padding: 14px 20px;
-    color: #eee;
-    text-decoration: none;
-    transition: 0.3s;
+.sidebar a{
+  display:flex;
+  align-items:center;
+  padding:14px 20px;
+  color:var(--muted);
+  text-decoration:none;
+  transition:.3s;
 }
 
-.sidebar a:hover {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.sidebar a.active {
-    background: rgba(255, 255, 255, 0.25);
-    border-left: 4px solid #fff;
+.sidebar a:hover,
+.sidebar a.active{
+  background:rgba(139,92,246,0.15);
+  color:#fff;
+  border-left:4px solid var(--purple);
+  box-shadow:0 0 10px var(--glow);
 }
 
 /* MAIN */
-.main {
-    margin-left: 240px;
-    width: 100%;
-    padding: 20px;
+.main{
+    margin-left:240px;
+    width:100%;
+    padding:20px;
 }
 
 /* TOPBAR */
-.topbar {
-    background: #fff;
-    padding: 15px 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+.topbar{
+    background:var(--card);
+    padding:15px 20px;
+    border-radius:12px;
+    margin-bottom:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 0 15px rgba(124,77,255,0.3);
 }
 
 /* CARD */
-.card {
-    border-radius: 15px;
-    padding: 20px;
-    background: #fff;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+.card{
+    background:var(--card);
+    border-radius:15px;
+    padding:20px;
+    box-shadow:0 0 20px rgba(124,77,255,0.15);
+}
+
+/* INPUTS */
+.form-control{
+    background:#111;
+    border:1px solid #444;
+    color:#fff;
+}
+.form-control::placeholder{
+    color:#aaa;
+}
+.form-control:focus{
+    background:#111;
+    color:#fff;
+    border-color:var(--purple);
+    box-shadow:0 0 5px var(--purple);
+}
+
+/* BUTTONS */
+.btn-purple{
+    background:linear-gradient(135deg,#7c4dff,#651fff);
+    border:none;
+    color:#fff;
+}
+.btn-purple:hover{
+    transform:scale(1.05);
 }
 
 /* TABLE */
-.table thead {
-    background: #343a40;
-    color: #fff;
+.table{
+    border-radius:10px;
+    overflow:hidden;
+}
+.table thead{
+    background:linear-gradient(135deg,#7c4dff,#651fff);
+    color:#fff;
+}
+.table tbody tr{
+    background:#111;
+    transition:0.3s;
+}
+.table tbody tr:hover{
+    background:#1f1f2e;
+}
+
+/* BADGE */
+.badge{
+    padding:6px 10px;
+    border-radius:10px;
+}
+
+/* ACTION BUTTONS */
+.action-btn{
+    border:none;
+    padding:6px 10px;
+    border-radius:8px;
+    color:#fff;
+    margin:2px;
+}
+.complete-btn{
+    background:linear-gradient(135deg,#00c853,#00e676);
+}
+.delete-btn{
+    background:linear-gradient(135deg,#ff1744,#d50000);
 }
 </style>
 
 <script>
 (function(){
     let role = localStorage.getItem("role");
-    if (role)
-        role = role.replace("ROLE_", "").toUpperCase();
+    if (role) role = role.replace("ROLE_","").toUpperCase();
 
-    if (!role || role !== "TRAINER") {
+    if(!role || role !== "TRAINER"){
         alert("Access denied");
-        window.location.href = "login.html";
+        window.location.href="login.html";
     }
 })();
 </script>
@@ -105,7 +168,7 @@ body {
 
 <body>
 
-<!-- SIDEBAR -->
+<!-- SIDEBAR (UNCHANGED) -->
 <div class="sidebar">
     <div class="brand">🎓 Smart Trainer</div>
 
@@ -141,10 +204,6 @@ body {
         <i class="fas fa-bell me-2"></i>Notifications
     </a>
 
-    <a href="#">
-        <i class="fas fa-cog me-2"></i>Settings
-    </a>
-
     <a href="#" onclick="logout()">
         <i class="fas fa-sign-out-alt me-2"></i>Logout
     </a>
@@ -153,23 +212,22 @@ body {
 <!-- MAIN -->
 <div class="main">
 
-    <!-- TOPBAR -->
     <div class="topbar">
-        <h5 class="mb-0">🎤 Mock Interviews</h5>
+        <h5>🎤 Mock Interviews</h5>
         <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
     </div>
 
-    <!-- CARD -->
     <div class="card">
 
         <!-- FORM -->
-        <div class="row mb-3">
+        <div class="row mb-4 g-3">
             <div class="col-md-3">
                 <select id="mockBatch" class="form-control"></select>
             </div>
 
             <div class="col-md-3">
-                <input id="interviewer" class="form-control" placeholder="Interviewer Name">
+                <input id="interviewer" class="form-control"
+                       placeholder="Enter Interviewer Name">
             </div>
 
             <div class="col-md-3">
@@ -177,14 +235,14 @@ body {
             </div>
 
             <div class="col-md-3">
-                <button class="btn btn-warning w-100" onclick="createMock()">
+                <button class="btn btn-purple w-100" onclick="createMock()">
                     Schedule Interview
                 </button>
             </div>
         </div>
 
         <!-- TABLE -->
-        <table class="table text-center">
+        <table class="table text-center align-middle">
             <thead>
                 <tr>
                     <th>Interviewer</th>
@@ -204,32 +262,31 @@ body {
 <!-- MODAL -->
 <div class="modal fade" id="mockModal">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content" style="background:#1a1a2e;color:#fff;">
 
-      <div class="modal-header">
+      <div class="modal-header border-0">
         <h5 class="modal-title">Complete Interview</h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
 
         <input type="hidden" id="mockId">
 
-        <label class="mb-1">Score</label>
+        <label>Score</label>
         <input type="number" id="mockScore"
                class="form-control mb-3"
-               placeholder="Enter Score (0-100)">
+               placeholder="Enter Score">
 
-        <label class="mb-1">Feedback</label>
+        <label>Feedback</label>
         <textarea id="mockFeedback"
                   class="form-control"
-                  rows="3"
                   placeholder="Enter feedback"></textarea>
 
       </div>
 
-      <div class="modal-footer">
-        <button class="btn btn-success" onclick="completeMock()">
+      <div class="modal-footer border-0">
+        <button class="btn btn-purple" onclick="completeMock()">
           Submit
         </button>
       </div>

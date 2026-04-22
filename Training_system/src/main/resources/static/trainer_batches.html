@@ -5,99 +5,139 @@
 <title>My Batches</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <style>
 :root {
-    --primary: linear-gradient(135deg, #6777ef, #9c88ff);
-    --bg: #f4f6f9;
+  --bg:#0b0b14;
+  --card: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+  --text:#f5f5ff;
+  --muted:#b8b8d1;
+  --purple:#8b5cf6;
+  --glow: rgba(139,92,246,0.4);
 }
 
 body {
-    margin: 0;
-    display: flex;
-    background: var(--bg);
-    font-family: 'Poppins', sans-serif;
+  margin:0;
+  display:flex;
+  background: radial-gradient(circle at top right,#1a1a2e,#0b0b14);
+  color:var(--text);
+  font-family:'Segoe UI',sans-serif;
 }
 
 /* ===== SIDEBAR ===== */
 .sidebar {
-    width: 240px;
-    height: 100vh;
-    position: fixed;
-    background: var(--primary);
-    color: white;
+  width:240px;
+  height:100vh;
+  position:fixed;
+  background:linear-gradient(180deg,#111326,#0b0b14);
+  border-right:1px solid var(--border);
 }
 
 .sidebar .brand {
-    font-size: 22px;
-    padding: 20px;
-    font-weight: bold;
-    text-align: center;
+  font-size:22px;
+  padding:20px;
+  font-weight:bold;
+  text-align:center;
+  background: linear-gradient(45deg,#8b5cf6,#c4b5fd);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
 
 .sidebar a {
-    display: flex;
-    align-items: center;
-    padding: 14px 20px;
-    color: #eee;
-    text-decoration: none;
-    transition: 0.3s;
+  display:flex;
+  align-items:center;
+  padding:14px 20px;
+  color:var(--muted);
+  text-decoration:none;
+  transition:.3s;
 }
 
-.sidebar a i {
-    width: 25px;
-}
-
-.sidebar a:hover {
-    background: rgba(255,255,255,0.15);
-    padding-left: 25px;
-}
-
+.sidebar a:hover,
 .sidebar a.active {
-    background: rgba(255,255,255,0.25);
-    border-left: 4px solid #fff;
+  background:rgba(139,92,246,0.15);
+  color:#fff;
+  border-left:4px solid var(--purple);
+  box-shadow:0 0 10px var(--glow);
 }
 
 /* ===== MAIN ===== */
 .main {
-    margin-left: 240px;
-    width: 100%;
-    padding: 20px;
+  margin-left:240px;
+  width:100%;
+  padding:25px;
 }
 
 /* ===== TOPBAR ===== */
 .topbar {
-    background: white;
-    padding: 15px 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:15px 20px;
+  border-radius:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
-/* ===== TABLE CARD ===== */
+/* ===== CARD ===== */
 .card {
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  backdrop-filter: blur(12px);
+}
+
+/* ===== SEARCH BOX ===== */
+.search-box {
+  background:#1c1c2b;
+  border:none;
+  color:#fff;
+  border-radius:10px;
+  padding:8px 12px;
+  width:250px;
+}
+
+/* ===== TABLE ===== */
+.table {
+  color:var(--text);
 }
 
 .table thead {
-    background: #6777ef;
-    color: white;
+  color:#a78bfa;
 }
 
-.progress {
-    height: 8px;
+.table tbody tr {
+  transition:.3s;
 }
+
+.table tbody tr:hover {
+  background:rgba(139,92,246,0.1);
+}
+
+/* ===== PROGRESS ===== */
+.progress {
+  height:8px;
+  background:#1c1c2b;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg,#8b5cf6,#c4b5fd);
+  box-shadow:0 0 10px var(--glow);
+}
+
+/* ===== STATUS BADGE ===== */
+.badge-active { background:#22c55e; }
+.badge-pending { background:#f59e0b; }
+.badge-complete { background:#3b82f6; }
+
 </style>
 
 <script>
-// 🔒 Protect Page
 (function () {
-    const role = localStorage.getItem("role");
+    let role = localStorage.getItem("role");
+    if(role) role = role.replace("ROLE_","").toUpperCase();
+
     if (!role || role !== "TRAINER") {
         alert("Access denied");
         window.location.href = "login.html";
@@ -109,77 +149,52 @@ body {
 
 <body>
 
-<!-- ===== SIDEBAR ===== -->
+<!-- SIDEBAR -->
 <div class="sidebar">
-    <div class="brand">🎓 Smart Trainer</div>
+  <div class="brand">🎓 Smart Trainer</div>
 
-  <a href="trainer_dashboard.html">
-        <i class="fas fa-home me-2"></i>Dashboard
-    </a>
-
-    <a href="create_batch.html">
-        <i class="fas fa-plus me-2"></i>Create Batch
-    </a>
-
-    <a href="trainer_batches.html"  class="active">
-        <i class="fas fa-layer-group me-2"></i>My Batches
-    </a>
-
-    <a href="training_sessions.html">
-        <i class="fas fa-layer-group me-2"></i>Create Session
-    </a>
-
-    <a href="practical_project.html">
-        <i class="fas fa-laptop-code me-2"></i>Practicals & Projects
-    </a>
-
-    <a href="mock_interview.html">
-        <i class="fas fa-microphone me-2"></i>Mock Interviews
-    </a>
-
-    <a href="update_progress.html">
-        <i class="fas fa-chart-line me-2"></i>Progress
-    </a>
-
-    <a href="trainer_notification.html">
-        <i class="fas fa-bell me-2"></i>Notifications
-    </a>
-
-
-    <a href="#" onclick="logout()">
-        <i class="fas fa-sign-out-alt me-2"></i>Logout
-    </a>
+  <a href="trainer_dashboard.html"><i class="fas fa-home me-2"></i>Dashboard</a>
+  <a href="create_batch.html"><i class="fas fa-plus me-2"></i>Create Batch</a>
+  <a href="trainer_batches.html" class="active"><i class="fas fa-layer-group me-2"></i>My Batches</a>
+  <a href="training_sessions.html"><i class="fas fa-chalkboard-teacher me-2"></i>Sessions</a>
+  <a href="practical_project.html"><i class="fas fa-laptop-code me-2"></i>Practicals</a>
+  <a href="mock_interview.html"><i class="fas fa-microphone me-2"></i>Mock Interviews</a>
+  <a href="update_progress.html"><i class="fas fa-chart-line me-2"></i>Progress</a>
+  <a href="trainer_notification.html"><i class="fas fa-bell me-2"></i>Notifications</a>
+  <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
 </div>
 
-<!-- ===== MAIN ===== -->
+<!-- MAIN -->
 <div class="main">
 
-    <!-- TOPBAR -->
-    <div class="topbar">
-        <h5>📊 My Batches</h5>
-        <button class="btn btn-sm btn-primary" onclick="logout()">Logout</button>
-    </div>
+<!-- TOPBAR -->
+<div class="topbar">
+  <h5>📊 My Batches</h5>
+  <input type="text" id="searchInput" class="search-box" placeholder="Search batch...">
+</div>
 
-    <!-- TABLE -->
-    <div class="card p-3">
-        <h5 class="mb-3">Assigned Batches</h5>
+<!-- TABLE -->
+<div class="card p-3 mt-3">
 
-        <table class="table table-hover text-center">
-            <thead>
-                <tr>
-                    <th>Batch</th>
-                    <th>Dates</th>
-                    <th>Total Days</th>
-                    <th>Completed</th>
-                    <th>Progress</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
+  <h5 class="mb-3">Assigned Batches</h5>
 
-            <tbody id="batchTable"></tbody>
-        </table>
-    </div>
+  <table class="table text-center">
+    <thead>
+      <tr>
+        <th>Batch</th>
+        <th>Dates</th>
+        <th>Total Days</th>
+        <th>Completed</th>
+        <th>Progress</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody id="batchTable"></tbody>
+  </table>
+
+</div>
 
 </div>
 
@@ -188,6 +203,17 @@ function logout() {
     localStorage.clear();
     window.location.href = "login.html";
 }
+
+/* 🔍 FRONTEND SEARCH FILTER */
+document.getElementById("searchInput").addEventListener("input", function () {
+    let filter = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#batchTable tr");
+
+    rows.forEach(row => {
+        let text = row.innerText.toLowerCase();
+        row.style.display = text.includes(filter) ? "" : "none";
+    });
+});
 </script>
 
 <script src="script.js"></script>

@@ -202,6 +202,43 @@ body {
     color: white;
 }
 
+/* NAVBAR CONTAINER */
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 25px;
+    background: #1e1e2f;
+    padding: 15px 30px;
+    margin: 0;
+}
+
+/* LIST ITEMS */
+.nav-links li {
+    display: inline;
+}
+
+/* LINKS */
+.nav-links a {
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 500;
+    transition: 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+/* HOVER EFFECT */
+.nav-links a:hover {
+    background: #6c63ff;
+    color: #fff;
+}
+
+/* ACTIVE LINK (optional) */
+.nav-links a.active {
+    background: #6c63ff;
+    color: #fff;
+}
 .secondary {
     background: transparent;
     border: 1px solid white;
@@ -860,16 +897,17 @@ body {
     </div>
 
     <!-- CENTER LINKS -->
-    <ul class="nav-links">
-        <li>Home</li>
-        <li>About</li>
-        <li>Contact Us</li>
-    </ul>
-
+   <ul class="nav-links">
+    <li><a href="/home.html">Home</a></li>
+    <li><a href="aboutus.html">About</a></li>
+    <li><a href="contactus.html">Contact</a></li>
+</ul>
     <!-- RIGHT BUTTON -->
-    <div class="nav-right">
+   <div class="nav-right">
+    <a href="login.html">
         <button class="nav-btn">Sign in</button>
-    </div>
+    </a>
+</div>
 
 </nav>
 

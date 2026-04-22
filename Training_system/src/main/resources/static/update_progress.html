@@ -8,208 +8,207 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
 <style>
-:root {
-    --primary: linear-gradient(135deg, #667eea, #764ba2);
-    --bg: #eef1f7;
+:root{
+    --purple:#7c4dff;
+    --dark:#0f0f1a;
+    --card:#1a1a2e;
+    --text:#ffffff;
 }
 
-body {
-    margin: 0;
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
-    background: var(--bg);
-    font-family: 'Poppins', sans-serif;
+/* BODY */
+body{
+    margin:0;
+    display:flex;
+    background:var(--dark);
+    color:var(--text);
+    font-family:'Poppins',sans-serif;
 }
 
-/* ================= SIDEBAR ================= */
-.sidebar {
-    width: 240px;
-    height: 100vh;
-    background: var(--primary);
-    color: #fff;
-    position: fixed;
-    display: flex;
-    flex-direction: column;
+/* SIDEBAR */
+.sidebar{
+  width:240px;
+  height:100vh;
+  position:fixed;
+  background:linear-gradient(180deg,#111326,#0b0b14);
+  border-right:1px solid var(--border);
 }
 
-.sidebar .brand {
-    padding: 22px;
-    text-align: center;
-    font-size: 22px;
-    font-weight: bold;
+.sidebar .brand{
+  padding:20px;
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+  background: linear-gradient(45deg,#8b5cf6,#c4b5fd);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
 
-.sidebar a {
-    padding: 14px 18px;
-    color: #eee;
-    text-decoration: none;
-    font-size: 15px;
+.sidebar a{
+  display:flex;
+  align-items:center;
+  padding:14px 20px;
+  color:var(--muted);
+  text-decoration:none;
+  transition:.3s;
 }
 
-.sidebar a:hover {
-    background: rgba(255,255,255,0.15);
+.sidebar a:hover,
+.sidebar a.active{
+  background:rgba(139,92,246,0.15);
+  color:#fff;
+  border-left:4px solid var(--purple);
+  box-shadow:0 0 10px var(--glow);
+}
+/* MAIN */
+.main{
+    margin-left:240px;
+    width:calc(100% - 240px);
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
 }
 
-.sidebar a.active {
-    background: rgba(255,255,255,0.25);
-    border-left: 4px solid #fff;
+/* CARD */
+.card{
+    background:var(--card);
+    border:none;
+    border-radius:16px;
+    padding:18px;
+    box-shadow:0 0 15px rgba(124,77,255,0.2);
 }
 
-/* ================= MAIN ================= */
-.main {
-    margin-left: 240px;
-    width: calc(100% - 240px);
-    height: 100vh;
-    padding: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+/* INPUT / SELECT */
+.form-control{
+    background:#111 !important;
+    color:#fff !important;
+    border:1px solid #444 !important;
+}
+.form-control::placeholder{
+    color:#aaa;
+}
+.form-control:focus{
+    border-color:var(--purple) !important;
+    box-shadow:0 0 6px var(--purple);
 }
 
-/* ================= COMMON CARD ================= */
-.card {
-    border: none;
-    border-radius: 16px;
-    padding: 16px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+/* STATS */
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+}
+.stat-card{
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+    font-weight:bold;
+    transition:0.3s;
+}
+.stat-card:hover{
+    transform:translateY(-5px);
+}
+.card-total{
+    background:linear-gradient(135deg,#7c4dff,#651fff);
+}
+.card-completed{
+    background:linear-gradient(135deg,#00c853,#00e676);
+}
+.card-remaining{
+    background:linear-gradient(135deg,#ff1744,#d50000);
 }
 
-/* ================= TOP ================= */
-.top {
-    display: grid;
-    grid-template-columns: 1fr;
-}
-
-/* ================= STATS ================= */
-.stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-}
-
-.stat-card {
-    border-radius: 16px;
-    padding: 18px;
-    color: #fff;
-    text-align: center;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-.stat-card:hover {
-    transform: translateY(-3px);
-}
-
-.stat-card h2 {
-    font-size: 26px;
-}
-
-.card-total { background: linear-gradient(135deg, #667eea, #764ba2); }
-.card-completed { background: linear-gradient(135deg, #ff416c, #ff4b2b); }
-.card-remaining { background: linear-gradient(135deg, #11998e, #38ef7d); }
-
-/* ================= MIDDLE ================= */
-.middle {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    height: 210px;
+/* MIDDLE */
+.middle{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
 }
 
 /* CIRCLE */
-.circle-box {
-    position: relative;
-    width: 140px;
-    margin: auto;
+.circle-box{
+    position:relative;
+    width:150px;
+    margin:auto;
+}
+.circle-box svg{
+    transform:rotate(-90deg);
+}
+.circle-text{
+    position:absolute;
+    top:55px;
+    left:0;
+    right:0;
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
 }
 
-.circle-box svg {
-    transform: rotate(-90deg);
+/* PROGRESS BAR */
+.progress{
+    height:20px;
+    border-radius:20px;
+    background:#111;
+}
+.progress-bar{
+    background:linear-gradient(135deg,#7c4dff,#651fff);
 }
 
-.circle-text {
-    position: absolute;
-    top: 50px;
-    left: 0;
-    right: 0;
-    font-size: 18px;
-    font-weight: bold;
+/* BOTTOM */
+.bottom{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:16px;
 }
 
-/* RIGHT */
-.progress-area {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 12px;
+.card{
+ color: aliceblue;
 }
-
-.progress {
-    height: 18px;
-    border-radius: 20px;
-}
-
-/* ================= BOTTOM ================= */
-.bottom {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 14px;
-}
-
-/* INPUTS */
-input, select {
-    padding: 10px;
-    border-radius: 10px !important;
-}
-
 /* BUTTON */
-button {
-    padding: 10px;
+.btn-purple{
+    background:linear-gradient(135deg,#7c4dff,#651fff);
+    border:none;
+    color:#fff;
 }
+.btn-purple:hover{
+    transform:scale(1.05);
+}
+
+
 
 /* MILESTONE */
-.milestone {
-    border-radius: 25px;
-    padding: 10px 14px;
-    border: none;
-    background: #e9ecef;
-    font-size: 14px;
+.milestone{
+    width:100%;
+    border:none;
+    border-radius:20px;
+    padding:10px;
+    margin-top:10px;
+    background:#222;
+    color:#bbb;
 }
-
-.milestone.active {
-    background: #667eea;
-    color: #fff;
+.milestone.active{
+    background:linear-gradient(135deg,#7c4dff,#651fff);
+    color:#fff;
 }
 </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
-	<div class="sidebar">
-		<div class="brand">🎓 Smart Trainer</div>
+<!-- SIDEBAR (UNCHANGED) -->
+<div class="sidebar">
+    <div class="brand">🎓 Smart Trainer</div>
 
-		<a href="trainer_dashboard.html" class="active"> <i
-			class="fas fa-home me-2"></i>Dashboard
-		</a> <a href="create_batch.html"> <i class="fas fa-plus me-2"></i>Create
-			Batch
-		</a> <a href="trainer_batches.html"> <i
-			class="fas fa-layer-group me-2"></i>My Batches
-		</a> <a href="training_sessions.html"> <i
-			class="fas fa-layer-group me-2"></i>Create Session
-		</a> <a href="practical_project.html"> <i
-			class="fas fa-laptop-code"></i> Practicals & Projects
-		</a> <a href="mock_interview.html"><i
-			class="fas fa-microphone me-2"></i>Mock Interviews</a> <a
-			href="update_progress.html"> <i class="fas fa-chart-line me-2"></i>Progress
-		</a> <a href="trainer_notification.html"> <i class="fas fa-bell me-2"></i>Notifications
-		</a>  <a href="#" onclick="logout()"> <i
-			class="fas fa-sign-out-alt me-2"></i>Logout
-		</a>
-
-
-	</div>
+    <a href="trainer_dashboard.html" class="active"><i class="fas fa-home me-2"></i>Dashboard</a>
+    <a href="create_batch.html"><i class="fas fa-plus me-2"></i>Create Batch</a>
+    <a href="trainer_batches.html"><i class="fas fa-layer-group me-2"></i>My Batches</a>
+    <a href="training_sessions.html"><i class="fas fa-layer-group me-2"></i>Create Session</a>
+    <a href="practical_project.html"><i class="fas fa-laptop-code"></i> Practicals & Projects</a>
+    <a href="mock_interview.html"><i class="fas fa-microphone me-2"></i>Mock Interviews</a>
+    <a href="update_progress.html"><i class="fas fa-chart-line me-2"></i>Progress</a>
+    <a href="trainer_notification.html"><i class="fas fa-bell me-2"></i>Notifications</a>
+    <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+</div>
 
 <!-- MAIN -->
 <div class="main">
@@ -222,46 +221,38 @@ button {
 
 <!-- STATS -->
 <div class="stats">
-
     <div class="stat-card card-total">
         TOTAL<br><h2 id="totalCard">0</h2>
     </div>
-
     <div class="stat-card card-completed">
         COMPLETED<br><h2 id="completedCard">0</h2>
     </div>
-
     <div class="stat-card card-remaining">
         REMAINING<br><h2 id="remainingCard">0</h2>
     </div>
-
 </div>
 
 <!-- PROGRESS -->
 <div class="middle">
 
-    <div class="card d-flex align-items-center justify-content-center">
-
+    <div class="card d-flex justify-content-center align-items-center">
         <div class="circle-box">
-            <svg width="120" height="120">
-                <circle cx="60" cy="60" r="50" stroke="#eee" stroke-width="10" fill="none"/>
-                <circle id="progressCircle" cx="60" cy="60" r="50" stroke="#667eea" stroke-width="10" fill="none"/>
+            <svg width="130" height="130">
+                <circle cx="65" cy="65" r="55" stroke="#222" stroke-width="10" fill="none"/>
+                <circle id="progressCircle" cx="65" cy="65" r="55"
+                        stroke="#7c4dff" stroke-width="10" fill="none"/>
             </svg>
             <div id="progressPercent" class="circle-text">0%</div>
         </div>
-
     </div>
 
-    <div class="card progress-area">
-
-        <div class="progress">
-            <div id="progressBar" class="progress-bar bg-primary"></div>
+    <div class="card d-flex flex-column justify-content-center">
+        <div class="progress mb-2">
+            <div id="progressBar" class="progress-bar"></div>
         </div>
 
         <div id="progressText" class="fw-bold">0%</div>
-
         <div id="motivationText" class="text-success"></div>
-
     </div>
 
 </div>
@@ -270,24 +261,20 @@ button {
 <div class="bottom">
 
     <div class="card">
-
         <input type="hidden" id="batchId">
 
         <input id="totalDays" class="form-control mb-2" readonly>
         <input id="completedDays" type="number" class="form-control mb-2">
 
-        <button onclick="submitProgressSafe()" class="btn btn-primary w-100">
+        <button onclick="submitProgressSafe()" class="btn btn-purple w-100">
             Update Progress
         </button>
-
     </div>
 
     <div class="card text-center">
-
         <button id="beginner" class="milestone">Beginner</button>
-        <button id="intermediate" class="milestone mt-2">Intermediate</button>
-        <button id="advanced" class="milestone mt-2">Advanced</button>
-
+        <button id="intermediate" class="milestone">Intermediate</button>
+        <button id="advanced" class="milestone">Advanced</button>
     </div>
 
 </div>
