@@ -365,7 +365,7 @@ body {
   <div class="topbar">
     <h5>Trainer Dashboard</h5>
 
-    <div onclick="toggleNotifications()" style="position:relative; cursor:pointer;">
+    <div onclick="goToNotifications()" style="position:relative; cursor:pointer;">
       <i class="fas fa-bell"></i>
       <span id="notifCount">0</span>
     </div>
@@ -427,12 +427,15 @@ body {
 
 </div>
 
-<!-- NOTIFICATIONS -->
-<div id="notificationList"></div>
-
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
 <script src="script.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    initNotifications();
+    connectSocket();
+});
+</script>
 
 </body>
 </html>

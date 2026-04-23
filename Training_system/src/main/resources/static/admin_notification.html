@@ -99,6 +99,7 @@ body {
   padding: 20px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.6);
   animation: fadeUp 0.6s ease;
+  color:aliceblue;
 }
 
 /* ===== NOTIFICATION ITEM ===== */
@@ -256,6 +257,15 @@ body {
 	<script
 		src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+	
+	<script>
+document.addEventListener("DOMContentLoaded", function () {
+    initNotifications();
+    connectSocket();
+    markNotificationsAsSeen();
+    loadAdminNotificationsFromServer();
+});
+</script>
 
 </body>
 </html>

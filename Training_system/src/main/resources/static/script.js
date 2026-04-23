@@ -99,19 +99,25 @@ function login() {
 
         return data;
     })
-    .then(data => {
-        showToast("Login successful!", false);
+	.then(data => {
+	    console.log("🔥 FULL LOGIN RESPONSE:", data);   // 👈 ADD
+	    console.log("🔥 ROLE FROM BACKEND:", data.role); // 👈 ADD
 
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("role", data.role);
+	    showToast("Login successful!", false);
 
-        // ROLE BASED REDIRECT (IMPORTANT UPGRADE)
-        if (data.role === "ADMIN") {
-            window.location.href = "/admin_dashboard.html";
-        } else {
-            window.location.href = "/trainer_dashboard.html";
-        }
-    })
+	    const cleanRole = data.role.replace("ROLE_", ""); // 🔥 SAFETY FIX
+
+	    localStorage.setItem("token", data.token);
+	    localStorage.setItem("role", cleanRole);
+
+	    console.log("✅ SAVED ROLE:", localStorage.getItem("role"));
+
+	    if (cleanRole === "ADMIN") {
+	        window.location.href = "/admin_dashboard.html";
+	    } else {
+	        window.location.href = "/trainer_dashboard.html";
+	    }
+	})
     .catch(err => {
         showToast(err.message);
     });
@@ -1061,66 +1067,154 @@ let stompClient = null;
 
 function connectSocket() {
 
-	const socket = new SockJS("http://localhost:8080/ws");
-	  stompClient = Stomp.over(socket);
+    if (stompClient && stompClient.connected) return;
 
-	  stompClient.connect({}, function () {
+    const socket = new SockJS("http://localhost:8080/ws");
+    stompClient = Stomp.over(socket);
 
-	      console.log("✅ Connected to WebSocket");
+    stompClient.connect({}, function () {
 
-	      stompClient.subscribe("/topic/notifications", function (message) {
+        console.log("✅ WebSocket Connected");
 
-	          const data = JSON.parse(message.body);
+        const roleRaw = localStorage.getItem("role") || "";
+        const role = roleRaw.toUpperCase();
 
-	          console.log("📩 Notification:", data.message);
+        console.log("👤 ROLE FROM STORAGE:", roleRaw);
 
-	          showNotification(data.message);
-	      });
-	  });
+        let topic = "";
+
+        if (role.includes("ADMIN")) {
+            topic = "/topic/admin-notifications";
+        } else {
+            topic = "/topic/trainer-notifications";
+        }
+
+        console.log("📡 Subscribing to:", topic);
+
+        stompClient.subscribe(topic, function (message) {
+
+            console.log("🔥 RECEIVED:", message.body);
+
+            const data = JSON.parse(message.body);
+
+            showNotification(data.message);
+        });
+    });
 }
-
 let notifCount = JSON.parse(localStorage.getItem("notifications") || "[]").length;
 
 
 
 function showNotification(message, time = null) {
 
-	notifCount++;
+    const container = document.getElementById("notificationList");
+    if (!container) return;
 
-	const countEl = document.getElementById("notifCount");
-	if (countEl) countEl.innerText = notifCount;
+    const div = document.createElement("div");
+    div.className = "notification-item";
 
-	// Save to localStorage
-	let history = JSON.parse(localStorage.getItem("notifications") || "[]");
-	
-	const emptyMsg = document.getElementById("emptyMsg");
-	if (emptyMsg) emptyMsg.style.display = "none";
-
-	const newNotif = {
-		message: message,
-		time: time || new Date().toLocaleString()
-	};
-
-	history.unshift(newNotif);
-	localStorage.setItem("notifications", JSON.stringify(history));
-
-	// Show in UI (if exists)
-	const container = document.getElementById("notificationList");
-	if (!container) return;
-
-	const div = document.createElement("div");
-	div.className = "alert alert-info shadow-sm";
-
-	div.innerHTML = `
+    div.innerHTML = `
         <div>${message}</div>
-        <small class="text-muted">${newNotif.time}</small>
+        <div class="time">${time || new Date().toLocaleString()}</div>
     `;
 
-	container.prepend(div);
+    container.prepend(div);
+}
+function initNotifications() {
 
-	alert("🔔 " + message);
+    const role = localStorage.getItem("role");
+
+    const key = role === "ADMIN" ? "admin_notifications" : "trainer_notifications";
+    const seenKey = role === "ADMIN" ? "admin_seen" : "trainer_seen";
+
+    let history = JSON.parse(localStorage.getItem(key) || "[]");
+    let seen = parseInt(localStorage.getItem(seenKey) || "0");
+
+    let unread = history.length - seen;
+
+    const countEl = document.getElementById("notifCount");
+    if (countEl) {
+        countEl.innerText = unread > 0 ? unread : 0;
+    }
 }
 
+function renderNotifications(history) {
+    const container = document.getElementById("notificationList");
+    const emptyMsg = document.getElementById("emptyMsg");
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    if (!history.length) {
+        if (emptyMsg) emptyMsg.style.display = "block";
+        return;
+    }
+
+    if (emptyMsg) emptyMsg.style.display = "none";
+	
+	function formatTime(t) {
+	    return new Date(t).toLocaleString();
+	}
+
+    history.forEach(n => {
+        const div = document.createElement("div");
+        div.className = "notification-item";
+
+        div.innerHTML = `
+            <div>${n.message}</div>
+            <div class="time">${formatTime(n.time)}</div>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+function goToNotifications() {
+
+    const role = localStorage.getItem("role");
+
+    if (role === "ADMIN") {
+        window.location.href = "admin_notification.html";
+    } else {
+        window.location.href = "trainer_notification.html";
+    }
+}
+
+function markNotificationsAsSeen() {
+
+    const role = localStorage.getItem("role");
+
+    const key = role === "ADMIN" ? "admin_notifications" : "trainer_notifications";
+    const seenKey = role === "ADMIN" ? "admin_seen" : "trainer_seen";
+
+    let history = JSON.parse(localStorage.getItem(key) || "[]");
+
+    // Mark all as seen
+    localStorage.setItem(seenKey, history.length);
+
+    const countEl = document.getElementById("notifCount");
+    if (countEl) {
+        countEl.innerText = 0;
+    }
+}
+function updateNotificationCount() {
+
+    const role = localStorage.getItem("role");
+
+    const key = role === "ADMIN" ? "admin_notifications" : "trainer_notifications";
+    const seenKey = role === "ADMIN" ? "admin_seen" : "trainer_seen";
+
+    let history = JSON.parse(localStorage.getItem(key) || "[]");
+    let seen = parseInt(localStorage.getItem(seenKey) || "0");
+
+    let unread = history.length - seen;
+
+    const countEl = document.getElementById("notifCount");
+    if (countEl) {
+        countEl.innerText = unread > 0 ? unread : 0;
+    }
+}
 /* ================= BELL TOGGLE ================= */
 
 function toggleNotifications() {
@@ -1167,42 +1261,66 @@ function calculateProgress(startDate, endDate) {
 	return Math.round(progress);
 }
 
-function loadOldNotificationsStyled() {
+function loadAdminNotificationsFromServer() {
 
-	const container = document.getElementById("notificationList");
-	const emptyMsg = document.getElementById("emptyMsg");
+    const token = localStorage.getItem("token");
 
-	if (!container) return; // ✅ safety
-
-	const history = JSON.parse(localStorage.getItem("notifications") || "[]");
-
-	container.innerHTML = "";
-
-	if (history.length === 0) {
-		if (emptyMsg) emptyMsg.style.display = "block"; // ✅ safe
-		return;
-	}
-
-	if (emptyMsg) emptyMsg.style.display = "none";
-
-	history.forEach(n => {
-
-		const div = document.createElement("div");
-		div.className = "notification-item";
-
-		div.innerHTML = `
-            <div>${n.message}</div>
-            <div class="time">${n.time}</div>
-        `;
-
-		container.appendChild(div);
-	});
+    fetch("http://localhost:8080/admin/notifications", {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
+        }
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Unauthorized");
+        return res.json();
+    })
+    .then(data => {
+        console.log("📥 Admin notifications:", data);
+        renderNotifications(data);
+    })
+    .catch(err => console.error("❌ Error:", err));
 }
 
+function loadTrainerNotificationsFromServer() {
+
+    const token = localStorage.getItem("token");
+
+    fetch("http://localhost:8080/admin/notifications/trainer", {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
+        }
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Unauthorized");
+        return res.json();
+    })
+    .then(data => {
+        console.log("📥 Trainer notifications:", data);
+        renderNotifications(data);
+    })
+    .catch(err => console.error("❌ Error:", err));
+}
 function clearNotifications() {
-	localStorage.removeItem("notifications");
-	document.getElementById("notificationList").innerHTML = "";
-	document.getElementById("notifCount").innerText = 0;
+
+    const role = localStorage.getItem("role");
+    const key = role === "ADMIN" ? "admin_notifications" : "trainer_notifications";
+    const seenKey = role === "ADMIN" ? "admin_seen" : "trainer_seen";
+
+    localStorage.removeItem(key);
+    localStorage.removeItem(seenKey);
+
+    const container = document.getElementById("notificationList");
+    if (container) container.innerHTML = "";
+
+    const countEl = document.getElementById("notifCount");
+    if (countEl) countEl.innerText = 0;
+
+    const emptyMsg = document.getElementById("emptyMsg");
+    if (emptyMsg) emptyMsg.style.display = "block";
 }
 
 /* ================= TRAINING SESSIONS ================= */
@@ -2338,9 +2456,6 @@ window.addEventListener("load", () => {
         loadProjectDropdown();
     }
 
-    if (document.getElementById("notificationList")) {
-        loadOldNotificationsStyled();
-    }
 
     if (document.getElementById("mockBatch")) {
         loadMockBatchDropdown();
@@ -2365,5 +2480,10 @@ window.addEventListener("load", () => {
 	// ✅ ADD THIS LINE (IMPORTANT FIX)
 		bindValidationEvents();
 	initBatchSelect();
+	initNotifications();
     connectSocket();
+});
+
+window.addEventListener("storage", function () {
+    initNotifications();
 });

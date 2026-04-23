@@ -53,11 +53,15 @@ public class  BatchServiceImpl implements BatchService {
              .filter(m -> m != null && !m.isBlank())
              .toList();
 
-     // ✅ BOTH SYSTEMS
-     notificationService.sendToAll(
-             "📢 New batch created: " + savedBatch.getBatchName(),
-             phones
-     );
+     notificationService.sendToAllTrainers(
+    		    "📢 New batch created: " + savedBatch.getBatchName(),
+    		    phones
+    		);
+
+    		// ✅ ALSO SEND TO ADMIN
+    		notificationService.sendToAdmin(
+    		    "📢 New batch created: " + savedBatch.getBatchName()
+    		);
         return savedBatch;
     }
    
@@ -183,11 +187,14 @@ public class  BatchServiceImpl implements BatchService {
                          updated.getTotalDays() + " (" + progress + "%)\n" +
                          "📌 Status: " + updated.getStatus();
 
-        // 🔥 Send ONLY to that trainer
+     // trainer gets it
         notificationService.sendToTrainer(
-                updated.getTrainer().getMobile(),
-                message
+            updated.getTrainer().getMobile(),
+            message
         );
+
+        // ✅ admin must also get it
+        notificationService.sendToAdmin(message);
 
         return updated;
     }
