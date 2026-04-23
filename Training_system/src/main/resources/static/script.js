@@ -1037,6 +1037,26 @@ async function loadMyBatchesPage() {
 	}).join("");
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    const bell = document.getElementById("notificationBtn");
+    const box = document.getElementById("notificationList");
+
+    bell.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        box.style.display =
+            box.style.display === "block" ? "none" : "block";
+    });
+
+    // close when clicking outside
+    document.addEventListener("click", function (event) {
+        if (!document.getElementById("notificationWrapper").contains(event.target)) {
+            box.style.display = "none";
+        }
+    });
+});
+
 let stompClient = null;
 
 function connectSocket() {
