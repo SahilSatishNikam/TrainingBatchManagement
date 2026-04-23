@@ -92,7 +92,6 @@ body{
   justify-content:space-between;
   align-items:center;
   backdrop-filter:blur(10px);
-  animation:slideDown 0.6s ease;
   transition:.3s;
 }
 
@@ -107,7 +106,6 @@ body{
   border-radius:16px;
   backdrop-filter:blur(12px);
   transition:0.3s;
-  animation:fadeUp 0.6s ease;
 }
 
 .card:hover{
@@ -115,34 +113,57 @@ body{
   transform:translateY(-5px);
 }
 
-/* ================= INPUT ================= */
+/* ================= INPUT FIX ================= */
 .form-control{
-  background:rgba(255,255,255,0.05);
+  background:rgba(255,255,255,0.08);
   border:1px solid var(--border);
-  color:white;
+  color:#ffffff !important;
   border-radius:10px;
   padding:10px;
   transition:.3s;
+  font-weight:500;
 }
 
 .form-control::placeholder{
   color:#aaa;
+  opacity:1;
 }
 
-.form-control:focus{
-  border-color:var(--purple);
-  box-shadow:0 0 10px var(--glow);
+.form-control:focus,
+.form-control:active{
   background:#1c1c2e;
+  color:#ffffff !important;
+  border-color:var(--purple);
+  box-shadow:0 0 12px var(--glow);
+}
+
+/* Autofill fix */
+input:-webkit-autofill{
+  -webkit-box-shadow:0 0 0 1000px #1c1c2e inset !important;
+  -webkit-text-fill-color:#fff !important;
 }
 
 /* DATE INPUT FIX */
 input[type="date"]{
+  color:#fff !important;
+  background:rgba(255,255,255,0.08);
   color-scheme:dark;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator{
   filter:invert(1) brightness(2);
   cursor:pointer;
+}
+
+/* SELECT FIX */
+select.form-control{
+  background:rgba(255,255,255,0.08);
+  color:#fff !important;
+}
+
+select.form-control option{
+  background:#0b0b14;
+  color:#fff;
 }
 
 /* ================= BUTTON ================= */
@@ -159,98 +180,88 @@ input[type="date"]::-webkit-calendar-picker-indicator{
   transform:scale(1.05);
 }
 
-/* TABLE CONTAINER */
-.table {
-  border-collapse: separate;
-  border-spacing: 0 12px;
-  font-family: "Times New Roman", serif;
+/* ================= TABLE ================= */
+.table{
+  border-collapse:separate;
+  border-spacing:0 12px;
 }
 
 /* HEADER */
-.table thead th {
-  background: linear-gradient(90deg, #8b5cf6, #6d28d9);
-  color: #fff;
-  border: none;
-  padding: 14px;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-align: center;
+.table thead th{
+  background:linear-gradient(90deg,#8b5cf6,#6d28d9);
+  color:#fff;
+  border:none;
+  padding:14px;
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  text-align:center;
 }
 
-/* ROW STYLE */
-.table tbody tr {
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--border);
-  transition: all 0.3s ease;
+/* ROW */
+.table tbody tr{
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(10px);
+  transition:all 0.3s ease;
 }
 
-/* ROUNDED CORNERS */
-.table tbody tr td:first-child {
-  border-top-left-radius: 12px;
-  border-bottom-left-radius: 12px;
+/* RADIUS */
+.table tbody tr td:first-child{
+  border-top-left-radius:12px;
+  border-bottom-left-radius:12px;
 }
-.table tbody tr td:last-child {
-  border-top-right-radius: 12px;
-  border-bottom-right-radius: 12px;
+.table tbody tr td:last-child{
+  border-top-right-radius:12px;
+  border-bottom-right-radius:12px;
 }
 
 /* CELL */
-.table td {
-  padding: 14px;
-  border: none;
-  vertical-align: middle;
+.table td{
+  padding:14px;
+  border:none;
 }
 
-/* HOVER EFFECT */
-.table tbody tr:hover {
-  transform: translateY(-5px) scale(1.01);
-  background: rgba(139,92,246,0.15);
-  box-shadow: 0 10px 25px rgba(139,92,246,0.25);
+/* HOVER */
+.table tbody tr:hover{
+  transform:translateY(-5px) scale(1.01);
+  background:rgba(139,92,246,0.15);
+  box-shadow:0 10px 25px rgba(139,92,246,0.25);
 }
 
-/* STATUS BADGES */
-.status {
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: bold;
+/* STATUS */
+.status{
+  padding:5px 12px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
 }
 
-.status.completed {
-  background: rgba(34,197,94,0.2);
-  color: #22c55e;
+.status.completed{
+  background:rgba(34,197,94,0.2);
+  color:#22c55e;
 }
-
-.status.pending {
-  background: rgba(234,179,8,0.2);
-  color: #eab308;
+.status.pending{
+  background:rgba(234,179,8,0.2);
+  color:#eab308;
 }
-
-.status.cancelled {
-  background: rgba(239,68,68,0.2);
-  color: #ef4444;
+.status.cancelled{
+  background:rgba(239,68,68,0.2);
+  color:#ef4444;
 }
 
 /* ACTION BUTTON */
-.btn-action {
-  border: none;
-  padding: 6px 12px;
-  border-radius: 8px;
-  background: linear-gradient(135deg,#8b5cf6,#6d28d9);
-  color: white;
-  transition: 0.3s;
+.btn-action{
+  border:none;
+  padding:6px 12px;
+  border-radius:8px;
+  background:linear-gradient(135deg,#8b5cf6,#6d28d9);
+  color:white;
+  transition:0.3s;
 }
 
-.btn-action:hover {
-  box-shadow: 0 0 10px rgba(139,92,246,0.6);
-  transform: scale(1.05);
-}
-
-/* FADE ANIMATION */
-.table tbody tr {
-  animation: fadeUp 0.4s ease;
+.btn-action:hover{
+  box-shadow:0 0 10px rgba(139,92,246,0.6);
+  transform:scale(1.05);
 }
 
 /* ================= ANIMATIONS ================= */
@@ -261,11 +272,6 @@ input[type="date"]::-webkit-calendar-picker-indicator{
 
 @keyframes fadeUp{
   from{opacity:0; transform:translateY(20px);}
-  to{opacity:1; transform:translateY(0);}
-}
-
-@keyframes slideDown{
-  from{opacity:0; transform:translateY(-30px);}
   to{opacity:1; transform:translateY(0);}
 }
 
@@ -299,53 +305,34 @@ input[type="date"]::-webkit-calendar-picker-indicator{
   }
 
   /* MOBILE TABLE */
-  .custom-table thead{display:none;}
+  .table thead{display:none;}
 
-  .custom-table tbody tr{
+  .table tbody tr{
     display:block;
     margin-bottom:15px;
     padding:10px;
   }
 
-  .custom-table td{
+  .table td{
     display:flex;
     justify-content:space-between;
     font-size:12px;
   }
 
-  .custom-table td::before{
+  .table td::before{
     content:attr(data-label);
     font-weight:bold;
     color:var(--purple2);
   }
 }
+input[type="date"] {
+    color: #fff !important;
+    background: rgba(255, 255, 255, 0.08);
+    color-scheme: white;
+}
 .h5, h5 {
     font-size: 1.25rem;
-    color:White;
-}
-/* DROPDOWN FIX */
-select.form-control {
-  background: rgba(255,255,255,0.05);
-  color: white;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-}
-
-/* VERY IMPORTANT: OPTIONS */
-select.form-control option {
-  background: #0b0b14;   /* dark background */
-  color: white;          /* visible text */
-}
-
-/* On focus */
-select.form-control:focus {
-  background: rgba(255,255,255,0.08);
-  color: white;
-  border-color: var(--purple);
-  box-shadow: 0 0 10px var(--purple-glow);
-}
-input[type="date"] {
-    color-scheme: white;
+    color:white;
 }
 </style>
 
