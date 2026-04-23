@@ -233,14 +233,17 @@ td{
 <div class="topbar">
     <h5>Welcome Admin 👋</h5>
 
-    <div style="position:relative">
-        <i class="fas fa-bell" onclick="toggleNotifications()"></i>
+   <div style="position:relative" id="notificationWrapper">
+    <button type="button" id="notificationBtn"
+        style="background:none;border:none;color:white;position:relative;cursor:pointer;">
+        <i class="fas fa-bell"></i>
         <span id="notifCount" class="badge bg-danger">0</span>
+    </button>
 
-        <div id="notificationList">
-            <div>No notifications</div>
-        </div>
+    <div id="notificationList">
+        <div>No notifications</div>
     </div>
+</div>
 </div>
 
 <!-- CIRCLE STATS -->
@@ -318,10 +321,6 @@ function logout() {
     window.location.href = "login.html";
 }
 
-function toggleNotifications() {
-    const box = document.getElementById("notificationList");
-    box.style.display = box.style.display === "block" ? "none" : "block";
-}
 
 /* 🔥 CIRCLE ANIMATION (AUTO BASED ON VALUE) */
 function animateCircle(id, value, max = 100) {
