@@ -1037,103 +1037,115 @@ async function loadMyBatchesPage() {
 	}).join("");
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    const bell = document.getElementById("notificationBtn");
-    const box = document.getElementById("notificationList");
-
-    bell.addEventListener("click", function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        box.style.display =
-            box.style.display === "block" ? "none" : "block";
-    });
-
-    // close when clicking outside
-    document.addEventListener("click", function (event) {
-        if (!document.getElementById("notificationWrapper").contains(event.target)) {
-            box.style.display = "none";
-        }
-    });
-});
 
 let stompClient = null;
+let notifCount = 0;
 
 function connectSocket() {
+    const socket = new SockJS("http://localhost:8080/ws");
+    stompClient = Stomp.over(socket);
 
-	const socket = new SockJS("http://localhost:8080/ws");
-	  stompClient = Stomp.over(socket);
+    stompClient.connect({}, function () {
+        console.log("✅ Connected to WebSocket");
 
-	  stompClient.connect({}, function () {
-
-	      console.log("✅ Connected to WebSocket");
-
-	      stompClient.subscribe("/topic/notifications", function (message) {
-
-	          const data = JSON.parse(message.body);
-
-	          console.log("📩 Notification:", data.message);
-
-	          showNotification(data.message);
-	      });
-	  });
+        stompClient.subscribe("/topic/notifications", function (message) {
+            const data = JSON.parse(message.body);
+            showNotification(data.message);
+        });
+    });
 }
 
-let notifCount = JSON.parse(localStorage.getItem("notifications") || "[]").length;
 
+function initNotifications() {
+    const history = JSON.parse(localStorage.getItem("notifications") || "[]");
 
+    notifCount = history.length;
+    updateNotificationCount();
+    renderNotifications(history);
+}
 
 function showNotification(message, time = null) {
 
-	notifCount++;
+    const newNotif = {
+        message: message,
+        time: time || new Date().toLocaleString()
+    };
 
-	const countEl = document.getElementById("notifCount");
-	if (countEl) countEl.innerText = notifCount;
+    let history = JSON.parse(localStorage.getItem("notifications") || "[]");
 
-	// Save to localStorage
-	let history = JSON.parse(localStorage.getItem("notifications") || "[]");
-	
-	const emptyMsg = document.getElementById("emptyMsg");
-	if (emptyMsg) emptyMsg.style.display = "none";
+    history.unshift(newNotif);
 
-	const newNotif = {
-		message: message,
-		time: time || new Date().toLocaleString()
-	};
+    if (history.length > 20) history.pop();
 
-	history.unshift(newNotif);
-	localStorage.setItem("notifications", JSON.stringify(history));
+    localStorage.setItem("notifications", JSON.stringify(history));
 
-	// Show in UI (if exists)
-	const container = document.getElementById("notificationList");
-	if (!container) return;
+    notifCount = history.length;
+    updateNotificationCount();
 
-	const div = document.createElement("div");
-	div.className = "alert alert-info shadow-sm";
-
-	div.innerHTML = `
-        <div>${message}</div>
-        <small class="text-muted">${newNotif.time}</small>
-    `;
-
-	container.prepend(div);
-
-	alert("🔔 " + message);
+    renderNotifications(history);
 }
 
+function renderNotifications(history) {
+
+    const container = document.getElementById("notificationList");
+    const emptyMsg = document.getElementById("emptyMsg");
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    if (!history.length) {
+        if (emptyMsg) container.appendChild(emptyMsg);
+        return;
+    }
+
+    history.forEach(n => {
+        const div = document.createElement("div");
+        div.className = "notification-item";
+
+        div.innerHTML = `
+            <div>${n.message}</div>
+            <div class="time">${n.time}</div>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+function updateNotificationCount() {
+    const el = document.getElementById("notifCount");
+    if (el) el.innerText = notifCount;
+}
 /* ================= BELL TOGGLE ================= */
 
 function toggleNotifications() {
+    const box = document.getElementById("notificationList");
+    const wrapper = document.getElementById("notificationWrapper");
 
-	const box = document.getElementById("notificationList");
+    if (!box || !wrapper) return;
 
-	if (!box) return;
+    const isOpen = box.style.display === "block";
 
-	if (box.style.display === "none" || box.style.display === "") {
-		box.style.display = "block";
-	} else {
-		box.style.display = "none";
-	}
+    box.style.display = isOpen ? "none" : "block";
+
+    // attach ONLY ONCE
+    if (!isOpen) {
+        document.addEventListener("click", closeOnOutside);
+    }
+}
+
+
+
+function closeOnOutside(e) {
+    const box = document.getElementById("notificationList");
+    const wrapper = document.getElementById("notificationWrapper");
+
+    if (!box || !wrapper) return;
+
+    if (!wrapper.contains(e.target)) {
+        box.style.display = "none";
+        document.removeEventListener("click", closeOnOutside);
+    }
 }
 
 function openProgressModal(id, total, completed) {
@@ -1167,43 +1179,14 @@ function calculateProgress(startDate, endDate) {
 	return Math.round(progress);
 }
 
-function loadOldNotificationsStyled() {
-
-	const container = document.getElementById("notificationList");
-	const emptyMsg = document.getElementById("emptyMsg");
-
-	if (!container) return; // ✅ safety
-
-	const history = JSON.parse(localStorage.getItem("notifications") || "[]");
-
-	container.innerHTML = "";
-
-	if (history.length === 0) {
-		if (emptyMsg) emptyMsg.style.display = "block"; // ✅ safe
-		return;
-	}
-
-	if (emptyMsg) emptyMsg.style.display = "none";
-
-	history.forEach(n => {
-
-		const div = document.createElement("div");
-		div.className = "notification-item";
-
-		div.innerHTML = `
-            <div>${n.message}</div>
-            <div class="time">${n.time}</div>
-        `;
-
-		container.appendChild(div);
-	});
-}
-
 function clearNotifications() {
-	localStorage.removeItem("notifications");
-	document.getElementById("notificationList").innerHTML = "";
-	document.getElementById("notifCount").innerText = 0;
+    localStorage.removeItem("notifications");
+    notifCount = 0;
+    updateNotificationCount();
+    renderNotifications([]);
 }
+
+
 
 /* ================= TRAINING SESSIONS ================= */
 
@@ -2338,10 +2321,6 @@ window.addEventListener("load", () => {
         loadProjectDropdown();
     }
 
-    if (document.getElementById("notificationList")) {
-        loadOldNotificationsStyled();
-    }
-
     if (document.getElementById("mockBatch")) {
         loadMockBatchDropdown();
     }
@@ -2365,5 +2344,6 @@ window.addEventListener("load", () => {
 	// ✅ ADD THIS LINE (IMPORTANT FIX)
 		bindValidationEvents();
 	initBatchSelect();
-    connectSocket();
+	initNotifications();
+	connectSocket();
 });
