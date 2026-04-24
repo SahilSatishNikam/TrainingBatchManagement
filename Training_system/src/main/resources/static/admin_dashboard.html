@@ -196,16 +196,24 @@ td{
     background:linear-gradient(90deg,#a855f7,#7e22ce);
 }
 
-/* NOTIFICATION */
-#notificationList {
-    display:none;
-    position:absolute;
-    top:30px;
-    right:0;
-    background:#111;
-    padding:10px;
-    border-radius:10px;
-    width:250px;
+.fa-bell {
+  transition:0.3s;
+}
+
+.fa-bell:hover {
+  transform:rotate(15deg) scale(1.2);
+  color:var(--purple2);
+}
+
+#notifCount {
+  position:absolute;
+  top:-6px;
+  right:-6px;
+  background:red;
+  color:white;
+  font-size:11px;
+  padding:4px 6px;
+  border-radius:50%;
 }
 </style>
 </head>
@@ -233,17 +241,10 @@ td{
 <div class="topbar">
     <h5>Welcome Admin 👋</h5>
 
-   <div style="position:relative" id="notificationWrapper">
-    <button type="button" id="notificationBtn"
-        style="background:none;border:none;color:white;position:relative;cursor:pointer;">
-        <i class="fas fa-bell"></i>
-        <span id="notifCount" class="badge bg-danger">0</span>
-    </button>
-
-    <div id="notificationList">
-        <div>No notifications</div>
+   <div onclick="toggleNotifications()" style="position:relative; cursor:pointer;">
+      <i class="fas fa-bell"></i>
+      <span id="notifCount">0</span>
     </div>
-</div>
 </div>
 
 <!-- CIRCLE STATS -->
@@ -348,6 +349,13 @@ setTimeout(() => {
 </script>
 
 <script src="script.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    initNotifications();
+    connectSocket();
+});
+</script>
 
 </body>
 </html>

@@ -99,19 +99,25 @@ function login() {
 
         return data;
     })
-    .then(data => {
-        showToast("Login successful!", false);
+	.then(data => {
+	    console.log("🔥 FULL LOGIN RESPONSE:", data);   // 👈 ADD
+	    console.log("🔥 ROLE FROM BACKEND:", data.role); // 👈 ADD
 
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("role", data.role);
+	    showToast("Login successful!", false);
 
-        // ROLE BASED REDIRECT (IMPORTANT UPGRADE)
-        if (data.role === "ADMIN") {
-            window.location.href = "/admin_dashboard.html";
-        } else {
-            window.location.href = "/trainer_dashboard.html";
-        }
-    })
+	    const cleanRole = data.role.replace("ROLE_", ""); // 🔥 SAFETY FIX
+
+	    localStorage.setItem("token", data.token);
+	    localStorage.setItem("role", cleanRole);
+
+	    console.log("✅ SAVED ROLE:", localStorage.getItem("role"));
+
+	    if (cleanRole === "ADMIN") {
+	        window.location.href = "/admin_dashboard.html";
+	    } else {
+	        window.location.href = "/trainer_dashboard.html";
+	    }
+	})
     .catch(err => {
         showToast(err.message);
     });
@@ -1133,6 +1139,15 @@ function toggleNotifications() {
         document.addEventListener("click", closeOnOutside);
     }
 }
+function updateNotificationCount() {
+
+    const role = localStorage.getItem("role");
+
+    const key = role === "ADMIN" ? "admin_notifications" : "trainer_notifications";
+    const seenKey = role === "ADMIN" ? "admin_seen" : "trainer_seen";
+
+    let history = JSON.parse(localStorage.getItem(key) || "[]");
+    let seen = parseInt(localStorage.getItem(seenKey) || "0");
 
 
 

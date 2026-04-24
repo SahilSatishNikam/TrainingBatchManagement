@@ -228,7 +228,7 @@ body {
 			class="fas fa-laptop-code me-2"></i>Practicals & Projects
 		</a> <a href="mock_interview.html"> <i class="fas fa-microphone me-2"></i>Mock
 			Interviews
-		</a><a href="admin_progress.html">
+		</a><a href="update_progress.html">
         <i class="fas fa-chart-line me-2"></i> Progress
     </a><a href="trainer_notification.html" class="active"> <i
 			class="fas fa-bell me-2"></i>Notifications
@@ -266,6 +266,15 @@ body {
 	<script
 		src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+	
+	<script>
+document.addEventListener("DOMContentLoaded", function () {
+    initNotifications();
+    connectSocket();
+    markNotificationsAsSeen();
+    loadTrainerNotificationsFromServer()
+});
+</script>
 
 </body>
 </html>
