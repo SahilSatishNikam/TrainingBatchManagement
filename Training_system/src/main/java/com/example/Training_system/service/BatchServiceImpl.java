@@ -53,15 +53,13 @@ public class  BatchServiceImpl implements BatchService {
              .filter(m -> m != null && !m.isBlank())
              .toList();
 
-     notificationService.sendToAllTrainers(
-    		    "📢 New batch created: " + savedBatch.getBatchName(),
-    		    phones
-    		);
-
-    		// ✅ ALSO SEND TO ADMIN
-    		notificationService.sendToAdmin(
-    		    "📢 New batch created: " + savedBatch.getBatchName()
-    		);
+  // ✅ Send only to assigned trainer dynamically
+     notificationService.sendToTrainer(
+         trainer.getMobile(),
+         "📢 Hello " + trainer.getName() +
+         ", a new batch '" + savedBatch.getBatchName() +
+         "' has been assigned to you."
+     );
         return savedBatch;
     }
    
