@@ -181,24 +181,20 @@ async function loadDashboard() {
 
 /* ================= TRAINERS ================= */
 async function loadTrainers() {
-	trainers = await apiRequest("/admin/trainers");
-	applyFilters();
+    try {
+        const data = await apiRequest("/admin/trainers");
+
+        trainers = Array.isArray(data) ? data : [];
+
+        currentPage = 0;
+        applyFilters();
+
+    } catch (err) {
+        console.error("Load trainers error:", err);
+    }
 }
 /* ================= FILTER ================= */
-function applyFilters() {
-	const search = document.getElementById("searchInput")?.value.toLowerCase() || "";
 
-	const filtered = trainers.filter(t =>
-		(t.name || "").toLowerCase().includes(search) ||
-		(t.lastName || "").toLowerCase().includes(search) ||
-		(t.email || "").toLowerCase().includes(search) ||
-		(t.department || "").toLowerCase().includes(search)
-	);
-
-	currentPage = 0;
-	renderTrainerTable(filtered);
-	renderTrainerPagination(filtered.length);
-}
 
 
 /* ================= TRAINER TABLE ================= */
@@ -388,6 +384,46 @@ function renderTrainerPagination(total) {
         `;
 	}
 }
+
+function applyFilters() {
+    const table = document.getElementById("trainerTable");
+    if (!table) return;
+
+    const search = document.getElementById("searchInput")?.value.toLowerCase() || "";
+
+    // Filter trainers
+    let filtered = trainers.filter(t =>
+        (t.name || "").toLowerCase().includes(search) ||
+        (t.email || "").toLowerCase().includes(search) ||
+        (t.department || "").toLowerCase().includes(search) ||
+        (t.mobile || "").toLowerCase().includes(search)
+    );
+
+    // Pagination
+    const start = currentPage * PAGE_SIZE;
+    const end = start + PAGE_SIZE;
+
+    const paginated = filtered.slice(start, end);
+
+    if (!paginated.length) {
+        table.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center">
+                    No trainers found
+                </td>
+            </tr>
+        `;
+        renderTrainerPagination(filtered.length);
+        return;
+    }
+
+    table.innerHTML = paginated
+        .map((t, i) => renderRow(t, start + i))
+        .join("");
+
+    renderTrainerPagination(filtered.length);
+}
+
 function changeTrainerPage(page) {
 	currentPage = page;
 	applyFilters();
